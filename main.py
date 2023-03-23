@@ -29,14 +29,16 @@ def measurement_pulsed():
     v_min   =   config.getfloat('measurementVI/pulsed','v_min')
 
 
+    #Create voltage lists for each cycle
+    vlistp  =   np.concatenate((np.arange(0, v_max+v_step, v_step), np.arange(v_max-v_step, -v_step, -v_step)))
+    vlistn  =   np.concatenate((np.arange(0, v_min-v_step, -v_step), np.arange(v_min+v_step, v_step, v_step)))
+    
     match cycle:
-        case '+':  
-            voltage_list = np.concatenate((np.arange(0, v_max+v_step, v_step), np.arange(v_max-v_step, -v_step, -v_step)))
-        case '-':
-            voltage_list = voltage_list = np.concatenate((np.arange(0, v_min-v_step, -v_step), np.arange(v_min, v_step, v_step)))
-        case '+-':
-            listp = 
-        
+        case '+':   voltage_list = vlistp
+        case '-':   voltage_list = vlistn
+        case '+-':  voltage_list = np.concatenate(vlistp,vlistn)
+        case '-+':  voltage_list = np.concatenate(vlistn,vlistp)
+
 
     for cycle in range(n_cycle):
 
