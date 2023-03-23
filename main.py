@@ -1,6 +1,7 @@
 import pyvisa
 import configparser
 import numpy as np
+import time
 
 # configuration file
 config = configparser.ConfigParser()
@@ -40,33 +41,31 @@ def measurement_pulsed():
         case '-+':  voltage_list = np.concatenate(vlistn,vlistp)
 
 
-    for cycle in range(n_cycle):
+    for cycle_i in range(n_cycle):
+        for voltage_val in voltage_list:
+            #write pulse
+            sourcemeter.write('SOUR:VOLT {}'.format(voltage_val))
+            sourcemeter.write('OUTP ON')
+            time.sleep(t_write)
+            current_write = sourcemeter.query('MEAS:CURR?')
+            sourcemeter.write('OUTP OFF')
+
+            #wait some time
+            time.sleep(t_wait)
+            
+            #read pulse
+            sourcemeter.write('SOUR:VOLT {}'.format(v_read))
+            sourcemeter.write('OUTP ON')
+            time.sleep(t_read)
+            current_read = sourcemeter.query('MEAS:CURR?')
+            sourcemeter.write('OUTP OFF')
+
+            
 
 
 
 
 
 
-        for voltage_val in np.concatenate((np.arange(0, end+step, step), np.arange(end-step, -step, -step))):
 
-
-
-
-
-
-
-
-
-# Set voltage level to 1 V
-keithley.write('SOUR:VOLT 1')
-
-# Turn on output
-keithley.write('OUTP ON')
-
-# Measure current
-current = keithley.query('MEAS:CURR?')
-
-# Turn off output
-keithley.write('OUTP OFF')
-
-keithley.close()
+sourcemeter.close()
