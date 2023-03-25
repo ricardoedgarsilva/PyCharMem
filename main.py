@@ -8,12 +8,10 @@ import time
 
 from modules.interface.main_menu import main_menu
 from modules.interface.measurement_selection_menu import measurement_selection_menu
-from modules.basic import *
+from modules.common import *
 from modules.measurements import *
 
 running = True
-load_config() # Load configuration file
-
 console = Console()
 install()
 
@@ -29,12 +27,12 @@ while running:
 
     match main_menu_selection:
         case 0:
+            load_config()
             measurement = measurement_selection_menu(console)
             bar = getattr(measurement, f'measure_{measurement}')
             result = bar()
 
         case 1:
             edit_config()
-            load_config()
         case 2:
             running = False
