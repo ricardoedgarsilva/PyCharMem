@@ -1,3 +1,6 @@
+import time
+import numpy as np
+
 def measure_pulsed(sourcemeter,config):
 
     #Read configuration file
@@ -41,12 +44,4 @@ def measure_pulsed(sourcemeter,config):
             current_read = sourcemeter.query('MEAS:CURR?')
             sourcemeter.write('OUTP OFF')
 
-            
-
-
-
-
-
-
-
-sourcemeter.close()
+    sourcemeter.close()
