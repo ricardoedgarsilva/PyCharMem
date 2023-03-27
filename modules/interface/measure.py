@@ -3,6 +3,7 @@ from rich.layout import Layout
 from rich.text import Text
 from rich.table import Table
 from datetime import datetime
+from rich.live import Live
 import time
 
 console = Console()
