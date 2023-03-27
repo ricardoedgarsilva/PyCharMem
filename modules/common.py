@@ -14,3 +14,12 @@ def load_config():
     config = configparser.ConfigParser()
     config.read('config.ini')
     return config
+
+def path_exists(path):
+    import os
+    return os.path.exists(path)
+
+def get_path():
+    import os
+    return os.path.dirname(os.path.realpath(__file__))
+
