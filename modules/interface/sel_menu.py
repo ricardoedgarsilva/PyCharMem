@@ -3,8 +3,11 @@ from rich.prompt import Prompt
 import os
 import time
 
-def measurement_selection_menu(console,path='modules/measurements'):
+
+
+def sel_menu(console,logger,path='modules/measurements'):
     measurement_types = os.listdir(path)
+
 
     if measurement_types:
         choices = [str(i) for i in range(len(measurement_types))]
@@ -20,13 +23,13 @@ def measurement_selection_menu(console,path='modules/measurements'):
             selection = Prompt.ask("Select an option:", choices=choices)
             
             if selection not in choices:
-                console.print("[red]Invalid selection, please try again![/red]")
+                logger.warning('Invalid selection, please try again!')
 
-        return int(selection)
+        print(f'You selected {measurement_types[int(selection)]}!')
+        return measurement_types[int(selection)]
     else:
-        console.print('[bold][red]No measurement types found![/red][/bold]')
+        logger.error('No measurement types found!')
         time.sleep(2)
-
 
 
 

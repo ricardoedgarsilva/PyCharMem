@@ -1,21 +1,24 @@
-import matplotlib.pyplot as plt
-import numpy as np
+from modules.common import *
+import pandas as pd
 
-fig, ax = plt.subplots(nrows=2, ncols=2)
+config = load_config()
 
-
-x = np.linspace(0, 10, 100)
-y = np.sin(x)
-ax.plot(x, y)
-
-for i in range(10):
-    y = np.sin(x + i/10)
-    ax.clear()
-    ax.plot(x, y)
-    plt.draw()
-    plt.pause(0.1)
-
-plt.show()
+sample = config.get('sample','name')
+device = config.get('sample','device')
 
 
-# Create a matrix of 4x4 plots with matplotlib and update them in a loop
+folder_path = folder_path(sample,device)
+create_path(folder_path)
+file = get_filename(folder_path,sample,device)
+
+# save the following section to a 'Input' sheet in the Excel file
+sections = ['sourcemeter','measurement','measurement/pulsed']
+section_data = dict()
+for section in sections:
+    section_data.update(dict(config.items(section)))
+
+# Convert the dictionary to a Pandas DataFrame
+df = pd.DataFrame(list(section_data.items()), columns=['Key', 'Value'])
+
+# Save the DataFrame to an Excel file
+df.to_excel(f'{folder_path}\\{file}', sheet_name='Input', index=False)

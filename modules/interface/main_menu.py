@@ -1,13 +1,11 @@
-from art import text2art
 from rich.panel import Panel
 from rich.prompt import Prompt
 
 def main_menu(console):
-    
-    print(text2art("PyCharMem"))
 
     options = [
         'Select Measurement',
+        'Print Available Adresses',
         'Edit Configuration',
         'Exit'
     ]
@@ -27,7 +25,11 @@ def main_menu(console):
         if selection not in choices:
             console.print("[red]Invalid selection, please try again![/red]")
 
-    return int(selection)
+    match selection:
+        case '0': return 'select_measurement'
+        case '1': return 'check_adresses'
+        case '2': return 'edit_config'
+        case '3': return 'exit'
 
     
 if __name__ == "__main__":
