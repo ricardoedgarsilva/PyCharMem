@@ -5,13 +5,11 @@ import time
 
 
 
-def sel_menu(console,logger,path='modules/measurements'):
+def measurement_file_menu(console,logger,path='modules/measurements'):
     measurement_types = os.listdir(path)
 
-
     if measurement_types:
-        choices = [str(i) for i in range(len(measurement_types))]
-
+        choices = list(map(str, range(len(measurement_types))))
         console.print(Panel.fit("[bold]Measurement selection menu[/bold]", border_style="green"))
 
         for choice in choices:

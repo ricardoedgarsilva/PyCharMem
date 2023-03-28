@@ -1,4 +1,4 @@
-from modules.common import *
+from modules.common_utils import *
 import pandas as pd
 
 config = load_config()
