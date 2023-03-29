@@ -9,11 +9,37 @@ import time
 console = Console()
 layout = Layout()
 
-layout.split(
-    Layout(name='header', size=3),
-    Layout(ratio=1, name='value_log'),
-    Layout(size=5, name='progress_bar'),
-)
+class measure_tui:
+    def __init__(self,console,cycles):
+        self.layout = Layout()
+
+        self.layout.split(
+            Layout(name='header', size=2),
+            Layout(ratio=1, name='value_table'),
+            Layout(size=5, name='console_log'))
+        
+        #split header into two columns, one for the time/date and the other for a progress bar
+        self.layout['header'].split(
+            Layout(name='time', size=3),
+            Layout(name='progress', ratio=1))
+        
+        progress_bar = progress.add_task("Task name", total=100)
+
+    #Create a function that updates all the elements of the layout
+    def update_progress(self,console,layout,progress):
+        p)
+        layout['progress_bar'].update(progress)
+
+    def update_layout(self,console,layout,data,progress):
+        console.print(layout)
+        layout['time'].update(Text(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+        layout['progress_bar'].update(progress)
+        
+
+
+
+
+
 
 
 table = Table(title="Star Wars Movies")

@@ -13,7 +13,7 @@ install()
 console = Console()
 
 #Verbose debug
-verbose = True
+verbose = False
 logger = verbose_debug(verbose)
 
 #Get config

@@ -1,24 +1,15 @@
-from modules.common_utils import *
-import pandas as pd
-
-config = load_config()
-
-sample = config.get('sample','name')
-device = config.get('sample','device')
+from textual.app import App, ComposeResult
+from textual.widgets import Welcome
 
 
-folder_path = folder_path(sample,device)
-create_path(folder_path)
-file = get_filename(folder_path,sample,device)
+class WelcomeApp(App):
+    def compose(self) -> ComposeResult:
+        yield Welcome()
 
-# save the following section to a 'Input' sheet in the Excel file
-sections = ['sourcemeter','measurement','measurement/pulsed']
-section_data = dict()
-for section in sections:
-    section_data.update(dict(config.items(section)))
+    def on_button_pressed(self) -> None:
+        self.exit()
 
-# Convert the dictionary to a Pandas DataFrame
-df = pd.DataFrame(list(section_data.items()), columns=['Key', 'Value'])
 
-# Save the DataFrame to an Excel file
-df.to_excel(f'{folder_path}\\{file}', sheet_name='Input', index=False)
+if __name__ == "__main__":
+    app = WelcomeApp()
+    app.run()
