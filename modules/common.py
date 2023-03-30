@@ -36,20 +36,14 @@ def splash_screen(console):
 def config_edit(logger):
     '''Opens the config file in the default editor'''
     import os
-    import configparser
-    import subprocess
 
     try:
-        config = configparser.ConfigParser()
-        config.read('config.ini')
-        editor = config.get('main','editor')
-        logger.info(f'Opening config file in {editor}')
-        subprocess.run([editor,'config.ini'])
+        os.startfile('config.ini')
     except:
         logger.critical('Config file not found')
         quit()
 
-def load_config(logger):
+def config_load(logger):
     '''Loads the config file'''
     import configparser
     try:
@@ -103,7 +97,7 @@ def print_available_addresses(console,logger):
     from modules.common import printnewlines
 
     rm = pyvisa.ResourceManager()
-    printnewlines(3)
+    printnewlines(1)
     console.print(Panel.fit("[bold]Available Addresses[/bold]", border_style="green"))
     for address in rm.list_resources():
         console.print(address)

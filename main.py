@@ -10,10 +10,10 @@ from modules.main_handler import MainHandler
 
 install()           #Rich traceback
 console = Console() #Rich console
-logger = verbose_debug(True)
+logger = verbose_debug(False)
 
 #Get config
-config = load_config(logger)
+config = config_load(logger)
 
 MainHandler = MainHandler(console,logger,config)
 MainHandler.main()
