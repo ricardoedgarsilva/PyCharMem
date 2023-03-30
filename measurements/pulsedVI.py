@@ -46,10 +46,10 @@ class pulsedVI:
 
         try:
             # Set the sourcemeter to autorange mode
-            srcmtr.set_source_function('Voltage') #Set source mode to voltage
+            srcmtr.set_source_function('Voltage')       #Set source mode to voltage
             srcmtr.set_fixed_mode('Voltage')
-            srcmtr.set_current_range() #Set current range to autorange
-            srcmtr.set_voltage_range() #Set voltage range to autorange   
+            srcmtr.set_current_range()                  #Set current range to autorange
+            srcmtr.set_voltage_range()                  #Set voltage range to autorange   
             srcmtr.set_sense_function('Voltage') #Set sense function to current
             srcmtr.set_sense_function('Current') #Set sense function to current
             srcmtr.set_current_compliance(self.ccplc) #Set current compliance

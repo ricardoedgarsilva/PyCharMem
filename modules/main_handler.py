@@ -48,7 +48,8 @@ class MainHandler:
 
                     if self.meas_type == 'Back': continue
 
-                    module = importlib.import_module(f'modules.measurements.{self.meas_type}')
+                    module = importlib.import_module(f'measurements.{self.meas_type}')
+                    print(dir(module))
                     measurement_type = getattr(module, self.meas_type)
                     measurement = measurement_type(self.config, self.console, self.logger)
                     measurement.set_sourcemeter(self.sourcemeter)

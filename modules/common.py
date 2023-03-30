@@ -23,22 +23,29 @@ def printnewlines(n):
 
 def splash_screen(console):
     '''Prints the splash screen'''
+    import os
     import configparser
     from art import text2art
-
+    path = os.path.join('modules','info.ini')
     info = configparser.ConfigParser()
-    info.read('modules\\info.ini')
+    info.read(path)
+    print(info.sections())
     print(text2art(info.get('main','name')))
     console.print(f"Version: {info.get('main','version')}",style='bold blue')
     console.print(f"Author: {info.get('main','author')}",style='bold blue')
     printnewlines(5)
 
 def config_edit(logger):
-    '''Opens the config file in the default editor'''
+    '''Open the config file in the default editor'''
     import os
-
+    import platform
+    filename = 'config.ini'
+    
     try:
-        os.startfile('config.ini')
+        match platform.system():
+            case 'Windows': os.system(f'start {filename}')
+            case 'Darwin':  os.system(f"open {filename}")
+            case 'Linux':   os.system(f"open {filename}")
     except:
         logger.critical('Config file not found')
         quit()
