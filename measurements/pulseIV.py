@@ -1,6 +1,6 @@
 import time
 import numpy as np
-from modules.common_utils import check_missing_params, create_list, timestamp
+from modules.common import check_missing_params, create_list, timestamp
 
 class pulsedVI:
     def __init__(self, config, console, logger):

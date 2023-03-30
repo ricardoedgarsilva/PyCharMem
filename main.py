@@ -4,17 +4,13 @@ from rich.traceback import install
 from rich.prompt import Prompt
 from rich.status import Status
 # ------------------------------
-from modules.common_utils import *
-from modules.measurements import *
+from modules.common import *
 from modules.main_handler import MainHandler
 # ------------------------------
-install()
-#Create console
-console = Console()
 
-#Verbose debug
-verbose = False
-logger = verbose_debug(verbose)
+install()           #Rich traceback
+console = Console() #Rich console
+logger = verbose_debug(True)
 
 #Get config
 config = load_config(logger)

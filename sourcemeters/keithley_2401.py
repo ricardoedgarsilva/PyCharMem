@@ -1,6 +1,6 @@
 import pyvisa
 
-class keithley_2400:
+class keithley_2401:
     def __init__ (self,logger,config):
         '''Opens sourcemeter'''
         try:
@@ -78,7 +78,6 @@ class keithley_2400:
             listd_return.append(float(val))
         return listd_return
 
-        return self.srcmtr.query(':READ?')[:-1].split('   ')
     
     def query(self,command):
         '''Queries sourcemeter'''

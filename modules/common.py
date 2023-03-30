@@ -1,7 +1,24 @@
-#This file contains simple functions used throughout the code
+#File with common functions for the project
+#Path: modules\common_utils.py
 
-def printnnewlines(n):
-    '''Prints n newlines'''
+def verbose_debug(verbose):
+    '''Hides the debug messages'''
+    from rich.logging import RichHandler
+    import logging
+    if verbose:
+        logging.basicConfig(level="NOTSET", format="%(message)s", datefmt="[%X]", handlers=[RichHandler()])
+    else:
+        logging.basicConfig(level='INFO', format="%(message)s", datefmt="[%X]", handlers=[RichHandler()])
+
+    return logging.getLogger("rich")
+
+def clear_terminal():
+    '''Clears the terminal'''
+    import os
+    os.system('cls||clear')
+
+def printnewlines(n):
+    '''Prints a new line'''
     print(n*'\n')
 
 def splash_screen(console):
@@ -14,34 +31,38 @@ def splash_screen(console):
     print(text2art(info.get('main','name')))
     console.print(f"Version: {info.get('main','version')}",style='bold blue')
     console.print(f"Author: {info.get('main','author')}",style='bold blue')
-    printnnewlines(5)
+    printnewlines(5)
 
-def clear_terminal():
-    '''Clears the terminal'''
+def config_edit(logger):
+    '''Opens the config file in the default editor'''
     import os
-    os.system('cls||clear')
+    import configparser
+    import subprocess
 
-def edit_config(logger):
-    '''Opens the config.ini file in the default text editor'''
-    import os
-    os.startfile(r'config.ini')
-    logger.info('Config file opened!')
-
-
-def load_config(logger):
-    '''Returns the config object'''
     try:
-        import configparser
         config = configparser.ConfigParser()
         config.read('config.ini')
-        logger.info('Config file loaded!')
+        editor = config.get('main','editor')
+        logger.info(f'Opening config file in {editor}')
+        subprocess.run([editor,'config.ini'])
+    except:
+        logger.critical('Config file not found')
+        quit()
+
+def load_config(logger):
+    '''Loads the config file'''
+    import configparser
+    try:
+        config = configparser.ConfigParser()
+        config.read('config.ini')
+        logger.info('Config file loaded')
         return config
     except:
-        logger.critical('Config file not found!')
+        logger.critical('Config file not found')
         quit()
 
 def path_exists(path):
-    '''Returns True if the path exists, False otherwise'''
+    '''Checks if a path exists'''
     import os
     return os.path.exists(path)
 
@@ -55,13 +76,11 @@ def folder_path(sample,device):
     '''Returns the path to the folder where the data is saved'''''
     return get_path() + f'\\data\\{sample}\\{device}\\'
 
-def create_path(path):
+def mkdir(path):
     '''Creates the path if it doesn't exist'''
     import os
-    if path_exists(path):
-        pass
-    else:
-        os.makedirs(path)
+    if path_exists(path): pass
+    else: os.mkdir(path)
 
 def get_index(path):
     '''Returns the index of the file in the folder'''
@@ -81,31 +100,16 @@ def print_available_addresses(console,logger):
     '''Prints the available adresses'''
     import pyvisa
     from rich.panel import Panel
-    from modules.common_utils import printnnewlines
+    from modules.common import printnewlines
 
     rm = pyvisa.ResourceManager()
-    printnnewlines(3)
+    printnewlines(3)
     console.print(Panel.fit("[bold]Available Addresses[/bold]", border_style="green"))
     for address in rm.list_resources():
         console.print(address)
     
     if len(rm.list_resources()) == 0:
         logger.critical('No addresses found!')
-
-
-
-
-def verbose_debug(verbose):
-    '''Hides the debug messages'''
-    from rich.logging import RichHandler
-    import logging
-    if verbose:
-        logging.basicConfig(level="NOTSET", format="%(message)s", datefmt="[%X]", handlers=[RichHandler()])
-    else:
-        logging.basicConfig(level="INFO", format="%(message)s", datefmt="[%X]", handlers=[RichHandler()])
-
-    return logging.getLogger("rich")
-
 
 def check_missing_params(my_dict, my_list, logger):
     '''Checks if the dictionary has all the keys in the list'''
@@ -119,8 +123,6 @@ def check_missing_params(my_dict, my_list, logger):
         for item in missing_items:
             logger.critical(f'- {item}')
         quit()
-
-
 
 def create_list(cycle,max,min,step,logger):
     '''Creates a list of values'''
@@ -142,10 +144,11 @@ def create_list(cycle,max,min,step,logger):
         logger.critical('Invalid cycle type!')
         quit()
     
-
-
 def timestamp():
     '''Returns timestamp'''
     import datetime
     import time
     return datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S:%f')
+
+
+

@@ -1,7 +1,6 @@
 from rich.panel import Panel
 from rich.prompt import Prompt
-from modules.interface.options import main_options
-from modules.common_utils import printnnewlines
+from modules.common import printnewlines
 import os
 import time
 
@@ -10,9 +9,16 @@ import time
 def main_menu(console):
     '''Main menu'''
 
-    options, num_options = main_options(), [str(i) for i in range(len(main_options()))]
+    options = {
+        'Exit': 'exit',
+        'Select Measurement': 'select_measurement',
+        'Print Available Addresses': 'check_addresses',
+        'Edit Configuration': 'edit_config',
+    }
+    
+    num_options =  [str(i) for i in range(len(options))]
 
-    printnnewlines(3)
+    printnewlines(3)
     console.print(Panel.fit("[bold]Main Menu[/bold]", border_style="green"))
 
     for i, option in enumerate(options):
@@ -36,7 +42,7 @@ def measurement_file_menu(console,logger,path='modules/measurements'):
     measurement_types = os.listdir(path)
     measurement_types = [filename.split('.')[0] for filename in measurement_types if filename.endswith('.py')]
     
-    printnnewlines(3)
+    printnewlines(3)
     if measurement_types:
         
         choices = list(map(str, range(len(measurement_types))))
@@ -58,18 +64,3 @@ def measurement_file_menu(console,logger,path='modules/measurements'):
         logger.error('No measurement types found!')
         time.sleep(2)
 
-
-
-
-
-
-
-
-
-
-
-
-#Test    
-if __name__ == "__main__":
-    from rich.console import Console
-    main_menu(Console())
