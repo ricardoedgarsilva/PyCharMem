@@ -1,6 +1,7 @@
 #Creates main handler object
 from modules.common import *
 from modules.interface import menu, measurement_plots
+from rich.progress import Progress
 import importlib
 import numpy as np
 
@@ -58,6 +59,17 @@ class MainHandler:
                     n_cycles = measurement.n_cycle
                     #save_config(self.config,self.logger)
 
+                    with Progress() as progress:
+                        task = progress.add_task("[green]Measuring", total=n_cycles)
+
+                        for i in range(n_cycles):
+                            progress.update(task, advance=1, description=f"[blue]Cycle {i}/{n_cycles}")
+                            measurement.measure_cycle(self.sourcemeter)
+                            self.data = np.concatenate((self.data, measurement.result))
+
+                            plots.add_result(measurement.result)
+                            plots.update()
+                            
 
                     measurement.measure_cycle(self.sourcemeter)
                     self.data.concat(measurement.result)
