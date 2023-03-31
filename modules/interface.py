@@ -7,9 +7,10 @@ import time
 import inquirer
 
 
-def menu(type,console,logger):
+def menu(logger,console,type):
     '''Several Menus'''
-
+    
+    logger.debug(f'Menu called! Type: {type}')
     match type:
         case 'main':
             name = 'Main Menu'
@@ -17,11 +18,11 @@ def menu(type,console,logger):
             choices = ['Exit','Select Measurement','Print Available Addresses','Edit Configuration']
         
         case 'measurements':
-
             try:
                 measurement_types = os.listdir('measurements')
+                logger.debug(f'{len(measurement_types)} measurement types found')
             except:
-                logger.error('No measurement types found!')
+                logger.critical('No measurement types found!')
                 time.sleep(2)
                 quit()
 
@@ -34,6 +35,7 @@ def menu(type,console,logger):
     console.print(Panel.fit(f"[bold]{name}[/bold]", border_style="green"))
     menu = [inquirer.List('choice',message=message,choices=choices)]
     answer = inquirer.prompt(menu)
+    logger.debug(f'Returning answer: {answer}')
     return answer['choice']
 
 

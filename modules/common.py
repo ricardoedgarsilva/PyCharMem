@@ -77,11 +77,15 @@ def folder_path(sample,device):
     '''Returns the path to the folder where the data is saved'''''
     return get_path() + f'\\data\\{sample}\\{device}\\'
 
-def mkdir(path):
+def mkdir(logger,path):
     '''Creates the path if it doesn't exist'''
     import os
-    if path_exists(path): pass
-    else: os.mkdir(path)
+    if path_exists(path): 
+        logger.info(f'Folder {path} already exists')
+        pass
+    else: 
+        os.makedirs(path)
+        logger.info(f'Folder {path} created')
 
 def get_index(path):
     '''Returns the index of the file in the folder'''
@@ -97,7 +101,7 @@ def get_filename(path,sample,device):
     date = datetime.datetime.now().strftime('%Y%m%d')
     return f'{date}_{sample}_{device}_{index}.xlsx'
 
-def print_available_addresses(console,logger):
+def print_available_addresses(logger,console):
     '''Prints the available adresses'''
     import pyvisa
     from rich.panel import Panel
@@ -112,7 +116,7 @@ def print_available_addresses(console,logger):
     if len(rm.list_resources()) == 0:
         logger.critical('No addresses found!')
 
-def check_missing_params(my_dict, my_list, logger):
+def check_missing_params(logger,my_dict, my_list):
     '''Checks if the dictionary has all the keys in the list'''
     
     missing_items = [item for item in my_list if item not in my_dict]
@@ -125,7 +129,7 @@ def check_missing_params(my_dict, my_list, logger):
             logger.critical(f'- {item}')
         quit()
 
-def create_list(cycle,max,min,step,logger):
+def create_list(logger,cycle,max,min,step):
     '''Creates a list of values'''
     import numpy as np
 
@@ -151,5 +155,50 @@ def timestamp():
     import time
     return datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S:%f')
 
+def import_module(logger,type,srcmtr_model=None,measurement_type=None,plot_type=None):
+    '''Imports a module from string'''
+    import importlib
+    logger.debug(f'Importing {type} module')
+    try:
+        match type:
+            case 'sourcemeter':
+                file_name = f'sourcemeters.{srcmtr_model}'
+                obj_name = 'Sourcemeter'
+            
+            case 'measurement':
+                file_name = f'measurements.{measurement_type}'
+                obj_name = 'Measurement'
+
+            
+            case 'plot':
+                file_name = f'plots.{plot_type}'
+                obj_name = 'Plots'
+
+        file = importlib.import_module(file_name)
+        logger.debug(f'{file_name} module imported')
+        obj = getattr(file, obj_name)
+        logger.debug(f'{obj_name} class imported')
+        return obj
+    
+    except:
+        logger.critical(f'Invalid {type} type!')
+        quit()
+
+        
 
 
+
+
+                model = config.get('sourcemeter','model')
+                file = importlib.import_module(f'sourcemeters.{model}')
+                
+                        #model = config.get('sourcemeter','model')
+        #srcmtr_file = importlib.import_module(f'modules.sourcemeters.{model}')
+        #srcmtr_class = getattr(srcmtr_file, model)
+        #self.sourcemeter = srcmtr_class(self.logger,self.config)
+
+        import importlib
+        return importlib.import_module(module)
+    except:
+        logger.critical(f'Module {module} not found!')
+        quit()
