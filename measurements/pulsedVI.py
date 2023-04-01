@@ -1,6 +1,5 @@
 import time
 import numpy as np
-from modules.common import check_missing_params, create_list, timestamp
 
 class Measurement:
     def __init__(self,logger,config,filesaver):
@@ -10,7 +9,7 @@ class Measurement:
         
         #Read parameters from config file
         self.name = 'pulsedVI'
-        self.plot_name = 'twocycles'
+        self.plot_type = 'twocycles'
         self.necessary_params = ['cycle','n_cycle','v_max','v_min','v_step','v_read','ccplc','t_write','t_read','t_wait','nplc']
         self.result_headers = ['Voltage Write[V]','Current Write [A]','Voltage Read [V]','Current Read [A]', 'Resistance [Ω]', 'Timestamp', 'Time [s]']
         self.params = dict(config.items(f'measurement/{self.name}'))

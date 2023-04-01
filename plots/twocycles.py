@@ -79,4 +79,13 @@ class Plots:
     def show(self):
         plt.ioff() #Set interactive mode off
         plt.show()
+
+    def image(self):
+        '''Return the plot as a PNG image'''
+        import io
+        buf = io.BytesIO()
+        plt.savefig(buf, format='png')
+        buf.seek(0)
+        return buf
+    
     
