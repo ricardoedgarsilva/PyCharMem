@@ -25,7 +25,7 @@ ProgramInfo = {
     'name': 'PyCharMem',
     'version': '0.0.1',
     'author': 'Ricardo E. Silva',
-    'email': 'ricardoedgarsilva@gmail.com',
+    'email': 'ricardoedgarsilva@tecnico.ulisboa.pt',
     'description': 'PyCharMem is a Python program that allows you to measure the charge memory of a device.',
     'license': 'GNU General Public License v3.0',
     'url': 'https://github.com/ricardoesilva/PyCharMem'  
