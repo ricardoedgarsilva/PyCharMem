@@ -18,7 +18,7 @@ data = np.array(data)
 plt.ion()
 plots = Plots()
 
-for i in range(1, 30):
+for i in range(1, 50):
     plots.add_result([float(data[i,1]), float(data[i,2]), float(data[i,4])])
     plots.update()
 

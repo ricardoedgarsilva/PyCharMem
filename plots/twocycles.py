@@ -26,10 +26,10 @@ class Plots:
         self.ax[1,1].set_title('Resistance Cicle +')
 
         #Set plots
-        self.cicle_plus,         = self.ax[0,1].plot([],[])
-        self.cicle_minus,        = self.ax[0,0].plot([],[])
-        self.resistance_plus,    = self.ax[1,1].plot([],[])
-        self.resistance_minus,   = self.ax[1,0].plot([],[])
+        self.cicle_plus,         = self.ax[0,1].plot([],[],'r-o',linewidth=1)
+        self.cicle_minus,        = self.ax[0,0].plot([],[],'r-o',linewidth=1)
+        self.resistance_plus,    = self.ax[1,1].plot([],[],'r-o',linewidth=1)
+        self.resistance_minus,   = self.ax[1,0].plot([],[],'r-o',linewidth=1)
 
         
         #Set initial data
