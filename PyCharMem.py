@@ -140,8 +140,9 @@ def check_missing_params(logger:logging.Logger, my_dict:dict, my_list:list):
             logger.critical(f'- {item}')
         quit()
 
-def create_list(logger:logging.Logger, cycle:str, max:float, min:float,step:float):
+def create_list(logger:logging.Logger, condition_values:list):
     '''Creates a list of values'''
+    [cycle,max,min,step] = condition_values
     # Create list of values from 0 to max
     listp_oneway = np.arange(0,max,step)
     listn_oneway = np.arange(0,min,-step)
@@ -367,16 +368,23 @@ while running:
             #Return to main menu
             if measurement_type == 'Back': continue 
 
-            #Initialize file save and logbook
-            filesave = FileSave(logger,config.get('sample','name'),config.get('sample','device'))
-            filesave.save_config(logger,config,measurement_type)
-            logbook = Logbook(logger,config.get('sample','name'))
-
             #Import measurement class
             measurement_class = import_module(logger=logger,type='measurement',measurement_type=measurement_type)
             measurement = measurement_class(logger,config,filesave)
+
+            #Check if all parameters are present
+            check_missing_params(logger,measurement.params,measurement.necessary_params)
+
+            #Create list of voltage/current values
+            measurement.values = create_list(logger,measurement.condition_values)
             measurement.set_sourcemeter(logger,sm)
             logger.info('Measurement loaded!')
+
+            #Initialize file save and logbook
+            filesave = FileSave(logger,config.get('sample','name'),config.get('sample','device'))
+            filesave.save_config(logger,config,measurement_type)
+            filesave.save_headers(logger,measurement.headers)
+            logbook = Logbook(logger,config.get('sample','name'))
 
             #Import plot class
             plot_class = import_module(logger=logger,type='plot',plot_type=measurement.plot_type)

@@ -3,18 +3,13 @@ import numpy as np
 
 class Measurement:
     def __init__(self,logger,config,filesaver):
-        
-        #Create object variables
-        self.config = config
-        
-        #Read parameters from config file
+
+        #Variables
         self.name = 'pulsedVI'
         self.plot_type = 'twocycles'
         self.necessary_params = ['cycle','n_cycle','v_max','v_min','v_step','v_read','ccplc','t_write','t_read','t_wait','nplc']
-        self.result_headers = ['Voltage Write[V]','Current Write [A]','Voltage Read [V]','Current Read [A]', 'Resistance [Ω]', 'Timestamp', 'Time [s]']
+        self.headers = ['Voltage Write[V]','Current Write [A]','Voltage Read [V]','Current Read [A]', 'Resistance [Ω]', 'Timestamp', 'Time [s]']
         self.params = dict(config.items(f'measurement/{self.name}'))
-        #Check if all necessary parameters are present
-        check_missing_params(logger,self.params,self.necessary_params)
 
         #Read parameters
         try:
@@ -35,12 +30,9 @@ class Measurement:
             self.logger.critical('Error reading parameters')
             quit()
 
-        #Create list of voltages
-        self.vals = create_list(logger,self.cycle,self.v_max,self.v_min,self.v_step)
+        #List criteria for creating voltage/current list
+        self.condition_values = [self.cycle,self.v_max,self.v_min,self.v_step]
 
-        #save config and headers
-        filesaver.save_config(logger,config,self.name)
-        filesaver.save_headers(self.result_headers)
     
     def set_sourcemeter(self,logger,srcmtr):
         
