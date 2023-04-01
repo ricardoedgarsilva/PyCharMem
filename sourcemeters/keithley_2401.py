@@ -3,13 +3,13 @@ import pyvisa
 class Sourcemeter:
     def __init__ (self,logger,config):
         '''Opens sourcemeter'''
+        logger.debug('Initializing sourcemeter...')
         try:
             logger.debug('Looking for sourcemeter...')
             self.rm = pyvisa.ResourceManager()
             self.srcmtr = self.rm.open_resource(config.get('sourcemeter','address'))
             logger.debug(f'{config.get("sourcemeter","model")} found at {config.get("sourcemeter","address")}')
             logger.info('Sourcemeter successfully initialized!')
-            self.reset()
         except:
             logger.critical('Sourcemeter not found!')
             quit()
@@ -161,4 +161,12 @@ class Sourcemeter:
             logger.critical('Sourcemeter timer could not be reseted! Check GPIB connection!')
             quit()
 
-    
+    def close(self,logger):
+        '''Closes sourcemeter'''
+
+        try:
+            self.srcmtr.close()
+            logger.debug('Sourcemeter closed')
+        except:
+            logger.critical('Sourcemeter could not be closed! Check GPIB connection!')
+            quit()

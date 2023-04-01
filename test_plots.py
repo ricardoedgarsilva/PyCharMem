@@ -15,7 +15,7 @@ with open('test_data.lvm', 'r') as f:
 
 data = np.array(data)
 
-plt.ion()
+#plt.ion()
 plots = Plots()
 
 for i in range(1, 50):

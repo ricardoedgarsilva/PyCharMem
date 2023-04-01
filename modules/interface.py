@@ -19,7 +19,8 @@ def menu(logger,console,type):
         
         case 'measurements':
             try:
-                measurement_types = os.listdir('measurements')
+                list_dir = os.listdir('measurements')
+                measurement_types = [filename.split('.')[0] for filename in list_dir if filename.endswith('.py')]
                 logger.debug(f'{len(measurement_types)} measurement types found')
             except:
                 logger.critical('No measurement types found!')
@@ -28,7 +29,7 @@ def menu(logger,console,type):
 
             name = 'Measurement Selection Menu'
             message = 'Select a measurement:'
-            choices = [filename.split('.')[0] for filename in measurement_types if filename.endswith('.py')]
+            choices = measurement_types
             choices.append('Back')
 
     printnewlines(1)

@@ -1,5 +1,6 @@
 #Creates main handler object
 from modules.common import *
+from modules.filesaver import FileSaver
 from modules.interface import menu
 from rich.progress import Progress
 import numpy as np
@@ -12,21 +13,22 @@ class MainHandler:
         self.logger = logger
         self.console = console
         self.config = config
-        self.data = np.array([])
+        self.data = []
         #Splash screen
         clear_terminal()
         splash_screen(console)
 
-        #Open Sourcemeter
-        scrmtr_model = config.get('sourcemeter','model')
-        sourcemeter_class = import_module(logger=self.logger,type='sourcemeter',srcmtr_model=scrmtr_model)
+        #Print available addresses
+        print_available_addresses(self.logger,self.console)
+
+        
+        #Load sourcemeter
+        sourcemeter_class = import_module(logger=self.logger,type='sourcemeter',srcmtr_model=config.get('sourcemeter','model'))
         self.sourcemeter = sourcemeter_class(self.logger,self.config)
 
 
         #Sucefully loaded
         self.logger.info('Loading complete!')
-        print_available_addresses(self.console,self.logger)
-
 
     def main(self):
         while self.running:
@@ -43,41 +45,45 @@ class MainHandler:
 
                     #Return to main menu
                     if self.meas_type == 'Back': continue
+
+                    #Import filesaver
+                    self.filesaver = FileSaver(self.logger,self.config.get('sample','name'),self.config.get('sample','device'))
                     
                     #Import measurement file
-                    measurement_type = import_module(self.logger,self.meas_type,self.config)
-                    module = importlib.import_module(f'measurements.{self.meas_type}')
-                    measurement_type = getattr(module, 'Measurement')
-                    measurement = measurement_type(self.config, self.console, self.logger)
-                    measurement.set_sourcemeter(self.sourcemeter)
+                    measurement_class = import_module(logger=self.logger, type='measurement',measurement_type=self.meas_type)
+                    measurement = measurement_class(self.logger,self.config,self.filesaver)
+                    measurement.set_sourcemeter(self.logger,self.sourcemeter)
+
+
 
                     try:
                         #
-                        module = importlib.import_module(f'plots.{self.plot_name}')
-                        plot_type = getattr(module, 'Plot')
-                        self.plots = plot_type()
-                        self.logger.info(f'Loaded plot: {self.plot_name}')
+                        self.plot_class = import_module(logger=self.logger,type='plot',plot_type=measurement.plot_name)
+                        self.plots = self.plot_class()
+                        self.logger.info(f'Loaded plot: {measurement.plot_name}')
                     except:
-                        self.logger.critical(f'Could not load plot: {self.plot_name}')
+                        self.logger.critical(f'Could not load plot: {measurement.plot_name}')
                         quit()
 
                     n_cycles = measurement.n_cycle
+
+                    # IMPLEMENT MEASUREMENT CYCLE
                     #save_config(self.config,self.logger)
 
                     with Progress() as progress:
                         task = progress.add_task("[green]Measuring", total=n_cycles)
 
                         for i in range(n_cycles):
+                            measurement.measure_cycle(self.logger,self.sourcemeter,self.plots)
+                            self.data.append((self.data, measurement.result))
                             progress.update(task, advance=1, description=f"[blue]Cycle {i}/{n_cycles}")
-                            #measurement.measure_cycle(self.sourcemeter)
-                            self.data = np.concatenate((self.data, measurement.result))
-
-                            self.plots.add_result(measurement.result)
-                            self.plots.update()
+                        
+                        self.plots.show()
                             
 
-                    measurement.measure_cycle(self.sourcemeter)
-                    self.data.concat(measurement.result)
+                    self.logger.info(f'Finished measurement: {measurement.name}')
+
+
 
 
                 

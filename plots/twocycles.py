@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import time
 
 class Plots:
     def __init__(self):
@@ -38,16 +39,19 @@ class Plots:
         self.data_resistance_plus = np.zeros((0,2))
         self.data_resistance_minus = np.zeros((0,2))
 
+        plt.draw()
+        time.sleep(0.3)
+
     def add_result(self, result):
-        # ['Voltage Write[V]','Current Write [A]','Resistance [Ω]']]
+        # result = ['Voltage Write[V]','Current Write [A]','Resistance [Ω]']]
 
         if result[0] > 0:
             self.data_cicle_plus = np.append(self.data_cicle_plus, [[result[0], result[1]]], axis=0)
             self.data_resistance_plus = np.append(self.data_resistance_plus, [[result[0], result[2]]],axis=0)
 
         else:
-            self.data_cicle_minus = np.append(self.data_cicle_minus, [result[0], result[1]], axis=0)
-            self.data_resistance_minus = np.append(self.data_resistance_minus, [result[0], result[2]], axis=0)
+            self.data_cicle_minus = np.append(self.data_cicle_minus, [[result[0], result[1]]], axis=0)
+            self.data_resistance_minus = np.append(self.data_resistance_minus, [[result[0], result[2]]], axis=0)
 
 
 

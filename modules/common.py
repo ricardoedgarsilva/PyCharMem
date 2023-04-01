@@ -181,24 +181,5 @@ def import_module(logger,type,srcmtr_model=None,measurement_type=None,plot_type=
         return obj
     
     except:
-        logger.critical(f'Invalid {type} type!')
-        quit()
-
-        
-
-
-
-
-                model = config.get('sourcemeter','model')
-                file = importlib.import_module(f'sourcemeters.{model}')
-                
-                        #model = config.get('sourcemeter','model')
-        #srcmtr_file = importlib.import_module(f'modules.sourcemeters.{model}')
-        #srcmtr_class = getattr(srcmtr_file, model)
-        #self.sourcemeter = srcmtr_class(self.logger,self.config)
-
-        import importlib
-        return importlib.import_module(module)
-    except:
-        logger.critical(f'Module {module} not found!')
+        logger.critical(f'{type} could not be imported!')
         quit()

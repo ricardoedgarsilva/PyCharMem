@@ -14,6 +14,5 @@ logger = verbose_debug(False)
 
 #Get config
 config = config_load(logger)
-
-MainHandler = MainHandler(console,logger,config)
+MainHandler = MainHandler(logger,console,config)
 MainHandler.main()
