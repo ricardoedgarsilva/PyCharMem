@@ -72,7 +72,9 @@ def config_open(logger:logging.Logger):
 def config_read(logger:logging.Logger):
     """Read the config file"""
     try:
-        return configparser.ConfigParser().read('config.ini')
+        config = configparser.ConfigParser()
+        config.read('config.ini')
+        return config
     except:
         logger.critical('Config file not found')
         quit()
@@ -327,16 +329,17 @@ data = []
 
 #Splash Screen
 clear_terminal()
-splash_screen(logger,console)
+splash_screen(console)
 
 #Load config file
 config = config_read(logger)
 logger.info('Configuration file loaded')
 
+
 #Print available addresses and check if the one in the config file is available
-adresses = get_available_addresses(logger)
+adresses = get_available_addresses()
 print_available_addresses(logger,console,adresses)
-check_address(logger,adresses,config.get('sourcemeter','adress'))
+check_address(logger,adresses,config.get('sourcemeter','address'))
 
 #Load sourcemeter
 sm_class = import_module(logger=logger,type='sourcemeter',sm_model=config.get('sourcemeter','model'))
@@ -382,6 +385,7 @@ while running:
 
             n_cycles = int(config.get(f'measurement/{measurement_type}','n_cycles'))
 
+            #Main measurement loop
             with Progress() as progress:
                 task = progress.add_task("[green]Measuring...", total=n_cycles)
 
@@ -402,8 +406,6 @@ while running:
                 image = plot.image()
                 filesave.save_plots(logger,image)
                 logger.info('Plot image saved!')
-
-            #Main measurement loop
 
 
 
