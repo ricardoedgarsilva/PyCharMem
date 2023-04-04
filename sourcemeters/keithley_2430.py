@@ -91,15 +91,66 @@ class Sourcemeter:
 
 #Measurement mode commands ------------------------------------------------
 
-    def set_mode_fixed(self, logger , func:str):
-        '''Sets measurement mode to fixed'''
+    def set_mode_fixed(self, logger, func:str):
+        '''Sets fixed mode of voltage or current'''
         try:
             match func:
-                case 'Current': self.srcmtr.write('SOUR:CURR:MODE FIXED')
-                case 'Voltage': self.srcmtr.write('SOUR:VOLT:MODE FIXED')
-            logger.debug('Sourcemeter measurement mode set to fixed')
+                case 'Current': self.srcmtr.write(f'SOUR:CURR:MODE FIXED')
+                case 'Voltage': self.srcmtr.write(f'SOUR:VOLT:MODE FIXED')
+            logger.debug(f'Sourcemeter mode set to {func}')
         except:
-            logger.critical('Sourcemeter measurement mode could not be set! Check GPIB connection!')
+            logger.critical('Sourcemeter mode could not be set! Check GPIB connection!')
+            quit()
+
+    def set_mode_pulsed(self, logger, func:str):
+        '''Sets pulsed mode'''
+        try:
+            match func:
+                case 'Current': self.srcmtr.write(f'SOUR:CURR:MODE PULS')
+                case 'Voltage': self.srcmtr.write(f'SOUR:VOLT:MODE PULS')
+            logger.debug(f'Sourcemeter pulsed mode set to {func}')
+        except:
+            logger.critical('Sourcemeter pulsed mode could not be set! Check GPIB connection!')
+            quit()
+
+    def set_func_pulse_start(self, logger, func:str, start:float):
+        '''Sets pulsed start value'''
+        try:
+            match func:
+                case 'Current': self.srcmtr.write(f'SOUR:CURR:STAR {start}')
+                case 'Voltage': self.srcmtr.write(f'SOUR:VOLT:STAR {start}')
+            logger.debug(f'Sourcemeter pulsed start set to {start}')
+        except:
+            logger.critical('Sourcemeter pulsed start could not be set! Check GPIB connection!')
+            quit()
+
+    def set_func_pulse_stop(self, logger, func:str, stop:float):
+        '''Sets pulsed stop value'''
+        try:
+            match func:
+                case 'Current': self.srcmtr.write(f'SOUR:CURR:STOP {stop}')
+                case 'Voltage': self.srcmtr.write(f'SOUR:VOLT:STOP {stop}')
+            logger.debug(f'Sourcemeter pulsed stop set to {stop}')
+        except:
+            logger.critical('Sourcemeter pulsed stop could not be set! Check GPIB connection!')
+            quit()
+
+    def set_pulse_delay(self, logger, time:float):
+        '''Sets pulsed delay'''
+        try:
+            self.srcmtr.write(f'SOUR:DEL {time}')
+            logger.debug(f'Sourcemeter pulsed delay set to {time}')
+        except:
+            logger.critical('Sourcemeter pulsed delay could not be set! Check GPIB connection!')
+            quit()
+
+    def set_pulse_width(self, logger, time:float):
+        '''Sets pulsed width'''
+        try:
+            self.srcmtr.write(f'SOUR:PULS:WIDT {time}')
+            logger.debug(f'Sourcemeter pulsed width set to {time}')
+        except:
+            logger.critical('Sourcemeter pulsed width could not be set! Check GPIB connection!')
             quit()
 
 #Measurement function commands -------------------------------------------

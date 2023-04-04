@@ -1,0 +1,25 @@
+# Sample configuration file for the 
+sample:
+  name: "MRG6N1"  # Name of the sample ex: "MRG6N1"
+  device: "x1y6"  # location of the device ex: "x1y6"
+
+#
+sourcemeter:
+  model: "keithley_2401"  # name of the sourcemeter file without .py ex: "keithley_2400.py"
+  address: "GPIB0::24::INSTR"  # address of the sourcemeter ex: "GPIB0::24::INSTR"
+
+
+pulsedIV:
+  cycle: "+-"  # cycle of the voltage (ex: "+-","-+", "+" or "-")
+  n_cycle: 1  # number of cycles
+  v_start: 1.0  # start voltage
+  v_stop: -1.0  # stop voltage
+  v_step: 0.5  # voltage step
+  v_read: 0.05  # voltage step for the read
+  ccplc: 0.1  # current compliance
+  t_write: 0.00001  # time between each voltage step
+  t_read: 0.00001  # time between each current read
+  t_wait: 0.00001  # time between each cycle
+  nplc: 10  # number of power line cycles
+
+

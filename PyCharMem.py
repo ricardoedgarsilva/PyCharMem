@@ -8,7 +8,7 @@ import importlib
 import datetime
 import openpyxl
 import inquirer
-import configparser
+import yaml
 import pyvisa
 import numpy as np
 from art import text2art
@@ -30,7 +30,6 @@ ProgramInfo = {
     'license': 'GNU General Public License v3.0',
     'url': 'https://github.com/ricardoesilva/PyCharMem'  
 }
-
 
 #Common functions -------------------------------------------------------------
 def verbose_debug(verbose:bool):
@@ -62,9 +61,9 @@ def config_open(logger:logging.Logger):
     """Open the config file"""
     try:
         match platform.system():
-            case 'Windows': os.system(f'start config.ini')
-            case 'Darwin':  os.system(f"open config.ini")
-            case 'Linux':   os.system(f"open config.ini")
+            case 'Windows': os.system(f'start config.yml')
+            case 'Darwin':  os.system(f"open config.yml")
+            case 'Linux':   os.system(f"open config.yml")
     except:
         logger.critical('Config file not found')
         quit()
@@ -72,8 +71,7 @@ def config_open(logger:logging.Logger):
 def config_read(logger:logging.Logger):
     """Read the config file"""
     try:
-        config = configparser.ConfigParser()
-        config.read('config.ini')
+        with open('config.yml', 'r') as file: config = yaml.safe_load(file)
         return config
     except:
         logger.critical('Config file not found')
@@ -168,31 +166,28 @@ def import_module(logger:logging.Logger, type:str, sm_type=None,measurement_type
     '''Imports a module file from string'''
 
     logger.debug(f'Importing {type} module')
-    try:
-        match type:
-            case 'sourcemeter':
-                file_name = f'sourcemeters.{sm_type}'
-                obj_name = 'Sourcemeter'
-            
-            case 'measurement':
-                file_name = f'measurements.{measurement_type}'
-                obj_name = 'Measurement'
 
-            
-            case 'plot':
-                file_name = f'plots.{plot_type}'
-                obj_name = 'Plots'
+    match type:
+        case 'sourcemeter':
+            file_name = f'sourcemeters.{sm_type}'
+            obj_name = 'Sourcemeter'
+        
+        case 'measurement':
+            file_name = f'measurements.{measurement_type}'
+            obj_name = 'Measurement'
 
-        file = importlib.import_module(file_name)
-        logger.debug(f'{file_name} module imported')
-        obj = getattr(file, obj_name)
-        logger.debug(f'{obj_name} class imported')
-        return obj
+        
+        case 'plot':
+            file_name = f'plots.{plot_type}'
+            obj_name = 'Plots'
+
+        
+    file = importlib.import_module(file_name)
+    logger.debug(f'{file_name} module imported')
+    obj = getattr(file, obj_name)
+    logger.debug(f'{obj_name} class imported')
+    return obj
     
-    except:
-        logger.critical(f'{type} could not be imported!')
-        quit()
-
 def menu(logger:logging.Logger, console:Console, type:str):
     '''Menu function'''
     
@@ -200,6 +195,7 @@ def menu(logger:logging.Logger, console:Console, type:str):
     match type:
         case 'main':
             name = 'Main Menu'
+            message = 'Select an option:'
             choices = ['Exit','Select Measurement','Print Available Addresses','Edit Configuration']
         
         case 'measurements':
@@ -224,9 +220,13 @@ def menu(logger:logging.Logger, console:Console, type:str):
     logger.debug(f'Returning answer: {answer}')
     return answer['choice']
 
+def ask_for_comment(logger:logging.Logger):
+    comment = [inquirer.Text('comment',message="What would you like to comment?",validate=lambda _, x: len(x) > 0),]
+    answer = inquirer.prompt(comment)
+    return answer['comment']
+
 
 # Important Classes --------------------------------------------------------------
-
 class FileSave:
     def __init__ (self, logger:logging.Logger, sample:str, device:str):
         '''Initializes the class'''
@@ -243,14 +243,14 @@ class FileSave:
         self.wb.remove(self.wb['Sheet'])
         self.wb.save(self.file_path)
 
-    def save_config(self, logger:logging.Logger, config:configparser.ConfigParser, measurement_type:str):
+    def save_config(self, logger:logging.Logger, config:dict, measurement_type:str):
         '''Saves the config file in the config sheet'''
         
         #Open config sheet and set title
         self.ws = self.wb['config']
         
         #read config file
-        sections = ['sample','sourcemeter',f'measurement/{measurement_type}']
+        sections = ['sample','sourcemeter', measurement_type]
         for section in sections:
             self.ws.append([section])
             for key, value in config.items(section):
@@ -340,10 +340,10 @@ logger.info('Configuration file loaded')
 #Print available addresses and check if the one in the config file is available
 adresses = get_available_addresses()
 print_available_addresses(logger,console,adresses)
-check_address(logger,adresses,config.get('sourcemeter','address'))
+check_address(logger,adresses, config.get('sourcemeter').get('address'))
 
 #Load sourcemeter
-sm_class = import_module(logger=logger,type='sourcemeter',sm_model=config.get('sourcemeter','model'))
+sm_class = import_module(logger=logger,type='sourcemeter',sm_type=config.get('sourcemeter').get('model'))
 sm = sm_class(logger,config)
 logger.info('Sourcemeter loaded')
 
@@ -357,27 +357,25 @@ while running:
             logger.info('Exiting program')
 
         case 'Print Available Addresses':
-            print_available_addresses(logger,console,get_available_addresses(logger))
+            print_available_addresses(logger,console,get_available_addresses())
         
         case 'Edit Configuration':
             config_open(logger)
 
         case 'Select Measurement':
-            measurement_type = menu(logger,console,'measurement')
+            measurement_type = menu(logger,console,'measurements')
 
             #Return to main menu
             if measurement_type == 'Back': continue 
 
             #Import measurement class
             measurement_class = import_module(logger=logger,type='measurement',measurement_type=measurement_type)
-            measurement = measurement_class(logger,config,filesave)
+            measurement = measurement_class(logger,config,sm)
 
             #Check if all parameters are present
-            check_missing_params(logger,measurement.params,measurement.necessary_params)
+            check_missing_params(logger,measurement.params,measurement.nparams)
 
             #Create list of voltage/current values
-            measurement.values = create_list(logger,measurement.condition_values)
-            measurement.set_sourcemeter(logger,sm)
             logger.info('Measurement loaded!')
 
             #Initialize file save and logbook
@@ -388,10 +386,10 @@ while running:
 
             #Import plot class
             plot_class = import_module(logger=logger,type='plot',plot_type=measurement.plot_type)
-            plot = plot_class()
+            plots = plot_class()
             logger.info('Plot loaded!')
 
-            n_cycles = int(config.get(f'measurement/{measurement_type}','n_cycles'))
+            n_cycles = config.get(measurement.name).get('n_cycles')
 
             #Main measurement loop
             with Progress() as progress:
@@ -399,21 +397,27 @@ while running:
 
                 #Main measurement loop
                 for i in range(n_cycles):
-                    result = measurement.measure_cycle(logger,sm,plot)
+                    result = measurement.measure_cycle(logger,console,sm,plots,filesave)
                     filesave.save_result(logger,result)
                     data.append(result)
-                    plot.add_result(result)
-                    plot.update(logger)
                     progress.update(task, advance=1, description=f"[blue]Cycle {i}/{n_cycles}")
                     time.sleep(0.1)
+                    plots.clear()
                 
-                plot.show()
+                plots.show()
                 logger.info(f'Finished measurement: {measurement.name}')
                 
                 #Save plot
-                image = plot.image()
+                image = plots.image()
                 filesave.save_plots(logger,image)
                 logger.info('Plot image saved!')
+
+                comment = ask_for_comment(logger)
+                logbook.save_log(logger,datetime.now().strftime("%d/%m/%Y %H:%M:%S"),filesave.file_path,comment)
+                logger.info('Log saved!')
+                quit()
+
+
 
 
 
