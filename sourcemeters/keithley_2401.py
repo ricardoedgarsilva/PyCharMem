@@ -26,6 +26,15 @@ class Sourcemeter:
             logger.critical('Sourcemeter could not be closed! Check GPIB connection!')
             quit()
 
+    def init(self,logger):
+        '''Initializes sourcemeter'''
+        try:
+            self.srcmtr.write('INIT')
+            logger.debug('Sourcemeter initialized')
+        except:
+            logger.critical('Sourcemeter could not be initialized! Check GPIB connection!')
+            quit()
+
     def reset(self, logger):
         '''Resets sourcemeter'''
         try:
@@ -67,10 +76,37 @@ class Sourcemeter:
             logger.critical('Sourcemeter value could not be set! Check GPIB connection!')
             quit()
 
+    def get_output_value(self, logger, func:str):
+        '''Measures output value of voltage, current or resistance'''
+        #try:
+        match func:
+            case 'Current': 
+                out = self.srcmtr.query('MEAS:CURR?').split(',')[1]
+            case 'Voltage': 
+                out = self.srcmtr.query('MEAS:VOLT?').split(',')[0]
+            case 'Resistance': 
+                out = self.srcmtr.query('MEAS:RES?').split(',')[2]
+        #except:
+        #    logger.critical('Sourcemeter value could not be measured! Check GPIB connection!')
+        #    quit()
+
+    def fetch(self, logger):
+        '''Fetches sourcemeter and returns list of values'''
+        try:
+            list_query = self.srcmtr.query('FETC?')[:-1].split(',')
+            logger.debug(f'Sourcemeter fetch: {list_query}')
+            listd_return = []
+            for val in list_query:
+                listd_return.append(float(val))
+            return listd_return
+        except:
+            print('Sourcemeter could not be fetched! Check GPIB connection!')
+            quit()
+
     def read(self, logger):
         '''Reads sourcemeter and returns list of values'''
         try:
-            list_query = self.srcmtr.query(':READ?')[:-1].split(',')
+            list_query = self.srcmtr.query('READ?')[:-1].split(',')
             logger.debug(f'Sourcemeter read: {list_query}')
             listd_return = []
             for val in list_query:
@@ -78,6 +114,15 @@ class Sourcemeter:
             return listd_return
         except:
             print('Sourcemeter could not be read! Check GPIB connection!')
+            quit()
+
+    def get_timer(self,logger):
+        '''Returns timer value'''
+        try:
+            timer = self.srcmtr.query(':SYST:TIME?')
+            return float(timer)
+        except:
+            logger.critical('Sourcemeter timer could not be read! Check GPIB connection!')
             quit()
 
     def reset_timer(self, logger):
@@ -104,7 +149,7 @@ class Sourcemeter:
 
 #Measurement function commands -------------------------------------------
 
-    def set_src_function(self, logger, func:str):
+    def set_src_func(self, logger, func:str):
         '''Sets source function of voltage or current'''
         try:
             match func:
@@ -119,8 +164,8 @@ class Sourcemeter:
         '''Sets range of voltage or current'''
         try:
             match func:
-                case 'Current': self.srcmtr.write(f'SOUR:CURR:RANG {range}')
-                case 'Voltage': self.srcmtr.write(f'SOUR:VOLT:RANG {range}')
+                case 'Current': self.srcmtr.write(f'SOUR:CURR:RANG{range}')
+                case 'Voltage': self.srcmtr.write(f'SOUR:VOLT:RANG{range}')
             logger.debug(f'Sourcemeter range set to {range}')
         except:
             logger.critical('Sourcemeter range could not be set! Check GPIB connection!')
@@ -149,7 +194,7 @@ class Sourcemeter:
             logger.critical('Sourcemeter sense function could not be set! Check GPIB connection!')
             quit()
 
-    def set_func_compliance(self, logger, func:str, value:float):
+    def set_func_ccplc(self, logger, func:str, value:float):
     
         '''Sets compliance of voltage or current'''
         try:
@@ -161,14 +206,14 @@ class Sourcemeter:
             logger.critical('Sourcemeter compliance could not be set! Check GPIB connection!')
             quit()
 
-    def set_func_nplc(self, logger, func:str, nplc:float):
+    def set_func_nplc(self, logger, func:str, value:float):
         '''Sets integration time for current or voltage'''
 
         try:
             match func:
-                case 'Current': self.srcmtr.write(f'SENS:CURR:NPLC {nplc}')
-                case 'Voltage': self.srcmtr.write(f'SENS:VOLT:NPLC {nplc}')
-            logger.debug(f'Sourcemeter integration time set to {nplc}')
+                case 'Current': self.srcmtr.write(f'SENS:CURR:NPLC {value}')
+                case 'Voltage': self.srcmtr.write(f'SENS:VOLT:NPLC {value}')
+            logger.debug(f'Sourcemeter integration time set to {value}')
         except:
             logger.critical('Sourcemeter integration time could not be set! Check GPIB connection!')
             quit()

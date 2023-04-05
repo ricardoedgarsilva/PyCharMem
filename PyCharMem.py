@@ -19,6 +19,7 @@ from rich.progress import Progress
 from rich.panel import Panel
 
 
+
 # Global Variables ------------------------------------------------------------
 
 ProgramInfo = {
@@ -83,8 +84,10 @@ def path_exists(path:str):
 
 def get_path():
     """Get the path to the file"""
-    path = os.path.dirname(os.path.realpath(__file__))
-    return path[:path.rfind('\\')]
+    #path = os.path.dirname(os.path.realpath(__file__)) This retuns the parent of /PyCharMem
+    #return path[:path.rfind('\\')]
+
+    return os.path.dirname(os.path.realpath(__file__))
 
 def mkdir(logger:logging.Logger, path:str):
     '''Creates the path if it doesn't exist'''
@@ -235,7 +238,8 @@ class FileSave:
         self.path = os.path.join(get_path(), "data", sample, device)
         mkdir(logger,self.path)
         #Create file
-        self.file_path = os.path.join(self.path, get_filename(self.path,sample,device))
+        self.file_name = get_filename(self.path,sample,device)
+        self.file_path = os.path.join(self.path, self.file_name)
         self.wb = openpyxl.Workbook()
         self.wb.create_sheet('config')
         self.wb.create_sheet('data')
@@ -253,7 +257,7 @@ class FileSave:
         sections = ['sample','sourcemeter', measurement_type]
         for section in sections:
             self.ws.append([section])
-            for key, value in config.items(section):
+            for key, value in config.get(section).items():
                 self.ws.append([key,value])
             self.ws.append([])
         self.wb.save(self.file_path)
@@ -274,12 +278,11 @@ class FileSave:
         self.wb.save(self.file_path)
         logger.debug('result saved in data sheet')
     
-    def save_plots(self, logger:logging.Logger, image:openpyxl.drawing.image.Image):
+    def save_plots(self, logger:logging.Logger, image):
         self.ws = self.wb['plots']
         self.ws.add_image(image, 'B2')
         self.wb.save(self.file_path)
         logger.debug('Plot saved in plots sheet')
-
 class Logbook:
     def __init__(self, logger:logging.Logger, sample:str):
         '''Initializes the class'''
@@ -324,9 +327,8 @@ class Logbook:
 
 install()
 console = Console()
-logger = verbose_debug(False)
+logger = verbose_debug(True)
 running = True
-data = []
 
 #Splash Screen
 clear_terminal()
@@ -373,16 +375,16 @@ while running:
             measurement = measurement_class(logger,config,sm)
 
             #Check if all parameters are present
-            check_missing_params(logger,measurement.params,measurement.nparams)
+            check_missing_params(logger,measurement.params[measurement.name],measurement.nparams)
 
             #Create list of voltage/current values
             logger.info('Measurement loaded!')
 
             #Initialize file save and logbook
-            filesave = FileSave(logger,config.get('sample','name'),config.get('sample','device'))
+            filesave = FileSave(logger,config.get('sample').get('name'),config.get('sample').get('device'))
             filesave.save_config(logger,config,measurement_type)
             filesave.save_headers(logger,measurement.headers)
-            logbook = Logbook(logger,config.get('sample','name'))
+            logbook = Logbook(logger,config.get('sample').get('name'))
 
             #Import plot class
             plot_class = import_module(logger=logger,type='plot',plot_type=measurement.plot_type)
@@ -398,24 +400,23 @@ while running:
                 #Main measurement loop
                 for i in range(n_cycles):
                     result = measurement.measure_cycle(logger,console,sm,plots,filesave)
-                    filesave.save_result(logger,result)
-                    data.append(result)
                     progress.update(task, advance=1, description=f"[blue]Cycle {i}/{n_cycles}")
                     time.sleep(0.1)
                     plots.clear()
                 
-                plots.show()
-                logger.info(f'Finished measurement: {measurement.name}')
-                
-                #Save plot
-                image = plots.image()
-                filesave.save_plots(logger,image)
-                logger.info('Plot image saved!')
+            plots.show()
+            logger.info(f'Finished measurement: {measurement.name}')
+            
+            #Save plot
+            filesave.save_plots(logger,plots.image())
+            logger.info('Plot image saved!')
 
-                comment = ask_for_comment(logger)
-                logbook.save_log(logger,datetime.now().strftime("%d/%m/%Y %H:%M:%S"),filesave.file_path,comment)
-                logger.info('Log saved!')
-                quit()
+            comment = ask_for_comment(logger)
+            logbook.save_log(logger,get_datetime(),filesave.file_name,comment)
+            logger.info('Log saved!')
+            sm.close(logger)
+            quit()
+
 
 
 

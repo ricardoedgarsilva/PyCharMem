@@ -1,4 +1,6 @@
 import matplotlib.pyplot as plt
+from PIL import Image
+from openpyxl.drawing.image import Image as XLImage
 import numpy as np
 import time
 
@@ -92,7 +94,6 @@ class Plots:
         plt.draw()
         plt.pause(0.1)
 
-    
     def show(self):
         plt.ioff() #Set interactive mode off
         plt.show()
@@ -108,9 +109,12 @@ class Plots:
     def image(self):
         '''Return the plot as a PNG image'''
         import io
-        buf = io.BytesIO()
-        plt.savefig(buf, format='png')
-        buf.seek(0)
-        return buf
+        buffer = io.BytesIO()
+        plt.savefig(buffer, format='png')
+        buffer.seek(0)
+        image = XLImage(Image.open(buffer))
+    
+    # Return the PIL Image object
+        return image
     
     
