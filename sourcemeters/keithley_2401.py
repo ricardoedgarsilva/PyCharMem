@@ -44,6 +44,15 @@ class Sourcemeter:
             logger.critical('GPIB defaults could not reseted! Check GPIB connection!')
             quit()
 
+    def write(self, logger, command:str):
+        '''Writes command to sourcemeter'''
+        try:
+            self.srcmtr.write(command)
+            logger.debug(f'Sourcemeter command: {command}')
+        except:
+            print('Sourcemeter could not be written! Check GPIB connection!')
+            quit()
+
     def query(self, logger, command:str):
         '''Queries sourcemeter'''
         try:

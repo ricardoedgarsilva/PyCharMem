@@ -64,37 +64,37 @@ class Measurement:
 
         logger.debug('Starting measurement')
         srcmtr.reset_timer(logger)
+        srcmtr.write(logger,'INIT:IMM')
+        srcmtr.set_output_state(logger,'ON')
         self.result = []
 
         for val in self.vals:
     
-
+            # Write Pulse: Start
             time.sleep(self.params.get(self.name).get('t_wait'))
             srcmtr.set_output_value(logger,'Voltage',val)
-            srcmtr.set_output_state(logger,'ON')
             time.sleep(self.params.get(self.name).get('t_write'))
-            v_write = val
-            i_write = srcmtr.get_output_value(logger,'Current')
-            srcmtr.set_output_state(logger,'OFF')
+            resultwrite = srcmtr.read(logger)
+            srcmtr.set_output_value(logger,'Voltage',0)
+            # Write Pulse: End
             
             time.sleep(self.params.get(self.name).get('t_wait'))
+
+            # Read Pulse: Start
             srcmtr.set_output_value(logger,'Voltage',self.params.get(self.name).get('v_read'))
-            srcmtr.set_output_state(logger,'ON')
             time.sleep(self.params.get(self.name).get('t_read'))
-            v_read = srcmtr.get_output_value(logger,'Voltage')
-            i_read = srcmtr.get_output_value(logger,'Current')
-            resist = srcmtr.get_output_value(logger,'Resistance')
-            srcmtr.set_output_state(logger,'OFF')
-            timer = srcmtr.get_timer(logger)
+            resultread = srcmtr.read(logger)
+            srcmtr.set_output_value(logger,'Voltage',0)
+            # Read Pulse: End
             
 
             self.result.append([
-                v_write, # Voltage Write
-                i_write, # Current Write
-                v_read, # Voltage Read
-                i_read, # Current Read
-                resist, # Resistance
-                timer, # Timer write
+                resultwrite[0], # Voltage Write
+                resultwrite[1], # Current Write
+                resultread[0], # Voltage Read
+                resultread[1], # Current Read
+                resultread[2], # Resistance
+                resultread[3], # Timer write
                 time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()) # Timestamp computer
                 ])
             
@@ -102,8 +102,10 @@ class Measurement:
 
             filesave.save_result(logger,self.result[-1])
             
-            plots.add_result([v_write,i_write,v_read,timer])
+            plots.add_result([resultwrite[0],resultwrite[1],resultread[2],resultread[3]])
             plots.update()
+            
+        srcmtr.set_output_state(logger,'OFF')
 
         
     
