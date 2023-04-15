@@ -327,7 +327,7 @@ class Logbook:
 
 install()
 console = Console()
-logger = verbose_debug(True)
+logger = verbose_debug(False)
 running = True
 
 #Splash Screen
@@ -395,13 +395,12 @@ while running:
 
             #Main measurement loop
             with Progress() as progress:
-                task = progress.add_task("[green]Measuring...", total=n_cycles)
+                task = progress.add_task("[blue]Cycle 0/{n_cycles}", total=n_cycles)
 
                 #Main measurement loop
                 for i in range(n_cycles):
                     result = measurement.measure_cycle(logger,console,sm,plots,filesave)
                     progress.update(task, advance=1, description=f"[blue]Cycle {i}/{n_cycles}")
-                    time.sleep(0.1)
                     plots.clear()
                 
             plots.show()

@@ -17,14 +17,15 @@ class Plots:
         self.ax[0,0].set_ylabel('Current (A)')
         self.ax[0,1].set_xlabel('Voltage (V)')
         self.ax[0,1].set_ylabel('Current (A)')
-        self.ax[0,2].set_xlabel('Resistance (Ω)')
-        self.ax[0,2].set_ylabel('Time (s)')
+        self.ax[0,2].set_xlabel('Time (s)')
+        self.ax[0,2].set_ylabel('Resistance (Ω)')
         self.ax[1,0].set_xlabel('Voltage (V)')
         self.ax[1,0].set_ylabel('Resistance (Ω)')
         self.ax[1,1].set_xlabel('Voltage (V)')
         self.ax[1,1].set_ylabel('Resistance (Ω)')
-        self.ax[1,2].set_xlabel('Voltage (V)')
-        self.ax[1,2].set_ylabel('Time (s)')
+        self.ax[1,2].set_xlabel('Time (s)')
+        self.ax[1,2].set_ylabel('Voltage (V)')
+
     
         #Set axis titles
         self.ax[0,0].set_title('IV Curve Cicle -')
@@ -65,8 +66,8 @@ class Plots:
             self.data_cicle_minus = np.append(self.data_cicle_minus, [[result[0], result[1]]], axis=0)
             self.data_resistance_minus = np.append(self.data_resistance_minus, [[result[0], result[2]]], axis=0)
         
-        self.data_resistance_vs_time = np.append(self.data_resistance_vs_time, [[result[2], result[3]]], axis=0)
-        self.data_voltage_vs_time = np.append(self.data_voltage_vs_time, [[result[0], result[3]]], axis=0)
+        self.data_resistance_vs_time = np.append(self.data_resistance_vs_time, [[result[3],result[2]]], axis=0)
+        self.data_voltage_vs_time = np.append(self.data_voltage_vs_time, [[result[3], result[0]]], axis=0)
 
     def update(self):
         self.cicle_plus.set_data(self.data_cicle_plus[:,0], self.data_cicle_plus[:,1])

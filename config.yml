@@ -20,6 +20,6 @@ pulsedIV:
   t_write: 0.00001  # time between each voltage step
   t_read: 0.00001  # time between each current read
   t_wait: 0.00001  # time between each cycle
-  nplc: 10  # number of power line cycles
+  nplc: 2  # number of power line cycles
 
 
