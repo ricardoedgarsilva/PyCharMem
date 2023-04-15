@@ -50,20 +50,27 @@ class Measurement:
         srcmtr.reset(logger)
         srcmtr.set_mode_fixed(logger, func='Voltage')
         srcmtr.set_src_func(logger,func='Voltage')
+
+        #Voltage parameters
         srcmtr.set_sense_func(logger,func='Voltage')
+        srcmtr.set_func_range(logger,func='Voltage')
+
+
+        #Current parameters
         srcmtr.set_sense_func(logger,func='Current')
         srcmtr.set_func_range(logger,func='Current')
-        srcmtr.set_func_range(logger,func='Voltage')
         srcmtr.set_func_ccplc(logger,func='Current',value=self.params.get(self.name).get('ccplc'))
         srcmtr.set_func_nplc(logger,func='Current',value=self.params.get(self.name).get('nplc'))
+
+        srcmtr.reset_timer(logger)
         logger.info('Sourcemeter parameters set successfully')
+
 
 
     
     def measure_cycle(self,logger,console,srcmtr,plots,filesave):
 
         logger.debug('Starting measurement')
-        srcmtr.reset_timer(logger)
         srcmtr.write(logger,'INIT:IMM')
         srcmtr.set_output_state(logger,'ON')
         self.result = []
@@ -86,6 +93,8 @@ class Measurement:
             resultread = srcmtr.read(logger)
             srcmtr.set_output_value(logger,'Voltage',0)
             # Read Pulse: End
+
+            print(f'read: {resultread}')
             
 
             self.result.append([
@@ -93,7 +102,7 @@ class Measurement:
                 resultwrite[1], # Current Write
                 resultread[0], # Voltage Read
                 resultread[1], # Current Read
-                resultread[2], # Resistance
+                resultread[0]/resultread[1], # Resistance
                 resultread[3], # Timer write
                 time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()) # Timestamp computer
                 ])
@@ -102,7 +111,7 @@ class Measurement:
 
             filesave.save_result(logger,self.result[-1])
             
-            plots.add_result([resultwrite[0],resultwrite[1],resultread[2],resultread[3]])
+            plots.add_result([resultwrite[0],resultwrite[1],resultread[0]/resultread[1],resultread[3]])
             plots.update()
             
         srcmtr.set_output_state(logger,'OFF')

@@ -175,6 +175,7 @@ class Sourcemeter:
             match func:
                 case 'Current': self.srcmtr.write(f'SOUR:CURR:RANG{range}')
                 case 'Voltage': self.srcmtr.write(f'SOUR:VOLT:RANG{range}')
+                case 'Resistance': self.srcmtr.write(f'SOUR:RES:RANG{range}')
             logger.debug(f'Sourcemeter range set to {range}')
         except:
             logger.critical('Sourcemeter range could not be set! Check GPIB connection!')

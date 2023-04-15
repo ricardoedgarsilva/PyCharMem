@@ -107,15 +107,9 @@ class Plots:
         self.data_resistance_minus = np.zeros((0,2))
         plt.draw()
 
-    def image(self):
+    def save_image(self,logger):
         '''Return the plot as a PNG image'''
-        import io
-        buffer = io.BytesIO()
-        plt.savefig(buffer, format='png')
-        buffer.seek(0)
-        image = XLImage(Image.open(buffer))
-    
-    # Return the PIL Image object
-        return image
+        self.fig.savefig('temp/plot.png')
+        logger.debug('Plot saved as temp/plot.png')
     
     

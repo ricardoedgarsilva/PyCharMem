@@ -7,6 +7,7 @@ import platform
 import importlib
 import datetime
 import openpyxl
+from openpyxl.drawing.image import Image
 import inquirer
 import yaml
 import pyvisa
@@ -278,10 +279,12 @@ class FileSave:
         self.wb.save(self.file_path)
         logger.debug('result saved in data sheet')
     
-    def save_plots(self, logger:logging.Logger, image):
+    def save_plots(self, logger:logging.Logger):
         self.ws = self.wb['plots']
-        self.ws.add_image(image, 'B2')
+        img = Image('temp/plot.png')
+        self.ws.add_image(img, 'B2')
         self.wb.save(self.file_path)
+        os.remove('temp/plot.png')
         logger.debug('Plot saved in plots sheet')
 class Logbook:
     def __init__(self, logger:logging.Logger, sample:str):
@@ -391,14 +394,14 @@ while running:
             plots = plot_class()
             logger.info('Plot loaded!')
 
-            n_cycles = config.get(measurement.name).get('n_cycles')
+            n_cycles = int(config.get(measurement.name).get('n_cycles'))
 
             #Main measurement loop
             with Progress() as progress:
-                task = progress.add_task("[blue]Cycle 0/{n_cycles}", total=n_cycles)
+                task = progress.add_task(f"[blue]Cycle 1/{n_cycles}", total=n_cycles)
 
                 #Main measurement loop
-                for i in range(n_cycles):
+                for i in range(1,n_cycles+1):
                     result = measurement.measure_cycle(logger,console,sm,plots,filesave)
                     progress.update(task, advance=1, description=f"[blue]Cycle {i}/{n_cycles}")
                     plots.clear()
@@ -407,7 +410,8 @@ while running:
             logger.info(f'Finished measurement: {measurement.name}')
             
             #Save plot
-            filesave.save_plots(logger,plots.image())
+            plots.save_image(logger)
+            filesave.save_plots(logger)
             logger.info('Plot image saved!')
 
             comment = ask_for_comment(logger)
