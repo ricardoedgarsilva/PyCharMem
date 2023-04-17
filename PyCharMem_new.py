@@ -1,23 +1,17 @@
 # Imports ---------------------------------------------------------------------
-import os
-import sys
-import time
-import logging
-import platform
-import importlib
-import datetime
-import openpyxl
-from openpyxl.drawing.image import Image
-import inquirer
-import yaml
-import pyvisa
+import os, sys, time, logging, platform, importlib, datetime
+import openpyxl, inquirer, yaml, pyvisa
 import numpy as np
+import pyqtgraph as pg
+from openpyxl.drawing.image import Image
 from art import text2art
 from rich.console import Console
 from rich.traceback import install
 from rich.logging import RichHandler
 from rich.progress import Progress
 from rich.panel import Panel
+from PyQt6.QtCore import QTimer
+from PyQt6.QtWidgets import QApplication,QMainWindow, QStyleFactory, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget, QTabWidget, QGridLayout
 
 
 
@@ -25,7 +19,7 @@ from rich.panel import Panel
 
 ProgramInfo = {
     'name': 'PyCharMem',
-    'version': '0.0.1',
+    'version': '0.0.2',
     'author': 'Ricardo E. Silva',
     'email': 'ricardoedgarsilva@tecnico.ulisboa.pt',
     'description': 'PyCharMem is a Python program that allows you to measure the charge memory of a device.',
@@ -166,15 +160,15 @@ def get_datetime():
     '''Returns date and time in the format YYYY-MM-DD HH:MM:SS:MS'''
     return datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S:%f')
 
-def import_module(logger:logging.Logger, type:str, sm_type=None,measurement_type=None,plot_type=None):
+def import_module(logger:logging.Logger, type:str, inst_type=None,measurement_type=None,plot_type=None):
     '''Imports a module file from string'''
 
     logger.debug(f'Importing {type} module')
 
     match type:
-        case 'sourcemeter':
-            file_name = f'sourcemeters.{sm_type}'
-            obj_name = 'Sourcemeter'
+        case 'instrument':
+            file_name = f'instruments.{inst_type}'
+            obj_name = 'Instrument'
         
         case 'measurement':
             file_name = f'measurements.{measurement_type}'
@@ -255,7 +249,7 @@ class FileSave:
         self.ws = self.wb['config']
         
         #read config file
-        sections = ['sample','sourcemeter', measurement_type]
+        sections = ['sample','instrument', measurement_type]
         for section in sections:
             self.ws.append([section])
             for key, value in config.get(section).items():
@@ -286,6 +280,7 @@ class FileSave:
         self.wb.save(self.file_path)
         os.remove('temp/plot.png')
         logger.debug('Plot saved in plots sheet')
+
 class Logbook:
     def __init__(self, logger:logging.Logger, sample:str):
         '''Initializes the class'''
@@ -325,108 +320,129 @@ class Logbook:
         self.wb.save(self.file_path)
         logger.debug('Log saved in logbook sheet')
 
+class MeasurementWindow(QMainWindow):
+    def __init__(self,meas):
+        super().__init__()
+        self.setWindowTitle(meas.name)
+        self.setGeometry(100,100,800,600)
 
-# Main ---------------------------------------------------------------------------
+        #Create a tab widget
+        self.tab_widget = QTabWidget(self)
 
-install()
-console = Console()
-logger = verbose_debug(False)
-running = True
+        #Create a Plot tab and add it to the tab widget
+        plot_tab = QWidget()
+        plot_layout = QVBoxLayout(plot_tab)
+        plot_grid = QGridLayout()
+        [rows,cols] = meas.plot_grid
+        for row in range(rows):
+            for col in range(cols):
+                plot_widget = pg.PlotWidget()
+                plot_widget.setTitle(meas.plot_titles[row][col])
+                plot_widget.setLabel('bottom',meas.plot_labels[row][col][0])
+                plot_widget.setLabel('left',meas.plot_labels[row][col][1])
+                plot_grid.addWidget(plot_widget,row,col)
 
-#Splash Screen
-clear_terminal()
-splash_screen(console)
-
-#Load config file
-config = config_read(logger)
-logger.info('Configuration file loaded')
+        plot_layout.addLayout(plot_grid)
+        plot_tab.setLayout(plot_layout)
+        self.tab_widget.addTab(plot_tab, "Plots")
 
 
-#Print available addresses and check if the one in the config file is available
-adresses = get_available_addresses()
-print_available_addresses(logger,console,adresses)
+        #Create a tab and add it to the tab widget
+        data_tab = QWidget()
+        data_layout = QVBoxLayout(data_tab)
+        self.data_table = QTableWidget()
+        self.data_table.setRowCount(0)
+        self.data_table.setColumnCount(len(meas.headers))
+        self.data_table.setHorizontalHeaderLabels(meas.headers)
+        data_layout.addWidget(self.data_table)
+        data_tab.setLayout(data_layout)
+        self.tab_widget.addTab(data_tab, "Data")
+
+        #Ad the widget to the main window
+        self.setCentralWidget(self.tab_widget)
+
+        #Call measure function
+
+    
 
 
-#Load sourcemeter
-sm_class = import_module(logger=logger,type='sourcemeter',sm_type=config.get('sourcemeter').get('model'))
-sm = sm_class(logger,config)
-logger.info('Sourcemeter loaded')
 
-#Main loop
-while running:
-    option = menu(logger,console,'main')
 
-    match option:
-        case 'Exit': 
-            running = False
-            logger.info('Exiting program')
+# Main Function ------------------------------------------------------------------
 
-        case 'Print Available Addresses':
-            print_available_addresses(logger,console,get_available_addresses())
-        
-        case 'Edit Configuration':
-            config_open(logger)
+def main():
+    install()
+    console = Console()
+    logger = verbose_debug(False)
+    running = True
 
-        case 'Select Measurement':
-            measurement_type = menu(logger,console,'measurements')
+    #Splash Screen
+    clear_terminal()
+    splash_screen(console)
 
-            #Return to main menu
-            if measurement_type == 'Back': continue 
+    #Load config file
+    config = config_read(logger)
+    logger.info('Configuration file loaded')
 
-            #Import measurement class
-            measurement_class = import_module(logger=logger,type='measurement',measurement_type=measurement_type)
-            measurement = measurement_class(logger,config,sm)
+    #Print Available Addresses
+    adresses = get_available_addresses()
+    print_available_addresses(logger,console,adresses)
 
-            #Check if all parameters are present
-            check_missing_params(logger,measurement.params[measurement.name],measurement.nparams)
+    #Load Instruments
+    inst_class = import_module(logger=logger,type='instrument',inst_type=config.get('instrument').get('model'))
+    inst = inst_class(logger,config)
+    logger.info('Instrument loaded')
 
-            #Create list of voltage/current values
-            logger.info('Measurement loaded!')
+    while running:
+        option = menu(logger,console,'main')
 
-            #Initialize file save and logbook
-            filesave = FileSave(logger,config.get('sample').get('name'),config.get('sample').get('device'))
-            filesave.save_config(logger,config,measurement_type)
-            filesave.save_headers(logger,measurement.headers)
-            logbook = Logbook(logger,config.get('sample').get('name'))
-
-            #Import plot class
-            plot_class = import_module(logger=logger,type='plot',plot_type=measurement.plot_type)
-            plots = plot_class()
-            logger.info('Plot loaded!')
-
-            n_cycles = int(config.get(measurement.name).get('n_cycles'))
-
-            #Main measurement loop
-            with Progress() as progress:
-                task = progress.add_task(f"[blue]Cycle 1/{n_cycles}", total=n_cycles)
-
-                #Main measurement loop
-                for i in range(1,n_cycles+1):
-                    result = measurement.measure_cycle(logger,console,sm,plots,filesave)
-                    progress.update(task, advance=1, description=f"[blue]Cycle {i}/{n_cycles}")
-                    plots.clear()
-                
-            plots.show()
-            logger.info(f'Finished measurement: {measurement.name}')
+        match option:
+            case 'Exit':
+                running = False
+                logger.info('Exiting program')
             
-            #Save plot
-            plots.save_image(logger)
-            filesave.save_plots(logger)
-            logger.info('Plot image saved!')
+            case 'Print Available Addresses':
+                print_available_addresses(logger,console,get_available_addresses())
 
-            comment = ask_for_comment(logger)
-            logbook.save_log(logger,get_datetime(),filesave.file_name,comment)
-            logger.info('Log saved!')
-            sm.close(logger)
-            quit()
+            case 'Edit Configuration':
+                config_open(logger)
+            
+            case 'Select Measurement':
+                #Load Measurements menu and go back to main menu if 'Back' is selected
+                option2 = menu(logger,console,'measurements')
+                if option2 == 'Back': continue
+
+                #Import measurement class
+                meas_class = import_module(logger=logger,type='measurement',measurement_type=option2)
+                meas = meas_class(logger,config,inst)
+
+                #Check if all measurements are present
+                check_missing_params(logger,meas.params[meas.name],meas.nparams)
+                logger.info('All parameters present')
+
+                filesave = FileSave(logger,config.get('sample').get('name'),config.get('instrument').get('model'))
+                filesave.save_config(logger,config,option2)
+                filesave.save_headers(logger,meas.headers)
+                logbook = Logbook(logger,config.get('sample').get('name'))
+
+                #Import plot class
+                n_cycles = int(config.get(meas.name).get('n_cycles'))
+
+                app = QApplication(sys.argv)
+                app.setStyle(QStyleFactory.create("Fusion"))
+                app.setStyleSheet("QMainWindow::title {background-color: #333333;}")
+                window = MeasurementWindow(meas)
+                window.show()
+                app.exec()
+                continue
 
 
 
 
 
 
-        
 
 
 
-
+if __name__ == "__main__":
+    main()

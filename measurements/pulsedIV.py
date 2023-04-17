@@ -23,81 +23,83 @@ def create_list(logger,cycle,max,min,step):
 
 
 class Measurement:
-    def __init__(self,logger,config,srcmtr):
+    def __init__(self,logger,config,inst):
         '''Set up the measurement'''
 
         # Set up the measurement parameters
         self.name = 'pulsedIV'
-        self.plot_type = 'IVcycles'
-        self.nparams = ['cycle','n_cycles','v_start','v_stop','v_step','v_read','ccplc','t_write','t_read','t_wait','nplc']
+        self.nparams = ['cycle','n_cycles','v+','v-','v_step','v_read','ccplc','t_write','t_read','t_wait','nplc']
         self.headers = ['Voltage Write[V]','Current Write [A]','Voltage Read [V]','Current Read [A]', 'Resistance [Ω]', 'Timer [s]', 'Datetime']
         self.params = dict(config.items())
-        # Create voltage values
-        self.vals = create_list(logger,
-                                self.params.get(self.name).get('cycle'),
-                                self.params.get(self.name).get('v_start'),
-                                self.params.get(self.name).get('v_stop'),
-                                self.params.get(self.name).get('v_step'))
+        self.vals = create_list(
+            logger,
+            self.params.get(self.name).get('cycle'),
+            self.params.get(self.name).get('v+'),
+            self.params.get(self.name).get('v-'),
+            self.params.get(self.name).get('v_step'))
 
+        #Set up plots parameters
+        cycle_type = self.params.get(self.name).get('cycle')
+        match len(cycle_type):
+            case 1: 
+                self.plot_grid = (2,2)
+                self.plot_titles = [[f'Cycle I-V {cycle_type}','Resistance vs Time'],
+                                    ['Resistance vs Voltage','Voltage vs Time']]
+                
+                self.plot_labels = [
+                    [['Voltage [V]','Current [A]'],
+                     ['Time [s]','Resistance [Ω]']],
+                    [['Voltage [V]','Resistance [Ω]'],
+                     ['Time [s]','Voltage [V]']]]
+            case 2:
+                self.plot_grid = (2,3)
+                self.plot_titles = [['Cycle I-V +','Cycle I-V -','Resistance vs Time'],
+                                    ['Resistance vs Voltage +','Resistance vs Voltage -','Voltage vs Time']]
+                
+                self.plot_labels = [
+                    [['Voltage [V]','Current [A]'],['Voltage [V]','Current [A]'],['Time [s]','Resistance [Ω]']],
+                    [['Voltage [V]','Resistance [Ω]'],['Voltage [V]','Resistance [Ω]'],['Time [s]','Voltage [V]']]]
 
-        logger.debug('Measurement parameters set!')
-
-        # Set up the sourcemeter
-        logger.debug('Setting sourcemeter initial parameters')
 
         
-        # Set the sourcemeter to autorange mode
-        srcmtr.reset(logger)
-        srcmtr.set_mode_fixed(logger, func='Voltage')
-        srcmtr.set_src_func(logger,func='Voltage')
+        # Set up the instrument
+        logger.debug('Setting instrument initial parameters')
+        
+        inst.reset(logger)
+        inst.set_mode_fixed(logger, func='Voltage')
+        inst.set_src_func(logger,func='Voltage')
 
-        #Voltage parameters
-        srcmtr.set_sense_func(logger,func='Voltage')
-        srcmtr.set_func_range(logger,func='Voltage')
+        inst.set_sense_func(logger,func='Voltage')
+        inst.set_func_range(logger,func='Voltage')
 
+        inst.set_sense_func(logger,func='Current')
+        inst.set_func_range(logger,func='Current')
+        inst.set_func_ccplc(logger,func='Current',value=self.params.get(self.name).get('ccplc'))
+        inst.set_func_nplc(logger,func='Current',value=self.params.get(self.name).get('nplc'))
+        #Prepare the instrument for measurements
+        inst.write(logger,'INIT:IMM')
 
-        #Current parameters
-        srcmtr.set_sense_func(logger,func='Current')
-        srcmtr.set_func_range(logger,func='Current')
-        srcmtr.set_func_ccplc(logger,func='Current',value=self.params.get(self.name).get('ccplc'))
-        srcmtr.set_func_nplc(logger,func='Current',value=self.params.get(self.name).get('nplc'))
-
-        srcmtr.reset_timer(logger)
-        logger.info('Sourcemeter parameters set successfully')
-
-
+        logger.debug('Instrument parameters set!')
 
     
-    def measure_cycle(self,logger,console,srcmtr,plots,filesave):
+    def measure_val(self,logger,console,inst,val):
 
-        logger.debug('Starting measurement')
-        srcmtr.write(logger,'INIT:IMM')
-        srcmtr.set_output_state(logger,'ON')
-        self.result = []
+        # Write Pulse: Start
+        time.sleep(self.params.get(self.name).get('t_wait'))
+        inst.set_output_value(logger,'Voltage',val)
+        time.sleep(self.params.get(self.name).get('t_write'))
+        resultwrite = inst.read(logger)
+        # Write Pulse: End
 
-        for val in self.vals:
-    
-            # Write Pulse: Start
-            time.sleep(self.params.get(self.name).get('t_wait'))
-            srcmtr.set_output_value(logger,'Voltage',val)
-            time.sleep(self.params.get(self.name).get('t_write'))
-            resultwrite = srcmtr.read(logger)
-            srcmtr.set_output_value(logger,'Voltage',0)
-            # Write Pulse: End
-            
-            time.sleep(self.params.get(self.name).get('t_wait'))
+        time.sleep(self.params.get(self.name).get('t_wait'))
 
-            # Read Pulse: Start
-            srcmtr.set_output_value(logger,'Voltage',self.params.get(self.name).get('v_read'))
-            time.sleep(self.params.get(self.name).get('t_read'))
-            resultread = srcmtr.read(logger)
-            srcmtr.set_output_value(logger,'Voltage',0)
-            # Read Pulse: End
+        # Read Pulse: Start
+        inst.set_output_value(logger,'Voltage',self.params.get(self.name).get('v_read'))
+        time.sleep(self.params.get(self.name).get('t_read'))
+        resultread = inst.read(logger)
+        # Read Pulse: End
 
-            print(f'read: {resultread}')
-            
-
-            self.result.append([
+        return([
                 resultwrite[0], # Voltage Write
                 resultwrite[1], # Current Write
                 resultread[0], # Voltage Read
@@ -106,16 +108,10 @@ class Measurement:
                 resultread[3], # Timer write
                 time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()) # Timestamp computer
                 ])
-            
-            print(self.result[-1]) # Temporary print to console
 
-            filesave.save_result(logger,self.result[-1])
-            
-            plots.add_result([resultwrite[0],resultwrite[1],resultread[0]/resultread[1],resultread[3]])
-            plots.update()
-            
-        srcmtr.set_output_state(logger,'OFF')
+
 
         
-    
+
+
         

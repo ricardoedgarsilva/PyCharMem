@@ -3,17 +3,17 @@ sample:
   name: "EM_Si200"  # Name of the sample ex: "MRG6N1"
   device: "test"  # location of the device ex: "x1y6"
 
-#
-sourcemeter:
-  model: "keithley_2401"  # name of the sourcemeter file without .py ex: "keithley_2400.py"
+# Load Instrument
+instrument:
+  model: "keithley_2400_sim"  # name of the sourcemeter file without .py ex: "keithley_2400"
   address: "GPIB0::24::INSTR"  # address of the sourcemeter ex: "GPIB0::24::INSTR"
 
 
 pulsedIV:
-  cycle: "+-"  # cycle of the voltage (ex: "+-","-+", "+" or "-")
+  cycle: "-"  # cycle of the voltage (ex: "+-","-+", "+" or "-")
   n_cycles: 1  # number of cycles
-  v_start:  2.0 # start voltage
-  v_stop: -2.0  # stop voltage
+  v+:  2.0 # maximum voltage value of positive cycle
+  v-: -2.0  # minimum voltage value of negative cycle
   v_step: 0.5  # voltage step
   v_read: 0.05  # voltage step for the read
   ccplc: 0.1  # current compliance
