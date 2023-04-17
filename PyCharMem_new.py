@@ -10,7 +10,7 @@ from rich.traceback import install
 from rich.logging import RichHandler
 from rich.progress import Progress
 from rich.panel import Panel
-from PyQt6.QtCore import QTimer
+from PyQt6.QtCore import QThread, pyqtSignal
 from PyQt6.QtWidgets import QApplication,QMainWindow, QStyleFactory, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget, QTabWidget, QGridLayout
 
 
@@ -320,9 +320,38 @@ class Logbook:
         self.wb.save(self.file_path)
         logger.debug('Log saved in logbook sheet')
 
+class MeasurementThread(QThread):
+    result_values = pyqtSignal(list)
+
+    def __init__(self):
+        super().__init__()
+    
+    def run(self):
+
+        #Import measurement class
+        meas_class = import_module(logger=logger,type='measurement',measurement_type=option2)
+        meas = meas_class(logger,config,inst)
+
+        #Check if all measurements are present
+        check_missing_params(logger,meas.params[meas.name],meas.nparams)
+        logger.info('All parameters present')
+
+        filesave = FileSave(logger,config.get('sample').get('name'),config.get('instrument').get('model'))
+        filesave.save_config(logger,config,option2)
+        filesave.save_headers(logger,meas.headers)
+        logbook = Logbook(logger,config.get('sample').get('name'))
+
+        #Import plot class
+        n_cycles = int(config.get(meas.name).get('n_cycles'))
+
+
+
 class MeasurementWindow(QMainWindow):
     def __init__(self,meas):
         super().__init__()
+        self.initUI(meas)
+
+    def initUI(self,meas):
         self.setWindowTitle(meas.name)
         self.setGeometry(100,100,800,600)
 
@@ -361,11 +390,7 @@ class MeasurementWindow(QMainWindow):
         #Ad the widget to the main window
         self.setCentralWidget(self.tab_widget)
 
-        #Call measure function
-
     
-
-
 
 
 # Main Function ------------------------------------------------------------------

@@ -1,7 +1,19 @@
 import sys
 import random
 from PyQt6.QtWidgets import QApplication, QMainWindow, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget
-from PyQt6.QtCore import QTimer
+from PyQt6.QtCore import QThread, pyqtSignal
+
+class RandomValueThread(QThread):
+    random_values_generated = pyqtSignal(list)
+
+    def __init__(self):
+        super().__init__()
+
+    def run(self):
+        while True:
+            random_values = [random.randint(0, 100) for _ in range(3)]
+            self.random_values_generated.emit(random_values)
+            self.sleep(1)
 
 class RandomTableApp(QMainWindow):
     def __init__(self):
@@ -9,10 +21,9 @@ class RandomTableApp(QMainWindow):
 
         self.init_ui()
 
-        # Create a QTimer object to call the add_random_values function periodically
-        self.timer = QTimer()
-        self.timer.timeout.connect(self.add_random_values)
-        self.timer.start(1000)  # Call add_random_values every 1000 milliseconds (1 second)
+        self.random_value_thread = RandomValueThread()
+        self.random_value_thread.random_values_generated.connect(self.add_random_values)
+        self.random_value_thread.start()
 
     def init_ui(self):
         self.setWindowTitle('Random Table')
@@ -28,13 +39,12 @@ class RandomTableApp(QMainWindow):
         container.setLayout(layout)
         self.setCentralWidget(container)
 
-    def add_random_values(self):
+    def add_random_values(self, random_values):
         row_position = self.table_widget.rowCount()
         self.table_widget.insertRow(row_position)
 
-        for col in range(3):
-            random_value = random.randint(0, 100)
-            self.table_widget.setItem(row_position, col, QTableWidgetItem(str(random_value)))
+        for col, value in enumerate(random_values):
+            self.table_widget.setItem(row_position, col, QTableWidgetItem(str(value)))
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
