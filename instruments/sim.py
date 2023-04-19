@@ -17,13 +17,7 @@ class Instrument:
     
     def close(self, logger):
         '''Closes instrument'''
-
-        try:
-            self.inst.close()
-            logger.debug('Instrument closed')
-        except:
-            logger.critical('Instrument could not be closed! Check connection!')
-            quit()
+        pass
 
     def init(self,logger):
         '''Initializes instrument'''
@@ -54,14 +48,7 @@ class Instrument:
 
     def set_output_state(self, logger, state:str):
         '''Sets output state'''
-        try:
-            match state:
-                case 'ON': self.inst.write('OUTP ON')
-                case 'OFF': self.inst.write('OUTP OFF')
-            logger.debug(f'Instrument output set to {state}')
-        except:
-            logger.critical('Instrument output could not be set! Check connection!')
-            quit()
+        pass
 
     def set_output_value(self, logger, func:str, value:float):
         '''Sets output value of voltage or current'''

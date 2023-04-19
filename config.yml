@@ -1,6 +1,6 @@
 # Sample configuration file for the 
 sample:
-  name: "EM_Si200"  # Name of the sample ex: "MRG6N1"
+  name: "Test"  # Name of the sample ex: "MRG6N1"
   device: "test"  # location of the device ex: "x1y6"
 
 # Load Instrument
@@ -10,10 +10,10 @@ instrument:
 
 
 pulsedIV:
-  cycle: "-"  # cycle of the voltage (ex: "+-","-+", "+" or "-")
-  n_cycles: 5  # number of cycles
-  v+:  20.0 # maximum voltage value of positive cycle
-  v-: -20.0  # minimum voltage value of negative cycle
+  cycle: "+-"  # cycle of the voltage (ex: "+-","-+", "+" or "-")
+  n_cycles: 2  # number of cycles
+  v+:  2.0 # maximum voltage value of positive cycle
+  v-: -2.0  # minimum voltage value of negative cycle
   v_step: 0.5  # voltage step
   v_read: 0.05  # voltage step for the read
   ccplc: 0.1  # current compliance

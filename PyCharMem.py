@@ -224,7 +224,6 @@ class FileSave:
         self.wb = openpyxl.Workbook()
         self.wb.create_sheet('config')
         self.wb.create_sheet('data')
-        self.wb.create_sheet('plots')
         self.wb.remove(self.wb['Sheet'])
         self.wb.save(self.file_path)
 
@@ -255,13 +254,6 @@ class FileSave:
         self.wb.save(self.file_path)
         logger.debug('result saved in data sheet')
 
-    def save_plots(self, logger: logging.Logger):
-        self.ws = self.wb['plots']
-        img = Image('temp/plot.png')
-        self.ws.add_image(img, 'B2')
-        self.wb.save(self.file_path)
-        os.remove('temp/plot.png')
-        logger.debug('Plot saved in plots sheet')
 
 
 class Logbook:
@@ -300,36 +292,59 @@ class Logbook:
 
 class MeasurementThread(QThread):
     update_data = pyqtSignal(object, list)
+    clear_plots = pyqtSignal(list, list)
+    close_window = pyqtSignal()
 
     def __init__(self, logger, inst, meas, config):
         super().__init__()
-
         self.logger = logger
         self.inst = inst
         self.meas = meas
-
-        self.filesave = FileSave(logger, config.get('sample').get('name'), config.get('instrument').get('model'))
+        self.config = config
+        self.filesave = FileSave(logger, config.get('sample').get('name'), config.get('sample').get('device'))
         self.filesave.save_config(logger, config, meas.name)
         self.filesave.save_headers(logger, self.meas.headers)
-
         self.n_cycles = config.get(meas.name).get('n_cycles')
+        self.n_vals = len(self.meas.vals)
 
     def run(self):
+        self.inst.set_output_state(self.logger,'ON')
+        
 
-        for cycle in range(1, self.n_cycles + 1):
-            for val in self.meas.vals:
-                results = self.meas.measure_val(self.logger, self.inst, val)
-                self.filesave.save_result(self.logger, results[0])
-                self.update_data.emit(self.meas, results)
+        with Progress() as progress:
+            value_task = progress.add_task(f"[purple] Current value: None", total=self.n_vals) 
+            cycle_task = progress.add_task(f"[blue]Cycle 0/{self.n_cycles}", total=self.n_cycles)
+            for cycle in range(1, self.n_cycles + 1):
+                for val in self.meas.vals:
+                    results = self.meas.measure_val(self.logger, self.inst, val)
+                    self.filesave.save_result(self.logger, results[0])
+                    self.update_data.emit(self.meas, results)
+                    progress.update(value_task, advance=1, description=f"[purple]Current value: {val}")
+                self.clear_plots.emit(self.meas.plot_grid,self.meas.plot_clear)
+                progress.update(value_task, advance=-self.n_vals, description=f"[purple]Value 0/{self.n_vals}")
+                progress.update(cycle_task, advance=1, description=f"[blue]Cycle {cycle}/{self.n_cycles}")
+            self.inst.set_output_state(self.logger,'OFF')
+
+        
+        logbook = Logbook(self.logger, self.config.get('sample').get('name'))
+        self.logger.info('Measurement finished! Please enter a comment for the logbook')
+        comment = ask_for_comment(self.logger)
+        logbook.save_log(self.logger, get_datetime(), self.filesave.file_name, comment)
+        self.close_window.emit()
+        self.logger.info('Logbook saved, exiting...')
+
+            
+
 
 
 class MeasurementWindow(QMainWindow):
     def __init__(self, logger, inst, meas, config):
         super().__init__()
         self.initUI(meas)
-
         self.measure = MeasurementThread(logger, inst, meas, config)
         self.measure.update_data.connect(self.update_data)
+        self.measure.clear_plots.connect(self.clear_plots)
+        self.measure.close_window.connect(self.close)
         self.measure.start()
 
     def initUI(self, meas):
@@ -337,7 +352,6 @@ class MeasurementWindow(QMainWindow):
         self.setGeometry(100, 100, 800, 600)
 
         self.tab_widget = QTabWidget(self)
-
         plot_tab = QWidget()
         plot_layout = QVBoxLayout(plot_tab)
         self.plot_grid = QGridLayout()
@@ -369,7 +383,6 @@ class MeasurementWindow(QMainWindow):
         self.setCentralWidget(self.tab_widget)
 
     def update_data(self, meas, results):
-
         [result, result_plots] = results
         self.data_table.insertRow(0)
         for col in range(len(meas.headers)):
@@ -380,7 +393,21 @@ class MeasurementWindow(QMainWindow):
             for col in range(meas.plot_grid[1]):
                 self.data_plots[row][col].append(result_plots[row][col])
                 plot_widget = self.plot_grid.itemAtPosition(row, col).widget()
-                plot_widget.plot(self.data_plots[row][col], clear=True)
+                plot_widget.plot(
+                    np.array(self.data_plots[row][col])[:,0],
+                    np.array(self.data_plots[row][col])[:,1], 
+                    clear=True)
+        
+    def clear_plots(self, plot_grid, plot_clear):
+    
+        for row in range(plot_grid[0]):
+            for col in range(plot_grid[1]):
+                if plot_clear[row][col]:
+                    self.data_plots[row][col] = []
+
+    def close_window(self):
+        self.close()
+
 
 # Main Functions ------------------------------------------------------------------
 
@@ -410,6 +437,7 @@ def main():
 
     inst_class = import_module(logger=logger, type='instrument', inst_type=config.get('instrument').get('model'))
     inst = inst_class(logger, config)
+    inst.reset(logger)
     logger.info('Instrument loaded')
 
     while running:
@@ -424,7 +452,7 @@ def main():
                 print_available_addresses(logger, console, get_available_addresses())
 
             case 'Edit Configuration':
-                config_open(logger)
+                open_config(logger)
 
             case 'Select Measurement':
                 option2 = menu(logger, console, 'measurements')
@@ -435,13 +463,10 @@ def main():
 
                 check_missing_params(logger, meas.params[meas.name], meas.nparams)
                 logger.info('All parameters present')
-                logbook = Logbook(logger, config.get('sample').get('name'))
-
                 start_gui(logger, inst, meas, config)
-
                 inst.close(logger)
-                comment = ask_for_comment(logger)
-                logbook.save_log(logger, get_datetime(), filesave.file_name, comment)
+                sys.exit()
+
 
 
 if __name__ == "__main__":

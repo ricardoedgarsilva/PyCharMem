@@ -41,6 +41,7 @@ class Measurement:
                      ['Time [s]', 'Resistance [Ω]']],
                     [['Voltage [V]', 'Resistance [Ω]'],
                      ['Time [s]', 'Voltage [V]']]]
+                self.plot_clear = [[True, False], [True, False]]
             case 2:
                 self.plot_grid = (2, 3)
                 self.plot_titles = [['Cycle I-V +', 'Cycle I-V -', 'Resistance vs Time'],
@@ -48,6 +49,7 @@ class Measurement:
                 self.plot_labels = [
                     [['Voltage [V]', 'Current [A]'], ['Voltage [V]', 'Current [A]'], ['Time [s]', 'Resistance [Ω]']],
                     [['Voltage [V]', 'Resistance [Ω]'], ['Voltage [V]', 'Resistance [Ω]'], ['Time [s]', 'Voltage [V]']]]
+                self.plot_clear = [[True, True, False], [True, True, False]]
 
     def initialize_instrument(self, logger, instrument):
         logger.debug('Setting instrument initial parameters')
@@ -92,28 +94,28 @@ class Measurement:
         match len(self.params.get(self.name).get('cycle')):
             case 1: 
                 result_plots = [
-                    [result[0], result[1]],  # Cycle I-V
-                    [result[5], result[4]],  # Resistance vs Time
-                    [result[0], result[4]],  # Resistance vs Voltage
-                    [result[5], result[0]]   # Voltage vs Time
+                    [[result[0], result[1]],  # Cycle I-V
+                     [result[5], result[4]]],  # Resistance vs Time
+                    [[result[0], result[4]],  # Resistance vs Voltage
+                     [result[5], result[0]]]   # Voltage vs Time
                 ]
 
             case 2:
                 if val >= 0:
                     result_plots = [
                         [[result[0], result[1]],  # Cycle I-V +
-                         [None, None],
+                         [np.nan, np.nan],
                          [result[5], result[4]]],  # Resistance vs Time
                         [[result[0], result[4]],  # Resistance vs Voltage +
-                         [None, None],
+                         [np.nan, np.nan],
                          [result[5], result[0]]]   # Voltage vs Time
                     ]
                 else:
                     result_plots = [
-                        [[None, None],
+                        [[np.nan, np.nan],
                          [result[0], result[1]],  # Cycle I-V -
                          [result[5], result[4]]],  # Resistance vs Time
-                        [[None, None],
+                        [[np.nan, np.nan],
                          [result[0], result[4]],  # Resistance vs Voltage -
                          [result[5], result[0]]]   # Voltage vs Time
                     ]
