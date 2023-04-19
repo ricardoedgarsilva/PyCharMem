@@ -67,8 +67,8 @@ class Instrument:
         '''Sets output value of voltage or current'''
         try:
             match func:
-                case 'Current': self.inst.write(f'SOUR:CURR:LEV {value}')
-                case 'Voltage': self.inst.write(f'SOUR:VOLT:LEV {value}')
+                case 'Current': pass
+                case 'Voltage': pass
             logger.debug(f'Instrument value set to {value}')
         except:
             logger.critical('Instrument value could not be set! Check connection!')
@@ -103,7 +103,7 @@ class Instrument:
 
     def read(self, logger):
         '''Reads instrument and returns list of sample values'''
-        return [-0.1999855,-2.64061E-11,0.05002385,-1.99749E-11,9.91E+37,3.756836,'2023-04-15 16:40:47']
+        return [-0.1999855,-2.64061e-11,0.05002385,-1.99749e-11,9.91e+37,3.756836,'2023-04-15 16:40:47']
 
 
     def get_timer(self,logger):

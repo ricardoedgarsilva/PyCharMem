@@ -5,15 +5,15 @@ sample:
 
 # Load Instrument
 instrument:
-  model: "keithley_2400_sim"  # name of the sourcemeter file without .py ex: "keithley_2400"
+  model: "sim"  # name of the sourcemeter file without .py ex: "keithley_2400"
   address: "GPIB0::24::INSTR"  # address of the sourcemeter ex: "GPIB0::24::INSTR"
 
 
 pulsedIV:
   cycle: "-"  # cycle of the voltage (ex: "+-","-+", "+" or "-")
-  n_cycles: 1  # number of cycles
-  v+:  2.0 # maximum voltage value of positive cycle
-  v-: -2.0  # minimum voltage value of negative cycle
+  n_cycles: 5  # number of cycles
+  v+:  20.0 # maximum voltage value of positive cycle
+  v-: -20.0  # minimum voltage value of negative cycle
   v_step: 0.5  # voltage step
   v_read: 0.05  # voltage step for the read
   ccplc: 0.1  # current compliance
