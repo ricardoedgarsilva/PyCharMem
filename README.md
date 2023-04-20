@@ -1,14 +1,13 @@
 <a name="readme-top"></a>
 
-[![Issues][issues-shield]][https://github.com/ricardoedgarsilva/PyCharMem/issues]
-[![MIT License][license-shield]][https://www.gnu.org/licenses/gpl-3.0.en.html]
+[![Issues][issues-shield]][issues-url]
+[![GPL-3.0][license-shield]][licence-url]
 
 
 
 <!-- PROJECT LOGO -->
 <br />
   <p align="center">
-    An awesome README template to jumpstart your projects!
     <br />
     <a href="https://github.com/ricardoedgarsilva/PyCharMem"><strong>Explore the docs »</strong></a>
     <br />
@@ -73,7 +72,12 @@ PyCharMem was developed as part of a research project at INESC-MN Lisbon, Portug
 This section should list any major frameworks/libraries used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
 
 * [![Python][Python]][Python-url]
-
+* [![Rich][Rich]][Rich-url]
+* [![InquirerPy][InquirerPy]][InquirerPy-url]
+* [![PyQt6][PyQt6]][PyQt6-url]
+* [![PyQtGraph][PyQtGraph]][PyQtGraph-url]
+* [![PyVISA][PyVISA]][PyVISA-url]
+* [![YAML][YAML]][YAML-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -174,14 +178,14 @@ Project Link: [https://github.com/ricardoedgarsilva/PyCharMem](https://github.co
 
 Use this space to list resources you find helpful and would like to give credit to. I've included a few of my favorites to kick things off!
 
-* [Choose an Open Source License](https://choosealicense.com)
-* [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)
-* [Malven's Flexbox Cheatsheet](https://flexbox.malven.co/)
-* [Malven's Grid Cheatsheet](https://grid.malven.co/)
-* [Img Shields](https://shields.io)
-* [GitHub Pages](https://pages.github.com)
-* [Font Awesome](https://fontawesome.com)
-* [React Icons](https://react-icons.github.io/react-icons/search)
+
+* [GNU Licence V3](https://choosealicense.com/licenses/gpl-3.0/)
+* [Rich](https://pypi.org/project/rich/)
+* [InquirerPy](https://pypi.org/project/inquirerpy/)
+* [PyQt6](https://pypi.org/project/PyQt6/)
+* [PyQtGraph](https://pypi.org/project/pyqtgraph/)
+* [PyVISA](https://pypi.org/project/PyVISA/)
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -205,3 +209,15 @@ Use this space to list resources you find helpful and would like to give credit 
 [Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
 [Python-url]: https://www.python.org/
 [Python]: https://img.shields.io/badge/Python-14354C?style=for-the-badge&logo=python&logoColor=white
+[GNU-url]: https://www.gnu.org/licenses/gpl-3.0.en.html
+[GNU]: https://img.shields.io/badge/License-GPLv3-blue.svg
+[Rich-url]: https://pypi.org/project/rich/
+[Rich]: https://img.shields.io/badge/Rich-000000?style=for-the-badge&logo=rich&logoColor=white
+[InquirerPy-url]: https://pypi.org/project/inquirerpy/
+[InquirerPy]: https://img.shields.io/badge/InquirerPy-000000?style=for-the-badge&logo=inquirerpy&logoColor=white
+[PyQt6-url]: https://pypi.org/project/PyQt6/
+[PyQt6]: https://img.shields.io/badge/PyQt6-000000?style=for-the-badge&logo=pyqt6&logoColor=white
+[PyQtGraph-url]: https://pypi.org/project/pyqtgraph/
+[PyQtGraph]: https://img.shields.io/badge/PyQtGraph-000000?style=for-the-badge&logo=pyqtgraph&logoColor=white
+[PyVISA-url]: https://pypi.org/project/PyVISA/
+[PyVISA]: https://img.shields.io/badge/PyVISA-000000?style=for-the-badge&logo=pyvisa&logoColor=white
