@@ -1,14 +1,8 @@
 <a name="readme-top"></a>
 
-[![Issues][issues-shield]][issues-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Contributors][contributors-shield]][contributors-url]
-[![GPL License][license-shield]][license-url]
 
 
-
-<!-- PROJECT LOGO -->
+<!-- Header -->
 <br />
   <p align="center">
     <br />
@@ -193,18 +187,7 @@ Use this space to list resources you find helpful and would like to give credit 
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=for-the-badge
-[contributors-url]: https://github.com/ricardoedgarsilva/PyCharMem/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/othneildrew/Best-README-Template.svg?style=for-the-badge
-[forks-url]: https://github.com/ricardoedgarsilva/PyCharMem/network/members
-[stars-shield]: https://img.shields.io/github/stars/othneildrew/Best-README-Template.svg?style=for-the-badge
-[stars-url]: https://github.com/ricardoedgarsilva/PyCharMem/stargazers
-[issues-shield]: https://img.shields.io/github/issues/othneildrew/Best-README-Template.svg?style=for-the-badge
-[issues-url]: https://github.com/ricardoedgarsilva/PyCharMem/issues
-[license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=for-the-badge
 [license-url]: https://www.gnu.org/licenses/gpl-3.0.en.html
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [Python-url]: https://www.python.org/
 [Python]: https://img.shields.io/badge/Python-14354C?style=for-the-badge&logo=python&logoColor=white
 [GNU-url]: https://www.gnu.org/licenses/gpl-3.0.en.html
