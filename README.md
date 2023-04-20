@@ -53,8 +53,6 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
-
 PyCharMem is a Python program that allows you to measure the charge memory of a device. The program measures the charge memory of a device under different conditions, which are specified in a configuration file.
 
 The program has been developed by Ricardo E. Silva and is licensed under the GNU General Public License v3.0. The source code is available on GitHub.
@@ -202,11 +200,8 @@ Use this space to list resources you find helpful and would like to give credit 
 [issues-shield]: https://img.shields.io/github/issues/othneildrew/Best-README-Template.svg?style=for-the-badge
 [issues-url]: https://github.com/ricardoedgarsilva/PyCharMem/issues
 [license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=for-the-badge
-[license-url]: https://github.com/ricardoedgarsilva/PyCharMem/blob/master/LICENSE.txt
+[license-url]: https://www.gnu.org/licenses/gpl-3.0.en.html
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/othneildrew
-[product-screenshot]: images/screenshot.png
-[Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
 [Python-url]: https://www.python.org/
 [Python]: https://img.shields.io/badge/Python-14354C?style=for-the-badge&logo=python&logoColor=white
 [GNU-url]: https://www.gnu.org/licenses/gpl-3.0.en.html
@@ -221,3 +216,5 @@ Use this space to list resources you find helpful and would like to give credit 
 [PyQtGraph]: https://img.shields.io/badge/PyQtGraph-000000?style=for-the-badge&logo=pyqtgraph&logoColor=white
 [PyVISA-url]: https://pypi.org/project/PyVISA/
 [PyVISA]: https://img.shields.io/badge/PyVISA-000000?style=for-the-badge&logo=pyvisa&logoColor=white
+[YAML-url]: https://yaml.org/
+[YAML]: https://img.shields.io/badge/YAML-000000?style=for-the-badge&logo=yaml&logoColor=white
