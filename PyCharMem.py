@@ -321,7 +321,7 @@ class MeasurementThread(QThread):
                     self.update_data.emit(self.meas, results)
                     progress.update(value_task, advance=1, description=f"[purple]Current value: {val}")
                 self.clear_plots.emit(self.meas.plot_grid,self.meas.plot_clear)
-                progress.update(value_task, advance=-self.n_vals, description=f"[purple]Value 0/{self.n_vals}")
+                progress.update(value_task, advance=-self.n_vals, description=f"[purple]Current value: None")
                 progress.update(cycle_task, advance=1, description=f"[blue]Cycle {cycle}/{self.n_cycles}")
             self.inst.set_output_state(self.logger,'OFF')
 

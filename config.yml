@@ -16,7 +16,22 @@ pulsedIV:
   v-: -2.0  # minimum voltage value of negative cycle
   v_step: 0.5  # voltage step
   v_read: 0.05  # voltage step for the read
-  ccplc: 0.1  # current compliance
+  ccplc+: 0.1  # current compliance for positive cycle
+  ccplc-: 0.1  # current compliance for negative cycle
+  t_write: 0.00001  # time between each voltage step
+  t_read: 0.00001  # time between each current read
+  t_wait: 0.00001  # time between each cycle
+  nplc: 2  # number of power line cycles
+
+pulsedVI:
+  cycle: "+-"  # cycle of the voltage (ex: "+-","-+", "+" or "-")
+  n_cycles: 2  # number of cycles
+  i+:  2.0 # maximum voltage value of positive cycle
+  i-: -2.0  # minimum voltage value of negative cycle
+  i_step: 0.5  # voltage step
+  i_read: 0.05  # voltage step for the read
+  vcplc+: 0.1  # current compliance for positive cycle
+  vcplc-: 0.1  # current compliance for negative cycle
   t_write: 0.00001  # time between each voltage step
   t_read: 0.00001  # time between each current read
   t_wait: 0.00001  # time between each cycle
