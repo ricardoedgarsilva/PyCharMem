@@ -1,7 +1,10 @@
 <a name="readme-top"></a>
 
 [![Issues][issues-shield]][issues-url]
-[![GPL-3.0][license-shield]][licence-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Contributors][contributors-shield]][contributors-url]
+[![GPL License][license-shield]][license-url]
 
 
 
