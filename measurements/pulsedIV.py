@@ -66,8 +66,6 @@ class Measurement:
         instrument.write(logger, 'INIT:IMM')
         logger.debug('Instrument parameters set!')
 
-
-
     def measure_val(self, logger, instrument, val):
         # Write Pulse: Start
         time.sleep(self.params.get(self.name).get('t_wait'))
