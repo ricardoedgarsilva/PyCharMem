@@ -36,24 +36,20 @@ PROGRAM_INFO = {
 
 
 def verbose_debug(verbose: bool) -> logging.Logger:
-    '''Set logging level to debug if verbose is True'''
     log_level = "NOTSET" if verbose else 'INFO'
     logging.basicConfig(level=log_level, format="%(message)s", datefmt="[%X]", handlers=[RichHandler()])
     return logging.getLogger("rich")
 
 
 def clear_terminal() -> None:
-    '''Clears the terminal'''
     os.system('cls||clear')
 
 
 def print_newlines(lines: int) -> None:
-    '''Prints n new lines'''
     print(lines * "\n")
 
 
 def splash_screen(console: Console) -> None:
-    '''Prints the splash screen'''
     print(text2art(PROGRAM_INFO['name']))
     console.print(f"Version: {PROGRAM_INFO['version']}", style='bold blue')
     console.print(f"Author: {PROGRAM_INFO['author']}", style='bold blue')
@@ -61,7 +57,6 @@ def splash_screen(console: Console) -> None:
 
 
 def open_config(logger: logging.Logger) -> None:
-    '''Opens the config file with the default program'''
     try:
         os.system({'Windows': 'start config.yml', 'Darwin': 'open config.yml', 'Linux': 'open config.yml'}.get(platform.system(), ''))
     except:
@@ -70,7 +65,6 @@ def open_config(logger: logging.Logger) -> None:
 
 
 def read_config(logger: logging.Logger) -> dict:
-    '''Reads the config file and returns a dictionary'''
     try:
         with open('config.yml', 'r') as file:
             config = yaml.safe_load(file)
@@ -81,43 +75,36 @@ def read_config(logger: logging.Logger) -> dict:
 
 
 def path_exists(path: str) -> bool:
-    '''Checks if a path exists and returns a boolean'''
     return os.path.exists(path)
 
 
 def get_path() -> str:
-    '''Returns the path of the current file directory'''
     return os.path.dirname(os.path.realpath(__file__))
 
 
 def mkdir(logger: logging.Logger, path: str) -> None:
-    '''Creates a folder if it doesn't exist'''
     if not path_exists(path):
         os.makedirs(path)
         logger.debug(f'Folder {path} created')
 
 
 def get_index(path: str) -> int:
-    '''Returns the number of files in a folder'''
     return len(os.listdir(path))
 
 
 def get_filename(path: str, sample: str, device: str) -> str:
-    '''Returns the filename of the current measurement'''
     index = get_index(path)
     date = datetime.datetime.now().strftime('%Y%m%d')
     return f'{date}_{sample}_{device}_{index}.xlsx'
 
 
 def get_available_addresses() -> list:
-    '''Returns a list of available addresses for the instruments'''
     rm = pyvisa.ResourceManager()
     addresses = rm.list_resources()
     return addresses
 
 
 def print_available_addresses(logger: logging.Logger, console: Console, addresses: list) -> None:
-    '''Prints the available addresses for the instruments'''
     print_newlines(1)
     console.print(Panel.fit("[bold]Available Addresses[/bold]", border_style="green"))
     
@@ -129,14 +116,12 @@ def print_available_addresses(logger: logging.Logger, console: Console, addresse
 
 
 def check_address(logger: logging.Logger, addresses: list, address: str) -> None:
-    '''Checks if the address in the config file is available'''
     if address not in addresses:
         logger.critical('Instrument address in config file not found! Please edit config file with correct address')
         sys.exit()
 
 
 def check_missing_params(logger: logging.Logger, my_dict: dict, my_list: list) -> None:
-    '''Checks if there are missing parameters in the config file'''
     missing_items = [item for item in my_list if item not in my_dict]
 
     if len(missing_items) == 0:
@@ -149,7 +134,6 @@ def check_missing_params(logger: logging.Logger, my_dict: dict, my_list: list) -
 
 
 def create_list(logger: logging.Logger, condition_values: list) -> np.ndarray:
-    '''Creates a list of values based on the cycle type'''
     cycle, max_value, min_value, step = condition_values
     listp_oneway = np.arange(0, max_value, step)
     listn_oneway = np.arange(0, min_value, -step)
@@ -165,12 +149,10 @@ def create_list(logger: logging.Logger, condition_values: list) -> np.ndarray:
 
 
 def get_datetime() -> str:
-    '''Returns the current date and time'''
     return datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S:%f')
 
 
 def import_module(logger: logging.Logger, type: str, inst_type=None, measurement_type=None) -> type:
-    '''Imports the instrument or measurement module'''
     file_name, obj_name = '', ''
     
     if type == 'instrument':
@@ -191,7 +173,6 @@ def import_module(logger: logging.Logger, type: str, inst_type=None, measurement
 
 
 def menu(logger: logging.Logger, console: Console, type: str) -> str:
-    '''Creates a menu and returns the selected option'''
     name, message, choices = '', '', []
     
     if type == 'main':
@@ -202,8 +183,6 @@ def menu(logger: logging.Logger, console: Console, type: str) -> str:
         try:
             list_dir = os.listdir('measurements')
             measurement_types = [filename.split('.')[0] for filename in list_dir if filename.endswith('.py')]
-            #Remove template.py from list
-            measurement_types.remove('template')
             logger.debug(f'{len(measurement_types)} measurement types found')
         except:
             logger.critical('No measurement types found!')
@@ -226,7 +205,6 @@ def menu(logger: logging.Logger, console: Console, type: str) -> str:
 
 
 def ask_for_comment(logger: logging.Logger) -> str:
-    '''Asks for a comment and returns it'''
     comment = [inquirer.Text('comment', message="What would you like to comment?", validate=lambda _, x: len(x) > 0),]
     answer = inquirer.prompt(comment)
     logger.debug(f'Comment: {answer}')
@@ -238,7 +216,6 @@ def ask_for_comment(logger: logging.Logger) -> str:
 
 class FileSave:
     def __init__(self, logger: logging.Logger, sample: str, device: str):
-        '''Creates a new file and saves the config'''
         self.path = os.path.join(get_path(), "data", sample, device)
         mkdir(logger, self.path)
 
@@ -251,7 +228,6 @@ class FileSave:
         self.wb.save(self.file_path)
 
     def save_config(self, logger: logging.Logger, config: dict, measurement_type: str):
-        '''Saves the config in the config sheet'''
         self.ws = self.wb['config']
 
         sections = ['sample', 'instrument', measurement_type]
@@ -264,7 +240,6 @@ class FileSave:
         logger.debug('Configuration file saved in config sheet')
 
     def save_headers(self, logger: logging.Logger, headers_list: list):
-        '''Saves the headers in the data sheet'''
         self.ws = self.wb['data']
         for i in range(len(headers_list)):
             self.ws.cell(row=1, column=i + 1).value = headers_list[i]
@@ -272,7 +247,6 @@ class FileSave:
         logger.debug('Headers saved in data sheet')
 
     def save_result(self, logger: logging.Logger, result: list):
-        '''Saves the result in the data sheet'''
         self.ws = self.wb['data']
         row = self.ws.max_row + 1
         for i in range(len(result)):
@@ -284,7 +258,6 @@ class FileSave:
 
 class Logbook:
     def __init__(self, logger: logging.Logger, sample: str):
-        '''Creates a new logbook file'''
         self.path = os.path.join(get_path(), "data", sample)
         mkdir(logger, self.path)
 
@@ -308,7 +281,6 @@ class Logbook:
             logger.debug('Logbook file created')
 
     def save_log(self, logger: logging.Logger, date: str, file: str, comment: str):
-        '''Saves the log in the logbook sheet'''
         self.ws = self.wb['logbook']
         row = self.ws.max_row + 1
         self.ws.cell(row=row, column=1).value = date
@@ -324,7 +296,6 @@ class MeasurementThread(QThread):
     close_window = pyqtSignal()
 
     def __init__(self, logger, inst, meas, config):
-        '''Initializes the measurement thread'''
         super().__init__()
         self.logger = logger
         self.inst = inst
@@ -337,8 +308,8 @@ class MeasurementThread(QThread):
         self.n_vals = len(self.meas.vals)
 
     def run(self):
-        '''Runs the measurement'''
         self.inst.set_output_state(self.logger,'ON')
+        self.inst.write(self.logger, 'INIT:IMM')
         
 
         with Progress() as progress:
@@ -351,7 +322,7 @@ class MeasurementThread(QThread):
                     self.update_data.emit(self.meas, results)
                     progress.update(value_task, advance=1, description=f"[purple]Current value: {val}")
                 self.clear_plots.emit(self.meas.plot_grid,self.meas.plot_clear)
-                progress.update(value_task, advance=-self.n_vals, description=f"[purple]Current value: None")
+                progress.update(value_task, advance=-self.n_vals, description=f"[purple]Value 0/{self.n_vals}")
                 progress.update(cycle_task, advance=1, description=f"[blue]Cycle {cycle}/{self.n_cycles}")
             self.inst.set_output_state(self.logger,'OFF')
 
@@ -369,7 +340,6 @@ class MeasurementThread(QThread):
 
 class MeasurementWindow(QMainWindow):
     def __init__(self, logger, inst, meas, config):
-        '''Initializes the measurement window'''
         super().__init__()
         self.initUI(meas)
         self.measure = MeasurementThread(logger, inst, meas, config)
@@ -443,7 +413,6 @@ class MeasurementWindow(QMainWindow):
 # Main Functions ------------------------------------------------------------------
 
 def start_gui(logger: logging.Logger, inst: object, meas: object, config: dict):
-    '''Starts the GUI'''
     app = QApplication(sys.argv)
     app.setStyle(QStyleFactory.create("Fusion"))
     app.setStyleSheet("QMainWindow::title {background-color: #333333;}")
@@ -453,7 +422,6 @@ def start_gui(logger: logging.Logger, inst: object, meas: object, config: dict):
 
 
 def main():
-    '''Main function'''
     install()
     console = Console()
     logger = verbose_debug(False)
@@ -504,4 +472,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
 

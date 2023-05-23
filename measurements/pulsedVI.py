@@ -68,7 +68,6 @@ class Measurement:
         instrument.set_func_nplc(logger, func="Current", value=self.params.get(self.name).get('nplc'))
         instrument.set_sense_func(logger, func="Voltage")
         instrument.set_func_range(logger, func="Voltage")
-        instrument.write(logger, 'INIT:IMM')
         logger.debug('Instrument parameters set!')
 
     def measure_val(self, logger, instrument, val):
