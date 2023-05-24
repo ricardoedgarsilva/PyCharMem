@@ -8,7 +8,6 @@ instrument:
   model: "sim"  # name of the sourcemeter file without .py ex: "keithley_2400"
   address: "GPIB0::24::INSTR"  # address of the sourcemeter ex: "GPIB0::24::INSTR"
 
-
 pulsedIV:
   cycle: "+-"  # cycle of the voltage (ex: "+-","-+", "+" or "-")
   n_cycles: 5  # number of cycles

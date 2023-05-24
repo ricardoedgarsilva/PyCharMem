@@ -204,7 +204,7 @@ class Instrument:
             logger.critical('Instrument sense function could not be set! Check connection!')
             quit()
 
-    def set_func_ccplc(self, logger, func:str, value:float):
+    def set_func_cplc(self, logger, func:str, value:float):
     
         '''Sets compliance of voltage or current'''
         try:

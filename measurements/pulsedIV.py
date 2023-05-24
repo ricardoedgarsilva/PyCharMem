@@ -19,7 +19,7 @@ def create_list(logger, cycle, max_val, min_val, step):
 class Measurement:
     def __init__(self, logger, config, instrument):
         self.name = 'pulsedIV'
-        self.nparams = ['cycle', 'n_cycles', 'v+', 'v-', 'v_step', 'v_read', 'ccplc', 't_write', 't_read', 't_wait', 'nplc']
+        self.nparams = ['cycle', 'n_cycles', 'v+', 'v-', 'v_step', 'v_read', 'ccplc+', 'ccplc-', 't_write', 't_read', 't_wait', 'nplc']
         self.headers = ['Voltage Write[V]', 'Current Write [A]', 'Voltage Read [V]', 'Current Read [A]', 'Resistance [Ω]', 'Timer [s]', 'Datetime']
         self.params = dict(config.items())
         self.vals = create_list(
@@ -61,12 +61,14 @@ class Measurement:
         instrument.set_func_range(logger, func='Voltage')
         instrument.set_sense_func(logger, func='Current')
         instrument.set_func_range(logger, func='Current')
-        instrument.set_func_ccplc(logger, func='Current', value=self.params.get(self.name).get('ccplc'))
-        instrument.set_func_nplc        (logger, func='Current', value=self.params.get(self.name).get('nplc'))
+        instrument.set_func_nplc(logger, func='Current', value=self.params.get(self.name).get('nplc'))
         instrument.write(logger, 'INIT:IMM')
         logger.debug('Instrument parameters set!')
 
     def measure_val(self, logger, instrument, val):
+        if val>0: instrument.set_func_cplc(logger, func="Current", value=self.params.get(self.name).get('ccplc+'))
+        else: instrument.set_func_cplc(logger, func="Current", value=self.params.get(self.name).get('ccplc-'))
+
         # Write Pulse: Start
         time.sleep(self.params.get(self.name).get('t_wait'))
         instrument.set_output_value(logger, 'Voltage', val)

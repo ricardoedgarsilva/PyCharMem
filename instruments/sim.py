@@ -4,11 +4,11 @@ import time
 class Instrument:
     def __init__ (self, logger, config:dict):
         '''Opens instrument'''
-        logger.critical('THIS IS A SIMULATED INSTRUMENT, NO HARDWARE IS BEING USED! "[SIM]" WILL BE PRINTED BEFORE ALL LOGS')
+        logger.warning('THIS IS A SIMULATED INSTRUMENT, NO HARDWARE IS BEING USED! "[SIM]" WILL BE PRINTED BEFORE ALL LOGS')
         logger.debug('[SIM] Initializing instrument...')
-        self.voltage = 0.0
-        self.current = 0.0
-        self.resistance = 0.0
+        self.voltage = 1.0
+        self.current = 1e-3
+        self.resistance = 1000.0
         self.timer = 0.0
         self.output_state = False
         logger.info('[SIM] Instrument successfully initialized!')
