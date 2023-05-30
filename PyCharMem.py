@@ -2,6 +2,7 @@
 import os
 import sys
 import time
+import atexit
 import logging
 import platform
 import importlib
@@ -26,7 +27,7 @@ from PyQt6.QtWidgets import (QApplication, QMainWindow, QStyleFactory, QTableWid
 # Global Variables
 PROGRAM_INFO = {
     'name': 'PyCharMem',
-    'version': '0.0.2',
+    'version': '0.0.3',
     'author': 'Ricardo E. Silva',
     'email': 'ricardoedgarsilva@tecnico.ulisboa.pt',
     'description': 'PyCharMem is a Python program that allows you to measure the charge memory of a device.',
@@ -68,6 +69,7 @@ def read_config(logger: logging.Logger) -> dict:
     try:
         with open('config.yml', 'r') as file:
             config = yaml.safe_load(file)
+        logger.info('Config file loaded!')
         return config
     except:
         logger.critical('Config file not found')
@@ -151,7 +153,6 @@ def create_list(logger: logging.Logger, condition_values: list) -> np.ndarray:
 def get_datetime() -> str:
     return datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S:%f')
 
-
 def import_module(logger: logging.Logger, type: str, inst_type=None, measurement_type=None) -> type:
     file_name, obj_name = '', ''
     
@@ -170,7 +171,6 @@ def import_module(logger: logging.Logger, type: str, inst_type=None, measurement
     obj = getattr(file, obj_name)
     logger.debug(f'{obj_name} class imported')
     return obj
-
 
 def menu(logger: logging.Logger, console: Console, type: str) -> str:
     name, message, choices = '', '', []
@@ -203,13 +203,25 @@ def menu(logger: logging.Logger, console: Console, type: str) -> str:
     logger.debug(f'Returning answer: {answer}')
     return answer['choice']
 
-
 def ask_for_comment(logger: logging.Logger) -> str:
+    print_newlines(2)
     comment = [inquirer.Text('comment', message="What would you like to comment?", validate=lambda _, x: len(x) > 0),]
     answer = inquirer.prompt(comment)
     logger.debug(f'Comment: {answer}')
     return answer['comment']
 
+def repeat_measurement(logger: logging.Logger, console: Console) -> bool:
+    print_newlines(2)
+    comment = [inquirer.Confirm('repeat', message="Would you like to repeat the measurement?")]
+    answer = inquirer.prompt(comment)
+    logger.debug(f'Repeat: {answer}')
+    return answer['repeat']
+
+def exit(logger: logging.Logger, inst: object) -> None:
+        logger.info('Exiting program...') 
+        inst.close(logger)
+        logger.info('Instrument closed')
+        time.sleep(2)
 
 
 # Important Classes
@@ -332,10 +344,7 @@ class MeasurementThread(QThread):
         comment = ask_for_comment(self.logger)
         logbook.save_log(self.logger, get_datetime(), self.filesave.file_name, comment)
         self.close_window.emit()
-        self.logger.info('Logbook saved, exiting...')
-
-            
-
+        self.logger.info('Logbook saved!')
 
 
 class MeasurementWindow(QMainWindow):
@@ -431,7 +440,6 @@ def main():
     splash_screen(console)
 
     config = read_config(logger)
-    logger.info('Configuration file loaded')
 
     addresses = get_available_addresses()
     print_available_addresses(logger, console, addresses)
@@ -440,14 +448,15 @@ def main():
     inst = inst_class(logger, config)
     inst.reset(logger)
     logger.info('Instrument loaded')
+    atexit.register(exit, logger, inst)
 
     while running:
         option = menu(logger, console, 'main')
+        
 
         match option:
             case 'Exit':
                 running = False
-                logger.info('Exiting program')
 
             case 'Print Available Addresses':
                 print_available_addresses(logger, console, get_available_addresses())
@@ -456,6 +465,7 @@ def main():
                 open_config(logger)
 
             case 'Select Measurement':
+                config = read_config(logger)
                 option2 = menu(logger, console, 'measurements')
                 if option2 == 'Back': continue
 
@@ -465,8 +475,11 @@ def main():
                 check_missing_params(logger, meas.params[meas.name], meas.nparams)
                 logger.info('All parameters present')
                 start_gui(logger, inst, meas, config)
-                inst.close(logger)
-                sys.exit()
+                option3 = repeat_measurement(logger, console)
+                if option3: continue
+                else: 
+                    running = False
+
 
 
 

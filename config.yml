@@ -10,10 +10,10 @@ instrument:
 
 pulsedIV:
   cycle: "+-"  # cycle of the voltage (ex: "+-","-+", "+" or "-")
-  n_cycles: 5  # number of cycles
+  n_cycles: 1  # number of cycles
   v+:  3.0 # maximum voltage value of positive cycle
   v-: -3.0  # minimum voltage value of negative cycle
-  v_step: 0.1  # voltage step
+  v_step: 1.0  # voltage step
   v_read: 0.05  # voltage step for the read
   ccplc+: 0.1  # current compliance for positive cycle
   ccplc-: 0.1  # current compliance for negative cycle
