@@ -2,7 +2,7 @@ import random
 import time
 
 class Instrument:
-    def __init__ (self, logger, config:dict):
+    def __init__ (self, logger, config):
         '''Opens instrument'''
         logger.warning('THIS IS A SIMULATED INSTRUMENT, NO HARDWARE IS BEING USED! "[SIM]" WILL BE PRINTED BEFORE ALL LOGS')
         logger.debug('[SIM] Initializing instrument...')
@@ -28,22 +28,22 @@ class Instrument:
         '''Resets instrument'''
         logger.debug('[SIM] GPIB defaults reseted')
 
-    def write(self, logger, command: str):
+    def write(self, logger, command):
         '''Writes command to instrument'''
         logger.debug(f'[SIM] Instrument command: {command}')
 
-    def query(self, logger, command: str):
+    def query(self, logger, command):
         '''Queries instrument'''
         logger.debug(f'[SIM] Instrument query: {command}')
 
-    def set_output_state(self, logger, state: str):
+    def set_output_state(self, logger, state):
         '''Sets output state'''
         if state == 'ON': self.output_state = True
         elif state == 'OFF': self.output_state = False
         else: logger.critical('[SIM] Invalid output state!')
         logger.debug(f'Instrument output set to {state}')
 
-    def set_output_value(self, logger, func: str, value: float):
+    def set_output_value(self, logger, func, value):
         '''Sets output value of voltage or current'''
         if func == 'Voltage': self.voltage = value
         elif func == 'Current': self.current = value
@@ -51,7 +51,7 @@ class Instrument:
 
         logger.debug(f'Instrument {func} value set to {value}')
 
-    def get_output_value(self, logger, func: str):
+    def get_output_value(self, logger, func):
         '''Measures output value of voltage, current, or resistance'''
         # Simulated response based on the function
         if func == 'Voltage': return self.voltage
@@ -83,32 +83,32 @@ class Instrument:
 
     # Measurement mode commands ------------------------------------------------
 
-    def set_mode_fixed(self, logger, func: str):
+    def set_mode_fixed(self, logger, func):
         '''Sets measurement mode to fixed'''
         logger.debug('[SIM] Instrument measurement mode set to fixed')
 
     # Measurement function commands -------------------------------------------
 
-    def set_src_func(self, logger, func: str):
+    def set_src_func(self, logger, func):
         '''Sets source function of voltage or current'''
         logger.debug(f'[SIM] Instrument source function set to {func}')
 
-    def set_func_range(self, logger, func: str, range: str = ':AUTO ON'):
+    def set_func_range(self, logger, func, range = ':AUTO ON'):
         '''Sets range of voltage or current'''
         logger.debug(f'[SIM] Instrument range set to {range}')
 
-    def set_func_step(self, logger, func: str, step: float):
+    def set_func_step(self, logger, func, step):
         '''Sets step'''
         logger.debug(f'[SIM] Instrument step set to {step}')
 
-    def set_sense_func(self, logger, func: str):
+    def set_sense_func(self, logger, func):
         '''Sets sense function of voltage, current, or resistance'''
         logger.debug(f'[SIM] Instrument sense function set to {func}')
 
-    def set_func_cplc(self, logger, func: str, value: float):
+    def set_func_cplc(self, logger, func, value):
         '''Sets compliance of voltage or current'''
         logger.debug(f'[SIM] Instrument compliance set to {value}')
 
-    def set_func_nplc(self, logger, func: str, value: float):
+    def set_func_nplc(self, logger, func, value):
         '''Sets integration time for current or voltage'''
         logger.debug(f'[SIM] Instrument integration time set to {value}')
