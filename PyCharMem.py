@@ -26,7 +26,7 @@ from PyQt6.QtWidgets import (QApplication, QMainWindow, QStyleFactory, QTableWid
 # Global Variables
 PROGRAM_INFO = {
     'name': 'PyCharMem',
-    'version': '0.0.3',
+    'version': '0.0.5',
     'author': 'Ricardo E. Silva',
     'email': 'ricardoedgarsilva@tecnico.ulisboa.pt',
     'description': 'PyCharMem is a Python program that allows you to measure the charge memory of a device.',
@@ -221,14 +221,14 @@ def exit(logger, inst):
         logger.info('Exiting program...') 
         inst.close(logger)
         logger.info('Instrument closed')
-        time.sleep(2)
+
 
 
 # Important Classes
 
 class FileSave:
-    def __init__(self, logger, sample, device):
-        self.path = os.path.join(get_path(), "data", sample, device)
+    def __init__(self, logger, path, sample, device):
+        self.path = os.path.join(path, sample, device)
         mkdir(logger, self.path)
 
         self.file_name = get_filename(self.path, sample, device)
@@ -269,8 +269,8 @@ class FileSave:
 
 
 class Logbook:
-    def __init__(self, logger, sample):
-        self.path = os.path.join(get_path(), "data", sample)
+    def __init__(self, logger, path, sample):
+        self.path = os.path.join(path, sample)
         mkdir(logger, self.path)
 
         self.file_path = os.path.join(self.path, 'logbook.xlsx')
@@ -307,13 +307,13 @@ class MeasurementThread(QThread):
     clear_plots = pyqtSignal(list, list)
     close_window = pyqtSignal()
 
-    def __init__(self, logger, inst, meas, config):
+    def __init__(self, logger, inst, meas, config, filesave):
         super().__init__()
         self.logger = logger
         self.inst = inst
         self.meas = meas
         self.config = config
-        self.filesave = FileSave(logger, config.get('sample').get('name'), config.get('sample').get('device'))
+        self.filesave = filesave
         self.filesave.save_config(logger, config, meas.name)
         self.filesave.save_headers(logger, self.meas.headers)
         self.n_cycles = config.get(meas.name).get('n_cycles')
@@ -337,21 +337,16 @@ class MeasurementThread(QThread):
                 progress.update(value_task, advance=-self.n_vals, description=f"[purple]Value 0/{self.n_vals}")
                 progress.update(cycle_task, advance=1, description=f"[blue]Cycle {cycle}/{self.n_cycles}")
             self.inst.set_output_state(self.logger,'OFF')
+        self.logger.info('Measurement finished! Please close the window to continue.')
 
         
-        logbook = Logbook(self.logger, self.config.get('sample').get('name'))
-        self.logger.info('Measurement finished! Please enter a comment for the logbook')
-        comment = ask_for_comment(self.logger)
-        logbook.save_log(self.logger, get_datetime(), self.filesave.file_name, comment)
-        self.close_window.emit()
-        self.logger.info('Logbook saved!')
 
 
 class MeasurementWindow(QMainWindow):
-    def __init__(self, logger, inst, meas, config):
+    def __init__(self, logger, inst, meas, config, filesave):
         super().__init__()
         self.initUI(meas)
-        self.measure = MeasurementThread(logger, inst, meas, config)
+        self.measure = MeasurementThread(logger, inst, meas, config, filesave)
         self.measure.update_data.connect(self.update_data)
         self.measure.clear_plots.connect(self.clear_plots)
         self.measure.close_window.connect(self.close)
@@ -421,11 +416,11 @@ class MeasurementWindow(QMainWindow):
 
 # Main Functions ------------------------------------------------------------------
 
-def start_gui(logger, inst, meas, config):
+def start_gui(logger, inst, meas, config, filesave):
     app = QApplication(sys.argv)
     app.setStyle(QStyleFactory.create("Fusion"))
     app.setStyleSheet("QMainWindow::title {background-color: #333333;}")
-    window = MeasurementWindow(logger, inst, meas, config)
+    window = MeasurementWindow(logger, inst, meas, config, filesave)
     window.show()
     app.exec()
 
@@ -472,9 +467,24 @@ def main():
                 meas_class = import_module(logger=logger, type='measurement', measurement_type=option2)
                 meas = meas_class(logger, config, inst)
 
+                filesave = FileSave(logger, config.get('sample').get('path'), config.get('sample').get('name'), config.get('sample').get('device'))
+
                 check_missing_params(logger, meas.params[meas.name], meas.nparams)
                 logger.info('All parameters present')
-                start_gui(logger, inst, meas, config)
+                start_gui(logger, inst, meas, config, filesave)
+
+                path = config.get('sample').get('path')
+                sample_name = config.get('sample').get('name')
+                sample_device = config.get('sample').get('device') 
+                
+                logbook = Logbook(logger,path, sample_name)
+                
+                logger.info('Please enter a comment for the logbook')
+                comment = ask_for_comment(logger)
+                logbook.save_log(logger, get_datetime(), filesave.file_name, comment)
+                logger.info('Logbook saved!')
+
+
                 option3 = repeat_measurement(logger, console)
                 if option3: continue
                 else: 
