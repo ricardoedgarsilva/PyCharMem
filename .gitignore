@@ -3,3 +3,5 @@ data
 test.py
 measurements/__pycache__
 instruments/__pycache__
+build
+dist

@@ -1,7 +1,7 @@
 import pyvisa
 
 class Instrument:
-    def __init__ (self, logger, config:dict):
+    def __init__ (self, logger, config):
         '''Opens instrument'''
         logger.debug('Initializing instrument...')
         try:
@@ -44,7 +44,7 @@ class Instrument:
             logger.critical('GPIB defaults could not reseted! Check connection!')
             quit()
 
-    def write(self, logger, command:str):
+    def write(self, logger, command):
         '''Writes command to instrument'''
         try:
             self.inst.write(command)
@@ -53,7 +53,7 @@ class Instrument:
             print('Instrument could not be written! Check connection!')
             quit()
 
-    def query(self, logger, command:str):
+    def query(self, logger, command):
         '''Queries instrument'''
         try:
             query = self.inst.query(command)
@@ -63,7 +63,7 @@ class Instrument:
             print('Instrument could not be queried! Check connection!')
             quit()
 
-    def set_output_state(self, logger, state:str):
+    def set_output_state(self, logger, state):
         '''Sets output state'''
         try:
             match state:
@@ -74,7 +74,7 @@ class Instrument:
             logger.critical('Instrument output could not be set! Check connection!')
             quit()
 
-    def set_output_value(self, logger, func:str, value:float):
+    def set_output_value(self, logger, func, value):
         '''Sets output value of voltage or current'''
         try:
             match func:
@@ -85,7 +85,7 @@ class Instrument:
             logger.critical('Instrument value could not be set! Check connection!')
             quit()
 
-    def get_output_value(self, logger, func:str):
+    def get_output_value(self, logger, func):
         '''Measures output value of voltage, current or resistance'''
         #try:
         match func:
@@ -145,7 +145,7 @@ class Instrument:
 
 #Measurement mode commands ------------------------------------------------
 
-    def set_mode_fixed(self, logger , func:str):
+    def set_mode_fixed(self, logger , func):
         '''Sets measurement mode to fixed'''
         try:
             match func:
@@ -158,7 +158,7 @@ class Instrument:
 
 #Measurement function commands -------------------------------------------
 
-    def set_src_func(self, logger, func:str):
+    def set_src_func(self, logger, func):
         '''Sets source function of voltage or current'''
         try:
             match func:
@@ -169,7 +169,7 @@ class Instrument:
             logger.critical('Instrument source function could not be set! Check connection!')
             quit()
 
-    def set_func_range(self, logger, func:str, range:str=':AUTO ON'):
+    def set_func_range(self, logger, func, range=':AUTO ON'):
         '''Sets range of voltage or current'''
         try:
             match func:
@@ -181,7 +181,7 @@ class Instrument:
             logger.critical('Instrument range could not be set! Check connection!')
             quit()
 
-    def set_func_step(self, logger, func:str, step:float):
+    def set_func_step(self, logger, func, step):
         '''Sets step'''
         try:
             match func:
@@ -192,7 +192,7 @@ class Instrument:
             logger.critical('Instrument step could not be set! Check connection!')
             quit()
 
-    def set_sense_func(self, logger, func:str):
+    def set_sense_func(self, logger, func):
         '''Sets sense function of voltage, current or resistance'''
         try:
             match func:
@@ -204,7 +204,7 @@ class Instrument:
             logger.critical('Instrument sense function could not be set! Check connection!')
             quit()
 
-    def set_func_cplc(self, logger, func:str, value:float):
+    def set_func_cplc(self, logger, func, value):
     
         '''Sets compliance of voltage or current'''
         try:
@@ -216,7 +216,7 @@ class Instrument:
             logger.critical('Instrument compliance could not be set! Check connection!')
             quit()
 
-    def set_func_nplc(self, logger, func:str, value:float):
+    def set_func_nplc(self, logger, func, value):
         '''Sets integration time for current or voltage'''
 
         try:

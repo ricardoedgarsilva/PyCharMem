@@ -13,7 +13,6 @@ import yaml
 import pyvisa
 import numpy as np
 import pyqtgraph as pg
-from openpyxl.drawing.image import Image
 from art import text2art
 from rich.console import Console
 from rich.traceback import install
@@ -27,7 +26,7 @@ from PyQt6.QtWidgets import (QApplication, QMainWindow, QStyleFactory, QTableWid
 # Global Variables
 PROGRAM_INFO = {
     'name': 'PyCharMem',
-    'version': '0.0.3',
+    'version': '0.0.5',
     'author': 'Ricardo E. Silva',
     'email': 'ricardoedgarsilva@tecnico.ulisboa.pt',
     'description': 'PyCharMem is a Python program that allows you to measure the charge memory of a device.',
@@ -36,28 +35,29 @@ PROGRAM_INFO = {
 }
 
 
-def verbose_debug(verbose: bool) -> logging.Logger:
+def verbose_debug(verbose):
     log_level = "NOTSET" if verbose else 'INFO'
     logging.basicConfig(level=log_level, format="%(message)s", datefmt="[%X]", handlers=[RichHandler()])
     return logging.getLogger("rich")
 
 
-def clear_terminal() -> None:
+def clear_terminal():
     os.system('cls||clear')
 
 
-def print_newlines(lines: int) -> None:
+def print_newlines(lines):
     print(lines * "\n")
 
 
-def splash_screen(console: Console) -> None:
+def splash_screen(console):
     print(text2art(PROGRAM_INFO['name']))
     console.print(f"Version: {PROGRAM_INFO['version']}", style='bold blue')
+    console.print(f"Repositoty: {PROGRAM_INFO['url']}", style='bold blue')
     console.print(f"Author: {PROGRAM_INFO['author']}", style='bold blue')
     print_newlines(5)
 
 
-def open_config(logger: logging.Logger) -> None:
+def open_config(logger):
     try:
         os.system({'Windows': 'start config.yml', 'Darwin': 'open config.yml', 'Linux': 'open config.yml'}.get(platform.system(), ''))
     except:
@@ -65,7 +65,7 @@ def open_config(logger: logging.Logger) -> None:
         sys.exit()
 
 
-def read_config(logger: logging.Logger) -> dict:
+def read_config(logger):
     try:
         with open('config.yml', 'r') as file:
             config = yaml.safe_load(file)
@@ -76,37 +76,37 @@ def read_config(logger: logging.Logger) -> dict:
         sys.exit()
 
 
-def path_exists(path: str) -> bool:
+def path_exists(path):
     return os.path.exists(path)
 
 
-def get_path() -> str:
+def get_path():
     return os.path.dirname(os.path.realpath(__file__))
 
 
-def mkdir(logger: logging.Logger, path: str) -> None:
+def mkdir(logger, path):
     if not path_exists(path):
         os.makedirs(path)
         logger.debug(f'Folder {path} created')
 
 
-def get_index(path: str) -> int:
+def get_index(path):
     return len(os.listdir(path))
 
 
-def get_filename(path: str, sample: str, device: str) -> str:
+def get_filename(path, sample, device):
     index = get_index(path)
     date = datetime.datetime.now().strftime('%Y%m%d')
     return f'{date}_{sample}_{device}_{index}.xlsx'
 
 
-def get_available_addresses() -> list:
+def get_available_addresses():
     rm = pyvisa.ResourceManager()
     addresses = rm.list_resources()
     return addresses
 
 
-def print_available_addresses(logger: logging.Logger, console: Console, addresses: list) -> None:
+def print_available_addresses(logger, console, addresses):
     print_newlines(1)
     console.print(Panel.fit("[bold]Available Addresses[/bold]", border_style="green"))
     
@@ -117,13 +117,13 @@ def print_available_addresses(logger: logging.Logger, console: Console, addresse
             console.print(address)
 
 
-def check_address(logger: logging.Logger, addresses: list, address: str) -> None:
+def check_address(logger, addresses, address):
     if address not in addresses:
         logger.critical('Instrument address in config file not found! Please edit config file with correct address')
         sys.exit()
 
 
-def check_missing_params(logger: logging.Logger, my_dict: dict, my_list: list) -> None:
+def check_missing_params(logger, my_dict, my_list):
     missing_items = [item for item in my_list if item not in my_dict]
 
     if len(missing_items) == 0:
@@ -135,7 +135,7 @@ def check_missing_params(logger: logging.Logger, my_dict: dict, my_list: list) -
         sys.exit()
 
 
-def create_list(logger: logging.Logger, condition_values: list) -> np.ndarray:
+def create_list(logger, condition_values):
     cycle, max_value, min_value, step = condition_values
     listp_oneway = np.arange(0, max_value, step)
     listn_oneway = np.arange(0, min_value, -step)
@@ -150,10 +150,10 @@ def create_list(logger: logging.Logger, condition_values: list) -> np.ndarray:
         sys.exit()
 
 
-def get_datetime() -> str:
+def get_datetime():
     return datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S:%f')
 
-def import_module(logger: logging.Logger, type: str, inst_type=None, measurement_type=None) -> type:
+def import_module(logger, type, inst_type=None, measurement_type=None):
     file_name, obj_name = '', ''
     
     if type == 'instrument':
@@ -172,7 +172,7 @@ def import_module(logger: logging.Logger, type: str, inst_type=None, measurement
     logger.debug(f'{obj_name} class imported')
     return obj
 
-def menu(logger: logging.Logger, console: Console, type: str) -> str:
+def menu(logger, console, type):
     name, message, choices = '', '', []
     
     if type == 'main':
@@ -203,32 +203,32 @@ def menu(logger: logging.Logger, console: Console, type: str) -> str:
     logger.debug(f'Returning answer: {answer}')
     return answer['choice']
 
-def ask_for_comment(logger: logging.Logger) -> str:
+def ask_for_comment(logger):
     print_newlines(2)
     comment = [inquirer.Text('comment', message="What would you like to comment?", validate=lambda _, x: len(x) > 0),]
     answer = inquirer.prompt(comment)
     logger.debug(f'Comment: {answer}')
     return answer['comment']
 
-def repeat_measurement(logger: logging.Logger, console: Console) -> bool:
+def repeat_measurement(logger, console):
     print_newlines(2)
     comment = [inquirer.Confirm('repeat', message="Would you like to repeat the measurement?")]
     answer = inquirer.prompt(comment)
     logger.debug(f'Repeat: {answer}')
     return answer['repeat']
 
-def exit(logger: logging.Logger, inst: object) -> None:
+def exit(logger, inst):
         logger.info('Exiting program...') 
         inst.close(logger)
         logger.info('Instrument closed')
-        time.sleep(2)
+
 
 
 # Important Classes
 
 class FileSave:
-    def __init__(self, logger: logging.Logger, sample: str, device: str):
-        self.path = os.path.join(get_path(), "data", sample, device)
+    def __init__(self, logger, path, sample, device):
+        self.path = os.path.join(path, sample, device)
         mkdir(logger, self.path)
 
         self.file_name = get_filename(self.path, sample, device)
@@ -239,7 +239,7 @@ class FileSave:
         self.wb.remove(self.wb['Sheet'])
         self.wb.save(self.file_path)
 
-    def save_config(self, logger: logging.Logger, config: dict, measurement_type: str):
+    def save_config(self, logger, config, measurement_type):
         self.ws = self.wb['config']
 
         sections = ['sample', 'instrument', measurement_type]
@@ -251,14 +251,14 @@ class FileSave:
         self.wb.save(self.file_path)
         logger.debug('Configuration file saved in config sheet')
 
-    def save_headers(self, logger: logging.Logger, headers_list: list):
+    def save_headers(self, logger, headers_list):
         self.ws = self.wb['data']
         for i in range(len(headers_list)):
             self.ws.cell(row=1, column=i + 1).value = headers_list[i]
         self.wb.save(self.file_path)
         logger.debug('Headers saved in data sheet')
 
-    def save_result(self, logger: logging.Logger, result: list):
+    def save_result(self, logger, result):
         self.ws = self.wb['data']
         row = self.ws.max_row + 1
         for i in range(len(result)):
@@ -269,8 +269,8 @@ class FileSave:
 
 
 class Logbook:
-    def __init__(self, logger: logging.Logger, sample: str):
-        self.path = os.path.join(get_path(), "data", sample)
+    def __init__(self, logger, path, sample):
+        self.path = os.path.join(path, sample)
         mkdir(logger, self.path)
 
         self.file_path = os.path.join(self.path, 'logbook.xlsx')
@@ -292,7 +292,7 @@ class Logbook:
             self.wb.save(self.file_path)
             logger.debug('Logbook file created')
 
-    def save_log(self, logger: logging.Logger, date: str, file: str, comment: str):
+    def save_log(self, logger, date, file, comment):
         self.ws = self.wb['logbook']
         row = self.ws.max_row + 1
         self.ws.cell(row=row, column=1).value = date
@@ -307,13 +307,13 @@ class MeasurementThread(QThread):
     clear_plots = pyqtSignal(list, list)
     close_window = pyqtSignal()
 
-    def __init__(self, logger, inst, meas, config):
+    def __init__(self, logger, inst, meas, config, filesave):
         super().__init__()
         self.logger = logger
         self.inst = inst
         self.meas = meas
         self.config = config
-        self.filesave = FileSave(logger, config.get('sample').get('name'), config.get('sample').get('device'))
+        self.filesave = filesave
         self.filesave.save_config(logger, config, meas.name)
         self.filesave.save_headers(logger, self.meas.headers)
         self.n_cycles = config.get(meas.name).get('n_cycles')
@@ -337,21 +337,16 @@ class MeasurementThread(QThread):
                 progress.update(value_task, advance=-self.n_vals, description=f"[purple]Value 0/{self.n_vals}")
                 progress.update(cycle_task, advance=1, description=f"[blue]Cycle {cycle}/{self.n_cycles}")
             self.inst.set_output_state(self.logger,'OFF')
+        self.logger.info('Measurement finished! Please close the window to continue.')
 
         
-        logbook = Logbook(self.logger, self.config.get('sample').get('name'))
-        self.logger.info('Measurement finished! Please enter a comment for the logbook')
-        comment = ask_for_comment(self.logger)
-        logbook.save_log(self.logger, get_datetime(), self.filesave.file_name, comment)
-        self.close_window.emit()
-        self.logger.info('Logbook saved!')
 
 
 class MeasurementWindow(QMainWindow):
-    def __init__(self, logger, inst, meas, config):
+    def __init__(self, logger, inst, meas, config, filesave):
         super().__init__()
         self.initUI(meas)
-        self.measure = MeasurementThread(logger, inst, meas, config)
+        self.measure = MeasurementThread(logger, inst, meas, config, filesave)
         self.measure.update_data.connect(self.update_data)
         self.measure.clear_plots.connect(self.clear_plots)
         self.measure.close_window.connect(self.close)
@@ -421,11 +416,11 @@ class MeasurementWindow(QMainWindow):
 
 # Main Functions ------------------------------------------------------------------
 
-def start_gui(logger: logging.Logger, inst: object, meas: object, config: dict):
+def start_gui(logger, inst, meas, config, filesave):
     app = QApplication(sys.argv)
     app.setStyle(QStyleFactory.create("Fusion"))
     app.setStyleSheet("QMainWindow::title {background-color: #333333;}")
-    window = MeasurementWindow(logger, inst, meas, config)
+    window = MeasurementWindow(logger, inst, meas, config, filesave)
     window.show()
     app.exec()
 
@@ -472,9 +467,24 @@ def main():
                 meas_class = import_module(logger=logger, type='measurement', measurement_type=option2)
                 meas = meas_class(logger, config, inst)
 
+                filesave = FileSave(logger, config.get('sample').get('path'), config.get('sample').get('name'), config.get('sample').get('device'))
+
                 check_missing_params(logger, meas.params[meas.name], meas.nparams)
                 logger.info('All parameters present')
-                start_gui(logger, inst, meas, config)
+                start_gui(logger, inst, meas, config, filesave)
+
+                path = config.get('sample').get('path')
+                sample_name = config.get('sample').get('name')
+                sample_device = config.get('sample').get('device') 
+                
+                logbook = Logbook(logger,path, sample_name)
+                
+                logger.info('Please enter a comment for the logbook')
+                comment = ask_for_comment(logger)
+                logbook.save_log(logger, get_datetime(), filesave.file_name, comment)
+                logger.info('Logbook saved!')
+
+
                 option3 = repeat_measurement(logger, console)
                 if option3: continue
                 else: 

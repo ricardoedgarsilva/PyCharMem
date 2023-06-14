@@ -8,10 +8,10 @@ def create_list(logger, cycle, max_val, min_val, step):
 
     try:
         match cycle:
-            case '+': return list_positive
-            case '-': return list_negative
-            case '+-': return np.concatenate((list_positive, list_negative))
-            case '-+': return np.concatenate((list_negative, list_positive))
+            case '+': return np.round(list_positive,5)
+            case '-': return np.round(list_negative,5)
+            case '+-': return np.round((np.concatenate((list_positive, list_negative))),5)
+            case '-+': return np.round(np.concatenate((list_negative, list_positive)),5)
     except:
         logger.critical('Invalid cycle type!')
         quit()
@@ -62,7 +62,7 @@ class Measurement:
         instrument.set_sense_func(logger, func='Current')
         instrument.set_func_range(logger, func='Current')
         instrument.set_func_nplc(logger, func='Current', value=self.params.get(self.name).get('nplc'))
-        instrument.write(logger, 'INIT:IMM')
+        #instrument.write(logger, 'INIT:IMM')
         logger.debug('Instrument parameters set!')
 
     def measure_val(self, logger, instrument, val):
@@ -85,7 +85,7 @@ class Measurement:
         # Read Pulse: End
         
         result = [
-            result_write[0],  # Voltage Write
+            val,  # Voltage Write
             result_write[1],  # Current Write
             result_read[0],   # Voltage Read
             result_read[1],   # Current Read
