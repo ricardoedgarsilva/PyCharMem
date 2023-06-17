@@ -1,8 +1,73 @@
 import pyvisa
 
 class Instrument:
+    """
+    A class used to represent and control an instrument.
+
+    ...
+
+    Attributes
+    ----------
+    rm : ResourceManager
+        a pyvisa ResourceManager object
+    inst : object
+        the instrument object
+        
+    Methods
+    -------
+    close(logger)
+        Closes the instrument.
+    init(logger)
+        Initializes the instrument.
+    reset(logger)
+        Resets the instrument.
+    write(logger, command)
+        Sends a command to the instrument.
+    query(logger, command)
+        Sends a command and receives a response from the instrument.
+    set_output_state(logger, state)
+        Sets the output state of the instrument.
+    set_output_value(logger, func, value)
+        Sets the output value of the instrument.
+    get_output_value(logger, func)
+        Measures the output value from the instrument.
+    fetch(logger)
+        Fetches data from the instrument.
+    read(logger)
+        Reads data from the instrument.
+    get_timer(logger)
+        Gets the timer value of the instrument.
+    reset_timer(logger)
+        Resets the instrument's timer.
+    set_mode_fixed(logger, func)
+        Sets the instrument's measurement mode to fixed.
+    set_src_func(logger, func)
+        Sets the source function of the instrument.
+    set_func_range(logger, func, range=':AUTO ON')
+        Sets the range of the instrument.
+    set_func_step(logger, func, step)
+        Sets the step value of the instrument.
+    set_sense_func(logger, func)
+        Sets the sense function of the instrument.
+    set_func_cplc(logger, func, value)
+        Sets the compliance of the instrument.
+    set_func_nplc(logger, func, value)
+        Sets the integration time of the instrument.
+    """
+
     def __init__ (self, logger, config):
-        '''Opens instrument'''
+        """
+        Opens instrument by creating a ResourceManager and using it to 
+        open the resource specified in the config.
+
+        Parameters
+        ----------
+        logger : Logger
+            the Logger object for logging debug and error messages
+        config : dict
+            a dictionary containing the configuration of the instrument
+        """
+
         logger.debug('Initializing instrument...')
         try:
             logger.debug('Looking for instrument...')
@@ -13,11 +78,16 @@ class Instrument:
         except:
             logger.critical('Instrument not found!')
             quit()
-
-#Basic control commands -------------------------------------------------------
     
     def close(self, logger):
-        '''Closes instrument'''
+        """
+        Closes instrument.
+
+        Parameters
+        ----------
+        logger : Logger
+            the Logger object for logging debug and error messages
+        """
 
         try:
             self.inst.close()
@@ -27,7 +97,15 @@ class Instrument:
             quit()
 
     def init(self,logger):
-        '''Initializes instrument'''
+        """
+        Initializes instrument.
+
+        Parameters
+        ----------
+        logger : Logger
+            the Logger object for logging debug and error messages
+        """
+
         try:
             self.inst.write('INIT')
             logger.debug('Instrument initialized')
@@ -36,7 +114,15 @@ class Instrument:
             quit()
 
     def reset(self, logger):
-        '''Resets instrument'''
+        """
+        Resets instrument.
+
+        Parameters
+        ----------
+        logger : Logger
+            the Logger object for logging debug and error messages
+        """
+
         try:
             self.inst.write('*RST')
             logger.debug('GPIB defaults reseted')
@@ -45,7 +131,18 @@ class Instrument:
             quit()
 
     def write(self, logger, command):
-        '''Writes command to instrument'''
+        """
+        Writes command to instrument.
+
+        Parameters
+        ----------
+        logger : Logger
+            the Logger object for logging debug and error messages
+        command : str
+            the command to be written to the instrument
+        """
+
+
         try:
             self.inst.write(command)
             logger.debug(f'Instrument command: {command}')
@@ -54,7 +151,17 @@ class Instrument:
             quit()
 
     def query(self, logger, command):
-        '''Queries instrument'''
+        """
+        Queries instrument.
+
+        Parameters
+        ----------
+        logger : Logger
+            the Logger object for logging debug and error messages
+        command : str
+            the command to be queried from the instrument
+        """
+
         try:
             query = self.inst.query(command)
             logger.debug(f'Instrument query: {query}')
@@ -64,7 +171,17 @@ class Instrument:
             quit()
 
     def set_output_state(self, logger, state):
-        '''Sets output state'''
+        """
+        Sets output state of the instrument.
+
+        Parameters
+        ----------
+        logger : Logger
+            the Logger object for logging debug and error messages
+        state : str
+            the state to be set on the instrument (ON/OFF)
+        """
+
         try:
             match state:
                 case 'ON': self.inst.write('OUTP ON')
@@ -75,7 +192,19 @@ class Instrument:
             quit()
 
     def set_output_value(self, logger, func, value):
-        '''Sets output value of voltage or current'''
+        """
+        Sets output value of voltage or current.
+
+        Parameters
+        ----------
+        logger : Logger
+            the Logger object for logging debug and error messages
+        func : str
+            the function of the instrument (Current/Voltage)
+        value : float
+            the value to be set on the instrument
+        """
+
         try:
             match func:
                 case 'Current': self.inst.write(f'SOUR:CURR:LEV {value}')
@@ -86,7 +215,17 @@ class Instrument:
             quit()
 
     def get_output_value(self, logger, func):
-        '''Measures output value of voltage, current or resistance'''
+        """
+        Measures output value of voltage, current or resistance.
+
+        Parameters
+        ----------
+        logger : Logger
+            the Logger object for logging debug and error messages
+        func : str
+            the function of the instrument (Current/Voltage/Resistance)
+        """
+
         #try:
         match func:
             case 'Current': 
@@ -100,7 +239,15 @@ class Instrument:
         #    quit()
 
     def fetch(self, logger):
-        '''Fetches instrument and returns list of values'''
+        """
+        Fetches instrument and returns list of values.
+
+        Parameters
+        ----------
+        logger : Logger
+            the Logger object for logging debug and error messages
+        """
+
         try:
             list_query = self.inst.query('FETC?')[:-1].split(',')
             logger.debug(f'Instrument fetch: {list_query}')
@@ -113,7 +260,15 @@ class Instrument:
             quit()
 
     def read(self, logger):
-        '''Reads instrument and returns list of values'''
+        """
+        Reads instrument and returns list of values.
+
+        Parameters
+        ----------
+        logger : Logger
+            the Logger object for logging debug and error messages
+        """
+        
         try:
             list_query = self.inst.query('READ?')[:-1].split(',')
             logger.debug(f'Instrument read: {list_query}')
@@ -126,7 +281,15 @@ class Instrument:
             quit()
 
     def get_timer(self,logger):
-        '''Returns timer value'''
+        """
+        Returns timer value of the instrument.
+
+        Parameters
+        ----------
+        logger : Logger
+            the Logger object for logging debug and error messages
+        """
+
         try:
             timer = self.inst.query(':SYST:TIME?')
             return float(timer)
@@ -135,7 +298,15 @@ class Instrument:
             quit()
 
     def reset_timer(self, logger):
-        '''Resets timer'''
+        """
+        Resets timer of the instrument.
+
+        Parameters
+        ----------
+        logger : Logger
+            the Logger object for logging debug and error messages
+        """
+
         try:
             self.inst.write(':SYST:TIME:RES')
             logger.debug('Instrument timer reseted')
@@ -146,7 +317,17 @@ class Instrument:
 #Measurement mode commands ------------------------------------------------
 
     def set_mode_fixed(self, logger , func):
-        '''Sets measurement mode to fixed'''
+        """
+        Sets measurement mode to fixed for the given function.
+
+        Parameters
+        ----------
+        logger : Logger
+            the Logger object for logging debug and error messages
+        func : str
+            the function of the instrument (Current/Voltage)
+        """
+
         try:
             match func:
                 case 'Current': self.inst.write('SOUR:CURR:MODE FIXED')
@@ -159,7 +340,17 @@ class Instrument:
 #Measurement function commands -------------------------------------------
 
     def set_src_func(self, logger, func):
-        '''Sets source function of voltage or current'''
+        """
+        Sets source function of voltage or current.
+
+        Parameters
+        ----------
+        logger : Logger
+            the Logger object for logging debug and error messages
+        func : str
+            the function of the instrument (Current/Voltage)
+        """
+
         try:
             match func:
                 case 'Current': self.inst.write('SOUR:FUNC CURR')
@@ -170,7 +361,19 @@ class Instrument:
             quit()
 
     def set_func_range(self, logger, func, range=':AUTO ON'):
-        '''Sets range of voltage or current'''
+        """
+        Sets range of voltage, current, or resistance.
+
+        Parameters
+        ----------
+        logger : Logger
+            the Logger object for logging debug and error messages
+        func : str
+            the function of the instrument (Current/Voltage/Resistance)
+        range : str
+            the range to be set on the instrument (default is ':AUTO ON')
+        """
+
         try:
             match func:
                 case 'Current': self.inst.write(f'SOUR:CURR:RANG{range}')
@@ -182,7 +385,19 @@ class Instrument:
             quit()
 
     def set_func_step(self, logger, func, step):
-        '''Sets step'''
+        """
+        Sets step for the given function.
+
+        Parameters
+        ----------
+        logger : Logger
+            the Logger object for logging debug and error messages
+        func : str
+            the function of the instrument (Current/Voltage)
+        step : float
+            the step value to be set on the instrument
+        """
+
         try:
             match func:
                 case 'Current': self.inst.write(f'SOUR:CURR:STEP {step}')
@@ -193,7 +408,17 @@ class Instrument:
             quit()
 
     def set_sense_func(self, logger, func):
-        '''Sets sense function of voltage, current or resistance'''
+        """
+        Sets sense function of voltage, current or resistance.
+
+        Parameters
+        ----------
+        logger : Logger
+            the Logger object for logging debug and error messages
+        func : str
+            the sense function of the instrument (Current/Voltage/Resistance)
+        """
+        
         try:
             match func:
                 case 'Current': self.inst.write('SENS:FUNC "CURR"')
@@ -205,8 +430,19 @@ class Instrument:
             quit()
 
     def set_func_cplc(self, logger, func, value):
-    
-        '''Sets compliance of voltage or current'''
+        """
+        Sets compliance of voltage or current.
+
+        Parameters
+        ----------
+        logger : Logger
+            the Logger object for logging debug and error messages
+        func : str
+            the function of the instrument (Current/Voltage)
+        value : float
+            the compliance value to be set on the instrument
+        """
+        
         try:
             match func:
                 case 'Current': self.inst.write(f'SENS:CURR:PROT {value}')
@@ -217,7 +453,18 @@ class Instrument:
             quit()
 
     def set_func_nplc(self, logger, func, value):
-        '''Sets integration time for current or voltage'''
+        """
+        Sets integration time for current or voltage.
+
+        Parameters
+        ----------
+        logger : Logger
+            the Logger object for logging debug and error messages
+        func : str
+            the function of the instrument (current or voltage)
+        value : float
+            the value to set the integration time to
+        """
 
         try:
             match func:

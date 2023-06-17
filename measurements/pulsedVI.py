@@ -4,6 +4,25 @@ import numpy as np
 
 
 def create_list(logger, cycle, max_val, min_val, step):
+    """
+    Create a list of values based on the specified cycle type and parameters.
+
+    Args:
+        logger (logging.Logger): The logger object to use for logging messages.
+        cycle (str): The cycle type. Valid values are '+', '-', '+-', '-+'.
+        max_val (float): The maximum value for the list.
+        min_val (float): The minimum value for the list.
+        step (float): The step size between consecutive values.
+
+    Returns:
+        numpy.ndarray: The generated list of values, rounded to 5 decimal places.
+
+    Raises:
+        ValueError: If the cycle type is invalid.
+
+    """
+
+
     list_positive = np.concatenate((np.arange(0, max_val, step), [max_val], np.flip(np.arange(0, max_val, step))))
     list_negative = np.concatenate((np.arange(0, min_val, -step), [min_val], np.flip(np.arange(0, min_val, -step))))
 
@@ -19,7 +38,17 @@ def create_list(logger, cycle, max_val, min_val, step):
 
 
 class Measurement:
-    def __init__(self, logger, config, instrument) -> None:
+    def __init__(self, logger, config, instrument):
+        """
+        Initialize a Measurement object.
+
+        Args:
+            logger (logging.Logger): The logger object to use for logging messages.
+            config (dict): The configuration dictionary containing measurement parameters.
+            instrument (object): The instrument object used for measurement.
+
+        """
+
         self.name = 'pulsedVI'
         self.nparams = ['cycle', 'n_cycles', 'i+', 'i-', 'i_step', 'i_read', 'vcplc+','vcplc-', 't_write', 't_read', 't_wait', 'nplc']
 
@@ -38,6 +67,14 @@ class Measurement:
         self.initialize_instrument(logger, instrument)
 
     def set_plot_parameters(self, cycle_type):
+        """
+        Set the plot parameters based on the cycle type.
+
+        Args:
+            cycle_type (str): The cycle type.
+
+        """
+
         match len(cycle_type):
                 case 1: 
                     self.plot_grid = (2, 2)
@@ -59,6 +96,15 @@ class Measurement:
                     self.plot_clear = [[True, True, False], [True, True, False]]
 
     def initialize_instrument(self, logger, instrument):
+        """
+        Initialize the instrument with the specified parameters.
+
+        Args:
+            logger (logging.Logger): The logger object to use for logging messages.
+            instrument (object): The instrument object used for measurement.
+
+        """
+
         logger.debug('Setting instrument initial parameters')
         instrument.reset(logger)
         instrument.set_mode_fixed(logger, func="Current")
@@ -71,6 +117,19 @@ class Measurement:
         logger.debug('Instrument parameters set!')
 
     def measure_val(self, logger, instrument, val):
+        """
+        Perform a measurement for a specific value.
+
+        Args:
+            logger (logging.Logger): The logger object to use for logging messages.
+            instrument (object): The instrument object used for measurement.
+            val (float): The value to measure.
+
+        Returns:
+            list: The measurement results and plots.
+
+        """
+
         if val>0: instrument.set_func_cplc(logger, func="Voltage", value=self.params.get(self.name).get('vcplc+'))
         else: instrument.set_func_cplc(logger, func="Voltage", value=self.params.get(self.name).get('vcplc-'))
 
