@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PyCharMem module &mdash; PyCharMem 0.0.6 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            PyCharMem
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">PyCharMem module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#PyCharMem.FileSave"><code class="docutils literal notranslate"><span class="pre">FileSave</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#PyCharMem.FileSave.save_config"><code class="docutils literal notranslate"><span class="pre">FileSave.save_config()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#PyCharMem.FileSave.save_headers"><code class="docutils literal notranslate"><span class="pre">FileSave.save_headers()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#PyCharMem.FileSave.save_result"><code class="docutils literal notranslate"><span class="pre">FileSave.save_result()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#PyCharMem.Logbook"><code class="docutils literal notranslate"><span class="pre">Logbook</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#PyCharMem.Logbook.save_log"><code class="docutils literal notranslate"><span class="pre">Logbook.save_log()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#PyCharMem.MeasurementThread"><code class="docutils literal notranslate"><span class="pre">MeasurementThread</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#PyCharMem.MeasurementThread.clear_plots"><code class="docutils literal notranslate"><span class="pre">MeasurementThread.clear_plots</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#PyCharMem.MeasurementThread.close_window"><code class="docutils literal notranslate"><span class="pre">MeasurementThread.close_window</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#PyCharMem.MeasurementThread.run"><code class="docutils literal notranslate"><span class="pre">MeasurementThread.run()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#PyCharMem.MeasurementThread.update_data"><code class="docutils literal notranslate"><span class="pre">MeasurementThread.update_data</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#PyCharMem.MeasurementWindow"><code class="docutils literal notranslate"><span class="pre">MeasurementWindow</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#PyCharMem.MeasurementWindow.clear_plots"><code class="docutils literal notranslate"><span class="pre">MeasurementWindow.clear_plots()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#PyCharMem.MeasurementWindow.close_window"><code class="docutils literal notranslate"><span class="pre">MeasurementWindow.close_window()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#PyCharMem.MeasurementWindow.initUI"><code class="docutils literal notranslate"><span class="pre">MeasurementWindow.initUI()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#PyCharMem.MeasurementWindow.update_data"><code class="docutils literal notranslate"><span class="pre">MeasurementWindow.update_data()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#PyCharMem.ask_for_comment"><code class="docutils literal notranslate"><span class="pre">ask_for_comment()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#PyCharMem.check_address"><code class="docutils literal notranslate"><span class="pre">check_address()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#PyCharMem.check_missing_params"><code class="docutils literal notranslate"><span class="pre">check_missing_params()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#PyCharMem.clear_terminal"><code class="docutils literal notranslate"><span class="pre">clear_terminal()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#PyCharMem.create_list"><code class="docutils literal notranslate"><span class="pre">create_list()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#PyCharMem.exit"><code class="docutils literal notranslate"><span class="pre">exit()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#PyCharMem.get_available_addresses"><code class="docutils literal notranslate"><span class="pre">get_available_addresses()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#PyCharMem.get_datetime"><code class="docutils literal notranslate"><span class="pre">get_datetime()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#PyCharMem.get_filename"><code class="docutils literal notranslate"><span class="pre">get_filename()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#PyCharMem.get_index"><code class="docutils literal notranslate"><span class="pre">get_index()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#PyCharMem.get_instrument"><code class="docutils literal notranslate"><span class="pre">get_instrument()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#PyCharMem.get_path"><code class="docutils literal notranslate"><span class="pre">get_path()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#PyCharMem.import_module"><code class="docutils literal notranslate"><span class="pre">import_module()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#PyCharMem.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#PyCharMem.menu"><code class="docutils literal notranslate"><span class="pre">menu()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#PyCharMem.mkdir"><code class="docutils literal notranslate"><span class="pre">mkdir()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#PyCharMem.open_config"><code class="docutils literal notranslate"><span class="pre">open_config()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#PyCharMem.path_exists"><code class="docutils literal notranslate"><span class="pre">path_exists()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#PyCharMem.print_available_addresses"><code class="docutils literal notranslate"><span class="pre">print_available_addresses()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#PyCharMem.print_newlines"><code class="docutils literal notranslate"><span class="pre">print_newlines()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#PyCharMem.read_config"><code class="docutils literal notranslate"><span class="pre">read_config()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#PyCharMem.repeat_measurement"><code class="docutils literal notranslate"><span class="pre">repeat_measurement()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#PyCharMem.splash_screen"><code class="docutils literal notranslate"><span class="pre">splash_screen()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#PyCharMem.start_gui"><code class="docutils literal notranslate"><span class="pre">start_gui()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#PyCharMem.verbose_debug"><code class="docutils literal notranslate"><span class="pre">verbose_debug()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PyCharMem</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">&lt;no title&gt;</a></li>
+      <li class="breadcrumb-item active">PyCharMem module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/PyCharMem.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-PyCharMem">
+<span id="pycharmem-module"></span><h1>PyCharMem module<a class="headerlink" href="#module-PyCharMem" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="PyCharMem.FileSave">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">PyCharMem.</span></span><span class="sig-name descname"><span class="pre">FileSave</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyCharMem.html#FileSave"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyCharMem.FileSave" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="PyCharMem.FileSave.save_config">
+<span class="sig-name descname"><span class="pre">save_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">measurement_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyCharMem.html#FileSave.save_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyCharMem.FileSave.save_config" title="Permalink to this definition"></a></dt>
+<dd><p>Save the configuration data to the ‘config’ sheet.</p>
+<p>Writes the configuration data to the ‘config’ sheet of the Excel file.
+The <cite>config</cite> parameter is expected to be a dictionary with sections as keys and section data as values.
+Each section is written as a separate block in the sheet.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logger</strong> (<em>logging.Logger</em>) – The logger object to use for logging messages.</p></li>
+<li><p><strong>config</strong> (<em>dict</em>) – The configuration data.</p></li>
+<li><p><strong>measurement_type</strong> (<em>str</em>) – The type of measurement.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="PyCharMem.FileSave.save_headers">
+<span class="sig-name descname"><span class="pre">save_headers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">headers_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyCharMem.html#FileSave.save_headers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyCharMem.FileSave.save_headers" title="Permalink to this definition"></a></dt>
+<dd><p>Save the headers to the ‘data’ sheet.</p>
+<p>Writes the headers to the first row of the ‘data’ sheet.
+The <cite>headers_list</cite> parameter is expected to be a list of header names.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logger</strong> (<em>logging.Logger</em>) – The logger object to use for logging messages.</p></li>
+<li><p><strong>headers_list</strong> (<em>list</em>) – The list of header names.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="PyCharMem.FileSave.save_result">
+<span class="sig-name descname"><span class="pre">save_result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyCharMem.html#FileSave.save_result"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyCharMem.FileSave.save_result" title="Permalink to this definition"></a></dt>
+<dd><p>Save a result row to the ‘data’ sheet.</p>
+<p>Appends a result row to the ‘data’ sheet.
+The <cite>result</cite> parameter is expected to be a list of values representing a row of results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logger</strong> (<em>logging.Logger</em>) – The logger object to use for logging messages.</p></li>
+<li><p><strong>result</strong> (<em>list</em>) – The list of values representing a result row.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="PyCharMem.Logbook">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">PyCharMem.</span></span><span class="sig-name descname"><span class="pre">Logbook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyCharMem.html#Logbook"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyCharMem.Logbook" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="PyCharMem.Logbook.save_log">
+<span class="sig-name descname"><span class="pre">save_log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comment</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyCharMem.html#Logbook.save_log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyCharMem.Logbook.save_log" title="Permalink to this definition"></a></dt>
+<dd><p>Save a log entry to the logbook.</p>
+<p>Appends a log entry to the ‘logbook’ sheet of the logbook Excel file.
+Writes the provided <cite>date</cite>, <cite>file</cite>, and <cite>comment</cite> to the respective columns.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logger</strong> (<em>logging.Logger</em>) – The logger object to use for logging messages.</p></li>
+<li><p><strong>date</strong> (<em>str</em>) – The date of the log entry.</p></li>
+<li><p><strong>file</strong> (<em>str</em>) – The file associated with the log entry.</p></li>
+<li><p><strong>comment</strong> (<em>str</em>) – The comment for the log entry.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="PyCharMem.MeasurementThread">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">PyCharMem.</span></span><span class="sig-name descname"><span class="pre">MeasurementThread</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inst</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filesave</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyCharMem.html#MeasurementThread"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyCharMem.MeasurementThread" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QThread</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="PyCharMem.MeasurementThread.clear_plots">
+<span class="sig-name descname"><span class="pre">clear_plots</span></span><a class="headerlink" href="#PyCharMem.MeasurementThread.clear_plots" title="Permalink to this definition"></a></dt>
+<dd><p>int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
+<p>types is normally a sequence of individual types.  Each type is either a
+type object or a string that is the name of a C++ type.  Alternatively
+each type could itself be a sequence of types each describing a different
+overloaded signal.
+name is the optional C++ name of the signal.  If it is not specified then
+the name of the class attribute that is bound to the signal is used.
+revision is the optional revision of the signal that is exported to QML.
+If it is not specified then 0 is used.
+arguments is the optional sequence of the names of the signal’s arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pyqtSignal(<a href="#id1"><span class="problematic" id="id2">*</span></a>types, name</p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str = …, revision</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="PyCharMem.MeasurementThread.close_window">
+<span class="sig-name descname"><span class="pre">close_window</span></span><a class="headerlink" href="#PyCharMem.MeasurementThread.close_window" title="Permalink to this definition"></a></dt>
+<dd><p>int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
+<p>types is normally a sequence of individual types.  Each type is either a
+type object or a string that is the name of a C++ type.  Alternatively
+each type could itself be a sequence of types each describing a different
+overloaded signal.
+name is the optional C++ name of the signal.  If it is not specified then
+the name of the class attribute that is bound to the signal is used.
+revision is the optional revision of the signal that is exported to QML.
+If it is not specified then 0 is used.
+arguments is the optional sequence of the names of the signal’s arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pyqtSignal(<a href="#id3"><span class="problematic" id="id4">*</span></a>types, name</p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str = …, revision</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="PyCharMem.MeasurementThread.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyCharMem.html#MeasurementThread.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyCharMem.MeasurementThread.run" title="Permalink to this definition"></a></dt>
+<dd><p>Run the measurement process in a separate thread.</p>
+<p>Executes the measurement process with the provided instrument, measurement, configuration,
+and FileSave objects.
+Emits signals to update data in the GUI, clear plots, and request the closing of the GUI window.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="PyCharMem.MeasurementThread.update_data">
+<span class="sig-name descname"><span class="pre">update_data</span></span><a class="headerlink" href="#PyCharMem.MeasurementThread.update_data" title="Permalink to this definition"></a></dt>
+<dd><p>int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
+<p>types is normally a sequence of individual types.  Each type is either a
+type object or a string that is the name of a C++ type.  Alternatively
+each type could itself be a sequence of types each describing a different
+overloaded signal.
+name is the optional C++ name of the signal.  If it is not specified then
+the name of the class attribute that is bound to the signal is used.
+revision is the optional revision of the signal that is exported to QML.
+If it is not specified then 0 is used.
+arguments is the optional sequence of the names of the signal’s arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pyqtSignal(<a href="#id5"><span class="problematic" id="id6">*</span></a>types, name</p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str = …, revision</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="PyCharMem.MeasurementWindow">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">PyCharMem.</span></span><span class="sig-name descname"><span class="pre">MeasurementWindow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inst</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filesave</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyCharMem.html#MeasurementWindow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyCharMem.MeasurementWindow" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QMainWindow</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="PyCharMem.MeasurementWindow.clear_plots">
+<span class="sig-name descname"><span class="pre">clear_plots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plot_grid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_clear</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyCharMem.html#MeasurementWindow.clear_plots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyCharMem.MeasurementWindow.clear_plots" title="Permalink to this definition"></a></dt>
+<dd><p>Clear the specified plots in the GUI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>plot_grid</strong> (<em>list</em>) – The grid layout of the plots.</p></li>
+<li><p><strong>plot_clear</strong> (<em>list</em>) – The boolean flags indicating which plots to clear.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="PyCharMem.MeasurementWindow.close_window">
+<span class="sig-name descname"><span class="pre">close_window</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyCharMem.html#MeasurementWindow.close_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyCharMem.MeasurementWindow.close_window" title="Permalink to this definition"></a></dt>
+<dd><p>Close the measurement window.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="PyCharMem.MeasurementWindow.initUI">
+<span class="sig-name descname"><span class="pre">initUI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">meas</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyCharMem.html#MeasurementWindow.initUI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyCharMem.MeasurementWindow.initUI" title="Permalink to this definition"></a></dt>
+<dd><p>Initialize the user interface of the window.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>meas</strong> (<em>object</em>) – The measurement object.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="PyCharMem.MeasurementWindow.update_data">
+<span class="sig-name descname"><span class="pre">update_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">meas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">results</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyCharMem.html#MeasurementWindow.update_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyCharMem.MeasurementWindow.update_data" title="Permalink to this definition"></a></dt>
+<dd><p>Update the displayed data and plots with the measurement results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>meas</strong> (<em>object</em>) – The measurement object.</p></li>
+<li><p><strong>results</strong> (<em>list</em>) – The measurement results.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyCharMem.ask_for_comment">
+<span class="sig-prename descclassname"><span class="pre">PyCharMem.</span></span><span class="sig-name descname"><span class="pre">ask_for_comment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyCharMem.html#ask_for_comment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyCharMem.ask_for_comment" title="Permalink to this definition"></a></dt>
+<dd><p>Prompt the user to enter a comment.</p>
+<p>Displays a prompt asking the user for a comment.
+Validates that the comment is not empty.
+Logs the entered comment and returns it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>logger</strong> (<em>logging.Logger</em>) – The logger object to use for logging messages.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The comment entered by the user.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyCharMem.check_address">
+<span class="sig-prename descclassname"><span class="pre">PyCharMem.</span></span><span class="sig-name descname"><span class="pre">check_address</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">addresses</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">address</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyCharMem.html#check_address"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyCharMem.check_address" title="Permalink to this definition"></a></dt>
+<dd><p>Check if the specified address is valid in the configuration.</p>
+<p>Checks if the <cite>addresses</cite> parameter is a dictionary and logs an error if it’s not.
+Checks if the specified <cite>address</cite> is present in the addresses dictionary and logs an error if it’s not.
+Checks if the address value is a dictionary and logs an error if it’s not.
+Checks if the required keys (‘type’, ‘name’, ‘protocol’, ‘port’, ‘baudrate’, ‘timeout’, ‘endline’, ‘write_timeout’,
+‘read_termination’, ‘write_termination’, ‘bytesize’, ‘parity’) are present in the address dictionary and logs
+an error if any of them are missing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logger</strong> (<em>logging.Logger</em>) – The logger object to use for logging messages.</p></li>
+<li><p><strong>addresses</strong> (<em>dict</em>) – A dictionary containing the configuration addresses.</p></li>
+<li><p><strong>address</strong> (<em>str</em>) – The address to be checked.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>quit</strong><strong>(</strong><strong>)</strong> – Exits the program if any errors are encountered.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyCharMem.check_missing_params">
+<span class="sig-prename descclassname"><span class="pre">PyCharMem.</span></span><span class="sig-name descname"><span class="pre">check_missing_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">my_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">my_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyCharMem.html#check_missing_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyCharMem.check_missing_params" title="Permalink to this definition"></a></dt>
+<dd><p>Check for missing measurement parameters in a dictionary.</p>
+<p>Compares the items in <cite>my_list</cite> against the keys in <cite>my_dict</cite> to find any missing items.
+If no missing items are found, logs an informational message.
+If only one missing item is found, logs a critical message with the missing item and exits the program.
+If multiple missing items are found, logs a critical message with a list of missing items and exits the program.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logger</strong> (<em>logging.Logger</em>) – The logger object to use for logging messages.</p></li>
+<li><p><strong>my_dict</strong> (<em>dict</em>) – The dictionary containing the measurement parameters.</p></li>
+<li><p><strong>my_list</strong> (<em>list</em>) – The list of measurement parameters to check.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>quit</strong><strong>(</strong><strong>)</strong> – Exits the program if missing items are found.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyCharMem.clear_terminal">
+<span class="sig-prename descclassname"><span class="pre">PyCharMem.</span></span><span class="sig-name descname"><span class="pre">clear_terminal</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyCharMem.html#clear_terminal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyCharMem.clear_terminal" title="Permalink to this definition"></a></dt>
+<dd><p>Clear the terminal screen.</p>
+<p>Uses the appropriate system command based on the operating system.
+If running on Windows, executes the ‘cls’ command.
+If running on Unix-based systems, executes the ‘clear’ command.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyCharMem.create_list">
+<span class="sig-prename descclassname"><span class="pre">PyCharMem.</span></span><span class="sig-name descname"><span class="pre">create_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition_values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyCharMem.html#create_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyCharMem.create_list" title="Permalink to this definition"></a></dt>
+<dd><p>Create a list of values based on the provided condition values.</p>
+<p>Takes a list <cite>condition_values</cite> containing the cycle type, maximum value, minimum value, and step size.
+Generates one-way lists (<cite>listp_oneway</cite> and <cite>listn_oneway</cite>) using <cite>np.arange</cite>.
+Combines the one-way lists with maximum and minimum values to create symmetric lists (<cite>listp</cite> and <cite>listn</cite>)
+using <cite>np.concatenate</cite>.
+Constructs a dictionary <cite>cycle_dict</cite> with cycle types as keys and corresponding lists as values.
+Returns the list of values based on the specified cycle type from the <cite>cycle_dict</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logger</strong> (<em>logging.Logger</em>) – The logger object to use for logging messages.</p></li>
+<li><p><strong>condition_values</strong> (<em>list</em>) – A list containing the cycle type, maximum value, minimum value, and step size.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The generated list of values based on the specified cycle type.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>KeyError</strong> – If an invalid cycle type is provided.</p></li>
+<li><p><strong>quit</strong><strong>(</strong><strong>)</strong> – Exits the program if an invalid cycle type is provided or if an unknown error occurs.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyCharMem.exit">
+<span class="sig-prename descclassname"><span class="pre">PyCharMem.</span></span><span class="sig-name descname"><span class="pre">exit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inst</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyCharMem.html#exit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyCharMem.exit" title="Permalink to this definition"></a></dt>
+<dd><p>Exit the program and close the instrument.</p>
+<p>Logs an informational message indicating that the program is exiting.
+Attempts to close the instrument using the <cite>close</cite> method of the provided <cite>inst</cite> object.
+Logs a message indicating whether the instrument was successfully closed or not.
+Exits the program.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logger</strong> (<em>logging.Logger</em>) – The logger object to use for logging messages.</p></li>
+<li><p><strong>inst</strong> (<em>object</em>) – The instrument object to be closed.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyCharMem.get_available_addresses">
+<span class="sig-prename descclassname"><span class="pre">PyCharMem.</span></span><span class="sig-name descname"><span class="pre">get_available_addresses</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyCharMem.html#get_available_addresses"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyCharMem.get_available_addresses" title="Permalink to this definition"></a></dt>
+<dd><p>Get the available addresses of USB devices.</p>
+<p>Attempts to create a PyVISA resource manager using <cite>pyvisa.ResourceManager</cite>.
+Retrieves the list of available resource addresses using <cite>rm.list_resources()</cite>.
+If no USB devices are found, prints a message and returns an empty list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of available addresses of USB devices.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>List[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyCharMem.get_datetime">
+<span class="sig-prename descclassname"><span class="pre">PyCharMem.</span></span><span class="sig-name descname"><span class="pre">get_datetime</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyCharMem.html#get_datetime"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyCharMem.get_datetime" title="Permalink to this definition"></a></dt>
+<dd><p>Get the current date and time as a formatted string.</p>
+<p>Retrieves the current timestamp using <cite>time.time()</cite>.
+Converts the timestamp to a <cite>datetime</cite> object using <cite>datetime.datetime.fromtimestamp</cite>.
+Formats the <cite>datetime</cite> object as a string in the format ‘%Y-%m-%d %H:%M:%S:%f’.
+Returns the formatted string representing the current date and time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The formatted string representing the current date and time.
+Returns None if an error occurs.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyCharMem.get_filename">
+<span class="sig-prename descclassname"><span class="pre">PyCharMem.</span></span><span class="sig-name descname"><span class="pre">get_filename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyCharMem.html#get_filename"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyCharMem.get_filename" title="Permalink to this definition"></a></dt>
+<dd><p>Generate a filename for a new Excel file.</p>
+<p>Retrieves the index of the last element in the specified <cite>path</cite> using the <cite>get_index</cite> function.
+Gets the current date in the format ‘%Y%m%d’ using <cite>datetime.datetime.now().strftime</cite>.
+Constructs and returns a filename using the format ‘{date}_{sample}_{device}_{index}.xlsx’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – The path of the directory where the file will be saved.</p></li>
+<li><p><strong>sample</strong> (<em>str</em>) – The name or identifier of the sample.</p></li>
+<li><p><strong>device</strong> (<em>str</em>) – The name or identifier of the device.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The generated filename for the Excel file.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyCharMem.get_index">
+<span class="sig-prename descclassname"><span class="pre">PyCharMem.</span></span><span class="sig-name descname"><span class="pre">get_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyCharMem.html#get_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyCharMem.get_index" title="Permalink to this definition"></a></dt>
+<dd><p>Get the index of the last element in a directory.</p>
+<p>Retrieves the index by counting the number of items in the specified <cite>path</cite> using <cite>os.listdir</cite>.
+If the directory is not found, returns 0 as the index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>str</em>) – The path of the directory.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The index of the last element in the directory.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyCharMem.get_instrument">
+<span class="sig-prename descclassname"><span class="pre">PyCharMem.</span></span><span class="sig-name descname"><span class="pre">get_instrument</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inst_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyCharMem.html#get_instrument"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyCharMem.get_instrument" title="Permalink to this definition"></a></dt>
+<dd><p>Get an instrument object based on the provided instrument type and address.</p>
+<p>Initializes an instrument of the specified <cite>inst_type</cite> at the given <cite>address</cite>.
+Logs an informational message indicating the instrument type and address.
+Attempts to import the corresponding module and create an instance of the instrument class using the <cite>import_module</cite> function.
+If successful, returns the instrument instance initialized with the provided logger, address, and additional arguments.
+If an exception occurs during the initialization, logs an error message and returns None.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logger</strong> (<em>logging.Logger</em>) – The logger object to use for logging messages.</p></li>
+<li><p><strong>inst_type</strong> (<em>str</em>) – The type of instrument to be initialized.</p></li>
+<li><p><strong>address</strong> (<em>str</em>) – The address of the instrument.</p></li>
+<li><p><strong>**kwargs</strong> – Additional keyword arguments to be passed to the instrument initialization.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An instance of the instrument class if initialization is successful.
+None if an error occurs during initialization.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>object or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyCharMem.get_path">
+<span class="sig-prename descclassname"><span class="pre">PyCharMem.</span></span><span class="sig-name descname"><span class="pre">get_path</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyCharMem.html#get_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyCharMem.get_path" title="Permalink to this definition"></a></dt>
+<dd><p>Get the path of the current file or module.</p>
+<p>If the script is being run as the main module (__name__ == ‘__main__’), returns the directory name
+of the current file after resolving symbolic links using <cite>os.path.realpath</cite>.
+Otherwise, returns the directory name of the current file using <cite>os.path.abspath</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The path of the current file or module.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyCharMem.import_module">
+<span class="sig-prename descclassname"><span class="pre">PyCharMem.</span></span><span class="sig-name descname"><span class="pre">import_module</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inst_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">measurement_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyCharMem.html#import_module"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyCharMem.import_module" title="Permalink to this definition"></a></dt>
+<dd><p>Import a module and retrieve a class object.</p>
+<p>Imports the specified module and retrieves the corresponding class object.
+The <cite>type</cite> parameter determines whether it’s an ‘instrument’ or ‘measurement’ module.
+Constructs the file name and object name based on the <cite>type</cite>, <cite>inst_type</cite>, and <cite>measurement_type</cite>.
+Returns the imported class object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logger</strong> (<em>logging.Logger</em>) – The logger object to use for logging messages.</p></li>
+<li><p><strong>type</strong> (<em>str</em>) – The type of module to import. Can be ‘instrument’ or ‘measurement’.</p></li>
+<li><p><strong>inst_type</strong> (<em>str</em>) – The type of instrument. Required if <cite>type</cite> is ‘instrument’.</p></li>
+<li><p><strong>measurement_type</strong> (<em>str</em>) – The type of measurement. Required if <cite>type</cite> is ‘measurement’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The imported class object.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>object</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ModuleNotFoundError</strong> – If the specified module is not found.</p></li>
+<li><p><strong>AttributeError</strong> – If the specified class is not found within the module.</p></li>
+<li><p><strong>quit</strong><strong>(</strong><strong>)</strong> – Exits the program if an error occurs during module or class import.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyCharMem.main">
+<span class="sig-prename descclassname"><span class="pre">PyCharMem.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyCharMem.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyCharMem.main" title="Permalink to this definition"></a></dt>
+<dd><p>Main function for running the measurement application.</p>
+<p>Initializes the necessary components, displays the main menu, handles user input,
+and performs the selected actions based on the user’s choices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyCharMem.menu">
+<span class="sig-prename descclassname"><span class="pre">PyCharMem.</span></span><span class="sig-name descname"><span class="pre">menu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">console</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyCharMem.html#menu"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyCharMem.menu" title="Permalink to this definition"></a></dt>
+<dd><p>Display a menu and prompt for user selection.</p>
+<p>Displays a menu based on the specified <cite>type</cite> parameter.
+Constructs the menu name, message, and choices based on the menu type.
+Prints the menu name using <cite>print_newlines</cite> and <cite>console.print</cite>.
+Prompts the user for menu selection using <cite>inquirer.prompt</cite>.
+Logs the selected choice and returns it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logger</strong> (<em>logging.Logger</em>) – The logger object to use for logging messages.</p></li>
+<li><p><strong>console</strong> (<em>Console</em>) – A console object for rich text output.</p></li>
+<li><p><strong>type</strong> (<em>str</em>) – The type of menu to display. Can be ‘main’ or ‘measurements’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The user-selected choice from the menu.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>quit</strong><strong>(</strong><strong>)</strong> – Exits the program if an invalid menu type is provided.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyCharMem.mkdir">
+<span class="sig-prename descclassname"><span class="pre">PyCharMem.</span></span><span class="sig-name descname"><span class="pre">mkdir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyCharMem.html#mkdir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyCharMem.mkdir" title="Permalink to this definition"></a></dt>
+<dd><p>Create a directory at the specified path.</p>
+<p>Checks if the directory already exists using the <cite>path_exists</cite> function.
+If the directory does not exist, creates it using <cite>os.makedirs</cite>.
+Logs a debug message with the logger indicating whether the folder was created or already exists.
+If an OSError occurs during the creation, logs an error message with the logger.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logger</strong> (<em>logging.Logger</em>) – The logger object to use for logging messages.</p></li>
+<li><p><strong>path</strong> (<em>str</em>) – The path of the directory to be created.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyCharMem.open_config">
+<span class="sig-prename descclassname"><span class="pre">PyCharMem.</span></span><span class="sig-name descname"><span class="pre">open_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyCharMem.html#open_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyCharMem.open_config" title="Permalink to this definition"></a></dt>
+<dd><p>Open the config file using the appropriate system command.</p>
+<p>Attempts to open the ‘config.yml’ file based on the operating system.
+On Windows, uses the ‘start’ command.
+On macOS, uses the ‘open’ command.
+On Linux, uses the ‘open’ command.
+If the config file is not found, logs a critical message using the provided logger and exits the program.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>logger</strong> (<em>logging.Logger</em>) – The logger object to use for logging error messages.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyCharMem.path_exists">
+<span class="sig-prename descclassname"><span class="pre">PyCharMem.</span></span><span class="sig-name descname"><span class="pre">path_exists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyCharMem.html#path_exists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyCharMem.path_exists" title="Permalink to this definition"></a></dt>
+<dd><p>Check if a path exists.</p>
+<p>Checks whether the specified <cite>path</cite> exists in the file system.
+Returns <cite>True</cite> if the path exists, <cite>False</cite> otherwise.
+If an OSError occurs during the check, it returns <cite>False</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>str</em>) – The path to be checked.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><cite>True</cite> if the path exists, <cite>False</cite> otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyCharMem.print_available_addresses">
+<span class="sig-prename descclassname"><span class="pre">PyCharMem.</span></span><span class="sig-name descname"><span class="pre">print_available_addresses</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">console</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">addresses</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyCharMem.html#print_available_addresses"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyCharMem.print_available_addresses" title="Permalink to this definition"></a></dt>
+<dd><p>Print the available addresses of USB devices.</p>
+<p>Prints a blank line using the <cite>print_newlines</cite> function.
+If no addresses are provided, logs a critical message using the provided logger and returns.
+Prints a panel with the title “Available Addresses” using the <cite>console.print</cite> function.
+Prints each address from the provided list using the <cite>console.print</cite> function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logger</strong> (<em>logging.Logger</em>) – The logger object to use for logging messages.</p></li>
+<li><p><strong>console</strong> (<em>Console</em>) – A console object for rich text output.</p></li>
+<li><p><strong>addresses</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – A list of available addresses of USB devices.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyCharMem.print_newlines">
+<span class="sig-prename descclassname"><span class="pre">PyCharMem.</span></span><span class="sig-name descname"><span class="pre">print_newlines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyCharMem.html#print_newlines"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyCharMem.print_newlines" title="Permalink to this definition"></a></dt>
+<dd><p>Print a specified number of newline characters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>lines</strong> (<em>int</em>) – The number of newline characters to be printed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyCharMem.read_config">
+<span class="sig-prename descclassname"><span class="pre">PyCharMem.</span></span><span class="sig-name descname"><span class="pre">read_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyCharMem.html#read_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyCharMem.read_config" title="Permalink to this definition"></a></dt>
+<dd><p>Read and load the configuration from a YAML file.</p>
+<p>Attempts to read the ‘config.yml’ file and load its contents using the <cite>yaml.safe_load</cite> function.
+If the file is successfully loaded, logs an informational message using the provided logger and returns the configuration.
+If the file is not found, logs a critical message and exits the program.
+If the file is not a valid YAML file, logs a critical message and exits the program.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>logger</strong> (<em>logging.Logger</em>) – The logger object to use for logging error messages.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The configuration loaded from the YAML file.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyCharMem.repeat_measurement">
+<span class="sig-prename descclassname"><span class="pre">PyCharMem.</span></span><span class="sig-name descname"><span class="pre">repeat_measurement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">console</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyCharMem.html#repeat_measurement"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyCharMem.repeat_measurement" title="Permalink to this definition"></a></dt>
+<dd><p>Prompt the user to repeat a measurement.</p>
+<p>Displays a prompt asking the user if they would like to repeat the measurement.
+Logs the user’s answer and returns it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logger</strong> (<em>logging.Logger</em>) – The logger object to use for logging messages.</p></li>
+<li><p><strong>console</strong> (<em>Console</em>) – A console object for rich text output.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the user chooses to repeat the measurement, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyCharMem.splash_screen">
+<span class="sig-prename descclassname"><span class="pre">PyCharMem.</span></span><span class="sig-name descname"><span class="pre">splash_screen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">console</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyCharMem.html#splash_screen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyCharMem.splash_screen" title="Permalink to this definition"></a></dt>
+<dd><p>Display a splash screen with program information.</p>
+<p>Prints the program name as ASCII art using the ‘text2art’ function.
+Displays the program version, repository URL, and author using the ‘console.print’ function.
+Inserts 5 newlines using the ‘print_newlines’ function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>console</strong> (<em>Console</em>) – A console object for rich text output.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyCharMem.start_gui">
+<span class="sig-prename descclassname"><span class="pre">PyCharMem.</span></span><span class="sig-name descname"><span class="pre">start_gui</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inst</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filesave</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyCharMem.html#start_gui"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyCharMem.start_gui" title="Permalink to this definition"></a></dt>
+<dd><p>Start the graphical user interface for the measurement application.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logger</strong> (<em>logging.Logger</em>) – The logger object to use for logging messages.</p></li>
+<li><p><strong>inst</strong> (<em>object</em>) – The instrument object for performing measurements.</p></li>
+<li><p><strong>meas</strong> (<em>object</em>) – The measurement object for performing measurements.</p></li>
+<li><p><strong>config</strong> (<em>dict</em>) – The configuration data for the measurement.</p></li>
+<li><p><strong>filesave</strong> (<em>object</em>) – The FileSave object for saving measurement results.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyCharMem.verbose_debug">
+<span class="sig-prename descclassname"><span class="pre">PyCharMem.</span></span><span class="sig-name descname"><span class="pre">verbose_debug</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbose</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyCharMem.html#verbose_debug"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyCharMem.verbose_debug" title="Permalink to this definition"></a></dt>
+<dd><p>Configure a verbose debugging setup.</p>
+<p>Initializes a logging configuration with customizable verbosity based on the provided <cite>verbose</cite> parameter.
+If <cite>verbose</cite> is True, the log level is set to “NOTSET”; otherwise, it is set to ‘INFO’.
+The log format displays only the log message with a timestamp in the format of [hour:minute:second].
+The log output is handled by a RichHandler.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The logger object from the “rich” logger if the setup is successful.
+If an exception occurs during setup, prints the error message and terminates the program, returning None.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>logging.Logger or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-left" title="&lt;no title&gt;" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Ricardo E. Silva.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>measurements.pulsedVI &mdash; PyCharMem 0.0.6 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            PyCharMem
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../PyCharMem.html">PyCharMem module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PyCharMem</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">measurements.pulsedVI</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for measurements.pulsedVI</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Measurement class for sweeping voltages and measuring voltage</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+<div class="viewcode-block" id="create_list"><a class="viewcode-back" href="../../measurements.html#measurements.pulsedVI.create_list">[docs]</a><span class="k">def</span> <span class="nf">create_list</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">cycle</span><span class="p">,</span> <span class="n">max_val</span><span class="p">,</span> <span class="n">min_val</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a list of values based on the specified cycle type and parameters.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        logger (logging.Logger): The logger object to use for logging messages.</span>
+<span class="sd">        cycle (str): The cycle type. Valid values are &#39;+&#39;, &#39;-&#39;, &#39;+-&#39;, &#39;-+&#39;.</span>
+<span class="sd">        max_val (float): The maximum value for the list.</span>
+<span class="sd">        min_val (float): The minimum value for the list.</span>
+<span class="sd">        step (float): The step size between consecutive values.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        numpy.ndarray: The generated list of values, rounded to 5 decimal places.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If the cycle type is invalid.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+    <span class="n">list_positive</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_val</span><span class="p">,</span> <span class="n">step</span><span class="p">),</span> <span class="p">[</span><span class="n">max_val</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_val</span><span class="p">,</span> <span class="n">step</span><span class="p">))))</span>
+    <span class="n">list_negative</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">min_val</span><span class="p">,</span> <span class="o">-</span><span class="n">step</span><span class="p">),</span> <span class="p">[</span><span class="n">min_val</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">min_val</span><span class="p">,</span> <span class="o">-</span><span class="n">step</span><span class="p">))))</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">match</span> <span class="n">cycle</span><span class="p">:</span>
+            <span class="k">case</span> <span class="s1">&#39;+&#39;</span><span class="p">:</span> <span class="k">return</span> <span class="n">list_positive</span>
+            <span class="k">case</span> <span class="s1">&#39;-&#39;</span><span class="p">:</span> <span class="k">return</span> <span class="n">list_negative</span>
+            <span class="k">case</span> <span class="s1">&#39;+-&#39;</span><span class="p">:</span> <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">list_positive</span><span class="p">,</span> <span class="n">list_negative</span><span class="p">))</span>
+            <span class="k">case</span> <span class="s1">&#39;-+&#39;</span><span class="p">:</span> <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">list_negative</span><span class="p">,</span> <span class="n">list_positive</span><span class="p">))</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s1">&#39;Invalid cycle type!&#39;</span><span class="p">)</span>
+        <span class="n">quit</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Measurement"><a class="viewcode-back" href="../../measurements.html#measurements.pulsedVI.Measurement">[docs]</a><span class="k">class</span> <span class="nc">Measurement</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">instrument</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize a Measurement object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            logger (logging.Logger): The logger object to use for logging messages.</span>
+<span class="sd">            config (dict): The configuration dictionary containing measurement parameters.</span>
+<span class="sd">            instrument (object): The instrument object used for measurement.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;pulsedVI&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nparams</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;cycle&#39;</span><span class="p">,</span> <span class="s1">&#39;n_cycles&#39;</span><span class="p">,</span> <span class="s1">&#39;i+&#39;</span><span class="p">,</span> <span class="s1">&#39;i-&#39;</span><span class="p">,</span> <span class="s1">&#39;i_step&#39;</span><span class="p">,</span> <span class="s1">&#39;i_read&#39;</span><span class="p">,</span> <span class="s1">&#39;vcplc+&#39;</span><span class="p">,</span><span class="s1">&#39;vcplc-&#39;</span><span class="p">,</span> <span class="s1">&#39;t_write&#39;</span><span class="p">,</span> <span class="s1">&#39;t_read&#39;</span><span class="p">,</span> <span class="s1">&#39;t_wait&#39;</span><span class="p">,</span> <span class="s1">&#39;nplc&#39;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">headers</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Current Write[A]&#39;</span><span class="p">,</span> <span class="s1">&#39;Voltage Write [A]&#39;</span><span class="p">,</span> <span class="s1">&#39;Current Read [V]&#39;</span><span class="p">,</span> <span class="s1">&#39;Voltage Read [A]&#39;</span><span class="p">,</span> <span class="s1">&#39;Resistance [Ω]&#39;</span><span class="p">,</span> <span class="s1">&#39;Timer [s]&#39;</span><span class="p">,</span> <span class="s1">&#39;Datetime&#39;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vals</span> <span class="o">=</span> <span class="n">create_list</span><span class="p">(</span>
+            <span class="n">logger</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cycle&#39;</span><span class="p">),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;i+&#39;</span><span class="p">),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;i-&#39;</span><span class="p">),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;i_step&#39;</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_plot_parameters</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cycle&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initialize_instrument</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">instrument</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Measurement.set_plot_parameters"><a class="viewcode-back" href="../../measurements.html#measurements.pulsedVI.Measurement.set_plot_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">set_plot_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cycle_type</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the plot parameters based on the cycle type.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            cycle_type (str): The cycle type.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">match</span> <span class="nb">len</span><span class="p">(</span><span class="n">cycle_type</span><span class="p">):</span>
+                <span class="k">case</span> <span class="mi">1</span><span class="p">:</span> 
+                    <span class="bp">self</span><span class="o">.</span><span class="n">plot_grid</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">plot_titles</span> <span class="o">=</span> <span class="p">[[</span><span class="sa">f</span><span class="s1">&#39;Cycle V-I  </span><span class="si">{</span><span class="n">cycle_type</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;Resistance vs Time&#39;</span><span class="p">],</span>
+                                        <span class="p">[</span><span class="s1">&#39;Resistance vs Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;Current vs Time&#39;</span><span class="p">]]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">plot_labels</span> <span class="o">=</span> <span class="p">[</span>
+                        <span class="p">[[</span><span class="s1">&#39;Current [A]&#39;</span><span class="p">,</span><span class="s1">&#39;Voltage [V]&#39;</span><span class="p">],</span>
+                        <span class="p">[</span><span class="s1">&#39;Time [s]&#39;</span><span class="p">,</span> <span class="s1">&#39;Resistance [Ω]&#39;</span><span class="p">]],</span>
+                        <span class="p">[[</span><span class="s1">&#39;Current [A]&#39;</span><span class="p">,</span> <span class="s1">&#39;Resistance [Ω]&#39;</span><span class="p">],</span>
+                        <span class="p">[</span><span class="s1">&#39;Time [s]&#39;</span><span class="p">,</span> <span class="s1">&#39;Current [A]&#39;</span><span class="p">]]]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">plot_clear</span> <span class="o">=</span> <span class="p">[[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">],</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">]]</span>
+                <span class="k">case</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">plot_grid</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">plot_titles</span> <span class="o">=</span> <span class="p">[[</span><span class="s1">&#39;Cycle V-I +&#39;</span><span class="p">,</span> <span class="s1">&#39;Cycle V-I -&#39;</span><span class="p">,</span> <span class="s1">&#39;Resistance vs Time&#39;</span><span class="p">],</span>
+                                        <span class="p">[</span><span class="s1">&#39;Resistance vs Current +&#39;</span><span class="p">,</span> <span class="s1">&#39;Resistance vs Current -&#39;</span><span class="p">,</span> <span class="s1">&#39;Current vs Time&#39;</span><span class="p">]]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">plot_labels</span> <span class="o">=</span> <span class="p">[</span>
+                        <span class="p">[[</span><span class="s1">&#39;Current [A]&#39;</span><span class="p">,</span><span class="s1">&#39;Voltage [V]&#39;</span><span class="p">],</span> <span class="p">[</span> <span class="s1">&#39;Current [A]&#39;</span><span class="p">,</span> <span class="s1">&#39;Voltage [V]&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;Time [s]&#39;</span><span class="p">,</span> <span class="s1">&#39;Resistance [Ω]&#39;</span><span class="p">]],</span>
+                        <span class="p">[[</span><span class="s1">&#39;Current [A]&#39;</span><span class="p">,</span> <span class="s1">&#39;Resistance [Ω]&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;Current[A]&#39;</span><span class="p">,</span> <span class="s1">&#39;Resistance [Ω]&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;Time [s]&#39;</span><span class="p">,</span> <span class="s1">&#39;Current [A]&#39;</span><span class="p">]]]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">plot_clear</span> <span class="o">=</span> <span class="p">[[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">],</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">]]</span></div>
+
+<div class="viewcode-block" id="Measurement.initialize_instrument"><a class="viewcode-back" href="../../measurements.html#measurements.pulsedVI.Measurement.initialize_instrument">[docs]</a>    <span class="k">def</span> <span class="nf">initialize_instrument</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">instrument</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the instrument with the specified parameters.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            logger (logging.Logger): The logger object to use for logging messages.</span>
+<span class="sd">            instrument (object): The instrument object used for measurement.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Setting instrument initial parameters&#39;</span><span class="p">)</span>
+        <span class="n">instrument</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>
+        <span class="n">instrument</span><span class="o">.</span><span class="n">set_mode_fixed</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="s2">&quot;Current&quot;</span><span class="p">)</span>
+        <span class="n">instrument</span><span class="o">.</span><span class="n">set_src_func</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="s2">&quot;Current&quot;</span><span class="p">)</span>
+        <span class="n">instrument</span><span class="o">.</span><span class="n">set_sense_func</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="s2">&quot;Current&quot;</span><span class="p">)</span>
+        <span class="n">instrument</span><span class="o">.</span><span class="n">set_func_range</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="s2">&quot;Current&quot;</span><span class="p">)</span>
+        <span class="n">instrument</span><span class="o">.</span><span class="n">set_func_nplc</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="s2">&quot;Current&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;nplc&#39;</span><span class="p">))</span>
+        <span class="n">instrument</span><span class="o">.</span><span class="n">set_sense_func</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="s2">&quot;Voltage&quot;</span><span class="p">)</span>
+        <span class="n">instrument</span><span class="o">.</span><span class="n">set_func_range</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="s2">&quot;Voltage&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Instrument parameters set!&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Measurement.measure_val"><a class="viewcode-back" href="../../measurements.html#measurements.pulsedVI.Measurement.measure_val">[docs]</a>    <span class="k">def</span> <span class="nf">measure_val</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">instrument</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform a measurement for a specific value.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            logger (logging.Logger): The logger object to use for logging messages.</span>
+<span class="sd">            instrument (object): The instrument object used for measurement.</span>
+<span class="sd">            val (float): The value to measure.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list: The measurement results and plots.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">val</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span> <span class="n">instrument</span><span class="o">.</span><span class="n">set_func_cplc</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="s2">&quot;Voltage&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;vcplc+&#39;</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span> <span class="n">instrument</span><span class="o">.</span><span class="n">set_func_cplc</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="s2">&quot;Voltage&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;vcplc-&#39;</span><span class="p">))</span>
+
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;t_wait&#39;</span><span class="p">))</span>
+
+
+        <span class="c1">#Write Pulse: Start</span>
+        <span class="n">instrument</span><span class="o">.</span><span class="n">set_output_value</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="s2">&quot;Current&quot;</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;t_write&#39;</span><span class="p">))</span>
+        <span class="n">result_write</span> <span class="o">=</span> <span class="n">instrument</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>
+        <span class="c1">#Write Pulse: End</span>
+
+        <span class="n">instrument</span><span class="o">.</span><span class="n">set_output_value</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="s2">&quot;Current&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;t_wait&#39;</span><span class="p">))</span>
+
+        <span class="c1">#Read Pulse: Start</span>
+        <span class="n">instrument</span><span class="o">.</span><span class="n">set_output_value</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="s2">&quot;Current&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;i_read&#39;</span><span class="p">))</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;t_read&#39;</span><span class="p">))</span>
+        <span class="n">result_read</span> <span class="o">=</span> <span class="n">instrument</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>
+        <span class="c1">#Read Pulse: End</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">result_write</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="c1">#Current Write</span>
+            <span class="n">result_write</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="c1">#Voltage Write</span>
+            <span class="n">result_read</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="c1">#Current Read</span>
+            <span class="n">result_read</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="c1">#Voltage Read</span>
+            <span class="n">result_read</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">result_read</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="c1">#Resistance</span>
+            <span class="n">result_read</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="c1">#Timer</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">localtime</span><span class="p">())</span> <span class="c1">#Datetime</span>
+        <span class="p">]</span>
+
+
+        <span class="k">match</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cycle&#39;</span><span class="p">)):</span>
+            <span class="k">case</span> <span class="mi">1</span><span class="p">:</span> 
+                <span class="n">result_plots</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="p">[[</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>  <span class="c1"># Cycle V-I</span>
+                     <span class="p">[</span><span class="n">result</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="mi">4</span><span class="p">]]],</span>  <span class="c1"># Resistance vs Time</span>
+                    <span class="p">[[</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="mi">4</span><span class="p">]],</span>  <span class="c1"># Resistance vs Current</span>
+                     <span class="p">[</span><span class="n">result</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]]]</span>   <span class="c1"># Current vs Time</span>
+                <span class="p">]</span>
+            <span class="k">case</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">val</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">result_plots</span> <span class="o">=</span> <span class="p">[</span>
+                        <span class="p">[[</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>  <span class="c1"># Cycle V-I +</span>
+                         <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">],</span>
+                         <span class="p">[</span><span class="n">result</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="mi">4</span><span class="p">]]],</span>  <span class="c1"># Resistance vs Time</span>
+                        <span class="p">[[</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="mi">4</span><span class="p">]],</span>  <span class="c1"># Resistance vs Voltage +</span>
+                         <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">],</span>
+                         <span class="p">[</span><span class="n">result</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]]]</span>   <span class="c1"># Voltage vs Time</span>
+                    <span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">result_plots</span> <span class="o">=</span> <span class="p">[</span>
+                        <span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">],</span>
+                         <span class="p">[</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>  <span class="c1"># Cycle V-I -</span>
+                         <span class="p">[</span><span class="n">result</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="mi">4</span><span class="p">]]],</span>  <span class="c1"># Resistance vs Time</span>
+                        <span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">],</span>
+                         <span class="p">[</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="mi">4</span><span class="p">]],</span>  <span class="c1"># Resistance vs Voltage -</span>
+                         <span class="p">[</span><span class="n">result</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]]]</span>   <span class="c1"># Current vs Time</span>
+                    <span class="p">]</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">result</span><span class="p">,</span> <span class="n">result_plots</span><span class="p">]</span>                </div></div>
+
+
+        
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Ricardo E. Silva.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
