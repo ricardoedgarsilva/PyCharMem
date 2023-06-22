@@ -121,7 +121,6 @@ uc-micro-py
 urllib3
 wcwidth
 Werkzeug
-windows-curses
 wrapt
 XlsxWriter
 zipp
