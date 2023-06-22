@@ -1,7 +1,5 @@
 .DS_Store
 data
 test.py
-measurements/__pycache__
-instruments/__pycache__
-build
-dist
+src/measurements/__pycache__
+src/instruments/__pycache__

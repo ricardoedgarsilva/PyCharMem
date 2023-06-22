@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>instruments package &mdash; PyCharMem 0.0.6 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            PyCharMem
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="PyCharMem.html">PyCharMem module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PyCharMem</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">instruments package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/instruments.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="instruments-package">
+<h1>instruments package<a class="headerlink" href="#instruments-package" title="Permalink to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-instruments.keithley_2401">
+<span id="instruments-keithley-2401-module"></span><h2>instruments.keithley_2401 module<a class="headerlink" href="#module-instruments.keithley_2401" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="instruments.keithley_2401.Instrument">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">instruments.keithley_2401.</span></span><span class="sig-name descname"><span class="pre">Instrument</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/keithley_2401.html#Instrument"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#instruments.keithley_2401.Instrument" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A class used to represent and control an instrument.</p>
+<p>…</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="instruments.keithley_2401.Instrument.rm">
+<span class="sig-name descname"><span class="pre">rm</span></span><a class="headerlink" href="#instruments.keithley_2401.Instrument.rm" title="Permalink to this definition"></a></dt>
+<dd><p>a pyvisa ResourceManager object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ResourceManager</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="instruments.keithley_2401.Instrument.inst">
+<span class="sig-name descname"><span class="pre">inst</span></span><a class="headerlink" href="#instruments.keithley_2401.Instrument.inst" title="Permalink to this definition"></a></dt>
+<dd><p>the instrument object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="instruments.keithley_2401.Instrument.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/keithley_2401.html#Instrument.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#instruments.keithley_2401.Instrument.close" title="Permalink to this definition"></a></dt>
+<dd><p>Closes the instrument.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="instruments.keithley_2401.Instrument.init">
+<span class="sig-name descname"><span class="pre">init</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/keithley_2401.html#Instrument.init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#instruments.keithley_2401.Instrument.init" title="Permalink to this definition"></a></dt>
+<dd><p>Initializes the instrument.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="instruments.keithley_2401.Instrument.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/keithley_2401.html#Instrument.reset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#instruments.keithley_2401.Instrument.reset" title="Permalink to this definition"></a></dt>
+<dd><p>Resets the instrument.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="instruments.keithley_2401.Instrument.write">
+<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">command</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/keithley_2401.html#Instrument.write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#instruments.keithley_2401.Instrument.write" title="Permalink to this definition"></a></dt>
+<dd><p>Sends a command to the instrument.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="instruments.keithley_2401.Instrument.query">
+<span class="sig-name descname"><span class="pre">query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">command</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/keithley_2401.html#Instrument.query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#instruments.keithley_2401.Instrument.query" title="Permalink to this definition"></a></dt>
+<dd><p>Sends a command and receives a response from the instrument.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="instruments.keithley_2401.Instrument.set_output_state">
+<span class="sig-name descname"><span class="pre">set_output_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/keithley_2401.html#Instrument.set_output_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#instruments.keithley_2401.Instrument.set_output_state" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the output state of the instrument.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="instruments.keithley_2401.Instrument.set_output_value">
+<span class="sig-name descname"><span class="pre">set_output_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/keithley_2401.html#Instrument.set_output_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#instruments.keithley_2401.Instrument.set_output_value" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the output value of the instrument.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="instruments.keithley_2401.Instrument.get_output_value">
+<span class="sig-name descname"><span class="pre">get_output_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/keithley_2401.html#Instrument.get_output_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#instruments.keithley_2401.Instrument.get_output_value" title="Permalink to this definition"></a></dt>
+<dd><p>Measures the output value from the instrument.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="instruments.keithley_2401.Instrument.fetch">
+<span class="sig-name descname"><span class="pre">fetch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/keithley_2401.html#Instrument.fetch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#instruments.keithley_2401.Instrument.fetch" title="Permalink to this definition"></a></dt>
+<dd><p>Fetches data from the instrument.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="instruments.keithley_2401.Instrument.read">
+<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/keithley_2401.html#Instrument.read"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#instruments.keithley_2401.Instrument.read" title="Permalink to this definition"></a></dt>
+<dd><p>Reads data from the instrument.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="instruments.keithley_2401.Instrument.get_timer">
+<span class="sig-name descname"><span class="pre">get_timer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/keithley_2401.html#Instrument.get_timer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#instruments.keithley_2401.Instrument.get_timer" title="Permalink to this definition"></a></dt>
+<dd><p>Gets the timer value of the instrument.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="instruments.keithley_2401.Instrument.reset_timer">
+<span class="sig-name descname"><span class="pre">reset_timer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/keithley_2401.html#Instrument.reset_timer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#instruments.keithley_2401.Instrument.reset_timer" title="Permalink to this definition"></a></dt>
+<dd><p>Resets the instrument’s timer.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="instruments.keithley_2401.Instrument.set_mode_fixed">
+<span class="sig-name descname"><span class="pre">set_mode_fixed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/keithley_2401.html#Instrument.set_mode_fixed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#instruments.keithley_2401.Instrument.set_mode_fixed" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the instrument’s measurement mode to fixed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="instruments.keithley_2401.Instrument.set_src_func">
+<span class="sig-name descname"><span class="pre">set_src_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/keithley_2401.html#Instrument.set_src_func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#instruments.keithley_2401.Instrument.set_src_func" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the source function of the instrument.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="instruments.keithley_2401.Instrument.set_func_range">
+<span class="sig-name descname"><span class="pre">set_func_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">':AUTO</span> <span class="pre">ON'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/keithley_2401.html#Instrument.set_func_range"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#instruments.keithley_2401.Instrument.set_func_range" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the range of the instrument.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="instruments.keithley_2401.Instrument.set_func_step">
+<span class="sig-name descname"><span class="pre">set_func_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/keithley_2401.html#Instrument.set_func_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#instruments.keithley_2401.Instrument.set_func_step" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the step value of the instrument.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="instruments.keithley_2401.Instrument.set_sense_func">
+<span class="sig-name descname"><span class="pre">set_sense_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/keithley_2401.html#Instrument.set_sense_func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#instruments.keithley_2401.Instrument.set_sense_func" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the sense function of the instrument.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="instruments.keithley_2401.Instrument.set_func_cplc">
+<span class="sig-name descname"><span class="pre">set_func_cplc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/keithley_2401.html#Instrument.set_func_cplc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#instruments.keithley_2401.Instrument.set_func_cplc" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the compliance of the instrument.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="instruments.keithley_2401.Instrument.set_func_nplc">
+<span class="sig-name descname"><span class="pre">set_func_nplc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/keithley_2401.html#Instrument.set_func_nplc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#instruments.keithley_2401.Instrument.set_func_nplc" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the integration time of the instrument.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/keithley_2401.html#Instrument.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id0" title="Permalink to this definition"></a></dt>
+<dd><p>Closes instrument.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>logger</strong> (<em>Logger</em>) – the Logger object for logging debug and error messages</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id1">
+<span class="sig-name descname"><span class="pre">fetch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/keithley_2401.html#Instrument.fetch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id1" title="Permalink to this definition"></a></dt>
+<dd><p>Fetches instrument and returns list of values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>logger</strong> (<em>Logger</em>) – the Logger object for logging debug and error messages</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id2">
+<span class="sig-name descname"><span class="pre">get_output_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/keithley_2401.html#Instrument.get_output_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id2" title="Permalink to this definition"></a></dt>
+<dd><p>Measures output value of voltage, current or resistance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logger</strong> (<em>Logger</em>) – the Logger object for logging debug and error messages</p></li>
+<li><p><strong>func</strong> (<em>str</em>) – the function of the instrument (Current/Voltage/Resistance)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id3">
+<span class="sig-name descname"><span class="pre">get_timer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/keithley_2401.html#Instrument.get_timer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id3" title="Permalink to this definition"></a></dt>
+<dd><p>Returns timer value of the instrument.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>logger</strong> (<em>Logger</em>) – the Logger object for logging debug and error messages</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4">
+<span class="sig-name descname"><span class="pre">init</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/keithley_2401.html#Instrument.init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id4" title="Permalink to this definition"></a></dt>
+<dd><p>Initializes instrument.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>logger</strong> (<em>Logger</em>) – the Logger object for logging debug and error messages</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id5">
+<span class="sig-name descname"><span class="pre">query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">command</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/keithley_2401.html#Instrument.query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id5" title="Permalink to this definition"></a></dt>
+<dd><p>Queries instrument.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logger</strong> (<em>Logger</em>) – the Logger object for logging debug and error messages</p></li>
+<li><p><strong>command</strong> (<em>str</em>) – the command to be queried from the instrument</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id6">
+<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/keithley_2401.html#Instrument.read"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id6" title="Permalink to this definition"></a></dt>
+<dd><p>Reads instrument and returns list of values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>logger</strong> (<em>Logger</em>) – the Logger object for logging debug and error messages</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id7">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/keithley_2401.html#Instrument.reset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id7" title="Permalink to this definition"></a></dt>
+<dd><p>Resets instrument.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>logger</strong> (<em>Logger</em>) – the Logger object for logging debug and error messages</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id8">
+<span class="sig-name descname"><span class="pre">reset_timer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/keithley_2401.html#Instrument.reset_timer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id8" title="Permalink to this definition"></a></dt>
+<dd><p>Resets timer of the instrument.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>logger</strong> (<em>Logger</em>) – the Logger object for logging debug and error messages</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id9">
+<span class="sig-name descname"><span class="pre">set_func_cplc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/keithley_2401.html#Instrument.set_func_cplc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id9" title="Permalink to this definition"></a></dt>
+<dd><p>Sets compliance of voltage or current.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logger</strong> (<em>Logger</em>) – the Logger object for logging debug and error messages</p></li>
+<li><p><strong>func</strong> (<em>str</em>) – the function of the instrument (Current/Voltage)</p></li>
+<li><p><strong>value</strong> (<em>float</em>) – the compliance value to be set on the instrument</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id10">
+<span class="sig-name descname"><span class="pre">set_func_nplc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/keithley_2401.html#Instrument.set_func_nplc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id10" title="Permalink to this definition"></a></dt>
+<dd><p>Sets integration time for current or voltage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logger</strong> (<em>Logger</em>) – the Logger object for logging debug and error messages</p></li>
+<li><p><strong>func</strong> (<em>str</em>) – the function of the instrument (current or voltage)</p></li>
+<li><p><strong>value</strong> (<em>float</em>) – the value to set the integration time to</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id11">
+<span class="sig-name descname"><span class="pre">set_func_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">':AUTO</span> <span class="pre">ON'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/keithley_2401.html#Instrument.set_func_range"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id11" title="Permalink to this definition"></a></dt>
+<dd><p>Sets range of voltage, current, or resistance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logger</strong> (<em>Logger</em>) – the Logger object for logging debug and error messages</p></li>
+<li><p><strong>func</strong> (<em>str</em>) – the function of the instrument (Current/Voltage/Resistance)</p></li>
+<li><p><strong>range</strong> (<em>str</em>) – the range to be set on the instrument (default is ‘:AUTO ON’)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id12">
+<span class="sig-name descname"><span class="pre">set_func_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/keithley_2401.html#Instrument.set_func_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id12" title="Permalink to this definition"></a></dt>
+<dd><p>Sets step for the given function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logger</strong> (<em>Logger</em>) – the Logger object for logging debug and error messages</p></li>
+<li><p><strong>func</strong> (<em>str</em>) – the function of the instrument (Current/Voltage)</p></li>
+<li><p><strong>step</strong> (<em>float</em>) – the step value to be set on the instrument</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id13">
+<span class="sig-name descname"><span class="pre">set_mode_fixed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/keithley_2401.html#Instrument.set_mode_fixed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id13" title="Permalink to this definition"></a></dt>
+<dd><p>Sets measurement mode to fixed for the given function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logger</strong> (<em>Logger</em>) – the Logger object for logging debug and error messages</p></li>
+<li><p><strong>func</strong> (<em>str</em>) – the function of the instrument (Current/Voltage)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id14">
+<span class="sig-name descname"><span class="pre">set_output_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/keithley_2401.html#Instrument.set_output_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id14" title="Permalink to this definition"></a></dt>
+<dd><p>Sets output state of the instrument.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logger</strong> (<em>Logger</em>) – the Logger object for logging debug and error messages</p></li>
+<li><p><strong>state</strong> (<em>str</em>) – the state to be set on the instrument (ON/OFF)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id15">
+<span class="sig-name descname"><span class="pre">set_output_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/keithley_2401.html#Instrument.set_output_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id15" title="Permalink to this definition"></a></dt>
+<dd><p>Sets output value of voltage or current.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logger</strong> (<em>Logger</em>) – the Logger object for logging debug and error messages</p></li>
+<li><p><strong>func</strong> (<em>str</em>) – the function of the instrument (Current/Voltage)</p></li>
+<li><p><strong>value</strong> (<em>float</em>) – the value to be set on the instrument</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id16">
+<span class="sig-name descname"><span class="pre">set_sense_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/keithley_2401.html#Instrument.set_sense_func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id16" title="Permalink to this definition"></a></dt>
+<dd><p>Sets sense function of voltage, current or resistance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logger</strong> (<em>Logger</em>) – the Logger object for logging debug and error messages</p></li>
+<li><p><strong>func</strong> (<em>str</em>) – the sense function of the instrument (Current/Voltage/Resistance)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id17">
+<span class="sig-name descname"><span class="pre">set_src_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/keithley_2401.html#Instrument.set_src_func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id17" title="Permalink to this definition"></a></dt>
+<dd><p>Sets source function of voltage or current.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logger</strong> (<em>Logger</em>) – the Logger object for logging debug and error messages</p></li>
+<li><p><strong>func</strong> (<em>str</em>) – the function of the instrument (Current/Voltage)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id18">
+<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">command</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/keithley_2401.html#Instrument.write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id18" title="Permalink to this definition"></a></dt>
+<dd><p>Writes command to instrument.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logger</strong> (<em>Logger</em>) – the Logger object for logging debug and error messages</p></li>
+<li><p><strong>command</strong> (<em>str</em>) – the command to be written to the instrument</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-instruments.sim">
+<span id="instruments-sim-module"></span><h2>instruments.sim module<a class="headerlink" href="#module-instruments.sim" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="instruments.sim.Instrument">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">instruments.sim.</span></span><span class="sig-name descname"><span class="pre">Instrument</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/sim.html#Instrument"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#instruments.sim.Instrument" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="instruments.sim.Instrument.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/sim.html#Instrument.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#instruments.sim.Instrument.close" title="Permalink to this definition"></a></dt>
+<dd><p>Closes the instrument.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>logger</strong> (<em>Logger</em>) – the Logger object for logging debug and error messages.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="instruments.sim.Instrument.fetch">
+<span class="sig-name descname"><span class="pre">fetch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/sim.html#Instrument.fetch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#instruments.sim.Instrument.fetch" title="Permalink to this definition"></a></dt>
+<dd><p>Fetches the instrument and returns a list of values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>logger</strong> (<em>Logger</em>) – the Logger object for logging debug and error messages.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="instruments.sim.Instrument.get_output_value">
+<span class="sig-name descname"><span class="pre">get_output_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/sim.html#Instrument.get_output_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#instruments.sim.Instrument.get_output_value" title="Permalink to this definition"></a></dt>
+<dd><p>Measures the output value for a given function (voltage, current, or resistance).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logger</strong> (<em>Logger</em>) – the Logger object for logging debug and error messages.</p></li>
+<li><p><strong>func</strong> (<em>str</em>) – the function for which the output value is being measured (Voltage/Current/Resistance).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="instruments.sim.Instrument.get_timer">
+<span class="sig-name descname"><span class="pre">get_timer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/sim.html#Instrument.get_timer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#instruments.sim.Instrument.get_timer" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the timer value of the instrument.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>logger</strong> (<em>Logger</em>) – the Logger object for logging debug and error messages.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="instruments.sim.Instrument.init">
+<span class="sig-name descname"><span class="pre">init</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/sim.html#Instrument.init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#instruments.sim.Instrument.init" title="Permalink to this definition"></a></dt>
+<dd><p>Initializes the instrument.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>logger</strong> (<em>Logger</em>) – the Logger object for logging debug and error messages.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="instruments.sim.Instrument.query">
+<span class="sig-name descname"><span class="pre">query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">command</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/sim.html#Instrument.query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#instruments.sim.Instrument.query" title="Permalink to this definition"></a></dt>
+<dd><p>Sends a query to the instrument.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logger</strong> (<em>Logger</em>) – the Logger object for logging debug and error messages.</p></li>
+<li><p><strong>command</strong> (<em>str</em>) – the query to be sent to the instrument.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="instruments.sim.Instrument.read">
+<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/sim.html#Instrument.read"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#instruments.sim.Instrument.read" title="Permalink to this definition"></a></dt>
+<dd><p>Reads the instrument and returns a list of values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>logger</strong> (<em>Logger</em>) – the Logger object for logging debug and error messages.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="instruments.sim.Instrument.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/sim.html#Instrument.reset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#instruments.sim.Instrument.reset" title="Permalink to this definition"></a></dt>
+<dd><p>Resets the instrument to default settings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>logger</strong> (<em>Logger</em>) – the Logger object for logging debug and error messages.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="instruments.sim.Instrument.reset_timer">
+<span class="sig-name descname"><span class="pre">reset_timer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/sim.html#Instrument.reset_timer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#instruments.sim.Instrument.reset_timer" title="Permalink to this definition"></a></dt>
+<dd><p>Resets the timer of the instrument.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>logger</strong> (<em>Logger</em>) – the Logger object for logging debug and error messages.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="instruments.sim.Instrument.set_func_cplc">
+<span class="sig-name descname"><span class="pre">set_func_cplc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/sim.html#Instrument.set_func_cplc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#instruments.sim.Instrument.set_func_cplc" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the compliance for a given function (voltage or current).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logger</strong> (<em>Logger</em>) – the Logger object for logging debug and error messages.</p></li>
+<li><p><strong>func</strong> (<em>str</em>) – the function of the instrument (Voltage/Current).</p></li>
+<li><p><strong>value</strong> (<em>float</em>) – the compliance value to be set on the instrument.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="instruments.sim.Instrument.set_func_nplc">
+<span class="sig-name descname"><span class="pre">set_func_nplc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/sim.html#Instrument.set_func_nplc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#instruments.sim.Instrument.set_func_nplc" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the integration time for a given function (voltage or current).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logger</strong> (<em>Logger</em>) – the Logger object for logging debug and error messages.</p></li>
+<li><p><strong>func</strong> (<em>str</em>) – the function of the instrument (Voltage/Current).</p></li>
+<li><p><strong>value</strong> (<em>float</em>) – the integration time to be set on the instrument.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="instruments.sim.Instrument.set_func_range">
+<span class="sig-name descname"><span class="pre">set_func_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">':AUTO</span> <span class="pre">ON'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/sim.html#Instrument.set_func_range"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#instruments.sim.Instrument.set_func_range" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the range of the given function on the instrument.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logger</strong> (<em>Logger</em>) – the Logger object for logging debug and error messages.</p></li>
+<li><p><strong>func</strong> (<em>str</em>) – the function of the instrument (Voltage/Current).</p></li>
+<li><p><strong>range</strong> (<em>str</em>) – the range to be set on the instrument (default is ‘:AUTO ON’).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="instruments.sim.Instrument.set_func_step">
+<span class="sig-name descname"><span class="pre">set_func_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/sim.html#Instrument.set_func_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#instruments.sim.Instrument.set_func_step" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the step for a given function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logger</strong> (<em>Logger</em>) – the Logger object for logging debug and error messages.</p></li>
+<li><p><strong>func</strong> (<em>str</em>) – the function of the instrument (Voltage/Current).</p></li>
+<li><p><strong>step</strong> (<em>float</em>) – the step value to be set on the instrument.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="instruments.sim.Instrument.set_mode_fixed">
+<span class="sig-name descname"><span class="pre">set_mode_fixed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/sim.html#Instrument.set_mode_fixed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#instruments.sim.Instrument.set_mode_fixed" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the measurement mode of the instrument to ‘fixed’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logger</strong> (<em>Logger</em>) – the Logger object for logging debug and error messages.</p></li>
+<li><p><strong>func</strong> (<em>str</em>) – the function for which the measurement mode is being set.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="instruments.sim.Instrument.set_output_state">
+<span class="sig-name descname"><span class="pre">set_output_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/sim.html#Instrument.set_output_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#instruments.sim.Instrument.set_output_state" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the output state of the instrument.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logger</strong> (<em>Logger</em>) – the Logger object for logging debug and error messages.</p></li>
+<li><p><strong>state</strong> (<em>str</em>) – the desired state of the instrument output (ON/OFF).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="instruments.sim.Instrument.set_output_value">
+<span class="sig-name descname"><span class="pre">set_output_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/sim.html#Instrument.set_output_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#instruments.sim.Instrument.set_output_value" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the output value for a given function (voltage or current).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logger</strong> (<em>Logger</em>) – the Logger object for logging debug and error messages.</p></li>
+<li><p><strong>func</strong> (<em>str</em>) – the function for which the output value is being set (Voltage/Current).</p></li>
+<li><p><strong>value</strong> (<em>float</em>) – the desired output value.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="instruments.sim.Instrument.set_sense_func">
+<span class="sig-name descname"><span class="pre">set_sense_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/sim.html#Instrument.set_sense_func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#instruments.sim.Instrument.set_sense_func" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the sense function of the instrument (voltage, current, or resistance).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logger</strong> (<em>Logger</em>) – the Logger object for logging debug and error messages.</p></li>
+<li><p><strong>func</strong> (<em>str</em>) – the sense function to be set on the instrument (Voltage/Current/Resistance).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="instruments.sim.Instrument.set_src_func">
+<span class="sig-name descname"><span class="pre">set_src_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/sim.html#Instrument.set_src_func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#instruments.sim.Instrument.set_src_func" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the source function of the instrument (voltage or current).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logger</strong> (<em>Logger</em>) – the Logger object for logging debug and error messages.</p></li>
+<li><p><strong>func</strong> (<em>str</em>) – the source function to be set on the instrument (Voltage/Current).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="instruments.sim.Instrument.write">
+<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">command</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instruments/sim.html#Instrument.write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#instruments.sim.Instrument.write" title="Permalink to this definition"></a></dt>
+<dd><p>Writes a command to the instrument.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logger</strong> (<em>Logger</em>) – the Logger object for logging debug and error messages.</p></li>
+<li><p><strong>command</strong> (<em>str</em>) – the command to be written to the instrument.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-instruments">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-instruments" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Ricardo E. Silva.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

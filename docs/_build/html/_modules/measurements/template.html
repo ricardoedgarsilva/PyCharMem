@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>measurements.template &mdash; PyCharMem 0.0.6 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            PyCharMem
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../PyCharMem.html">PyCharMem module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PyCharMem</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">measurements.template</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for measurements.template</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Imports </span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> <span class="c1">#Necessary for returning nan values</span>
+
+<div class="viewcode-block" id="Measurement"><a class="viewcode-back" href="../../measurements.html#measurements.template.Measurement">[docs]</a><span class="k">class</span> <span class="nc">Measurement</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">instrument</span><span class="p">):</span> <span class="c1">#Initialize measurement (DON&#39;T CHANGE ARGUMENTS)</span>
+        <span class="c1"># Necessary parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Name of measurement&#39;</span>   <span class="c1"># Name of measurement</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nparams</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;n_cycles&#39;</span><span class="p">]</span>         <span class="c1"># List of necessary parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">headers</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Example header&#39;</span><span class="p">]</span>   <span class="c1"># List of headers for table and xlsx file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>  <span class="c1"># Retrieve list of parameters from config file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vals</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Example value&#39;</span><span class="p">]</span>       <span class="c1"># List of values that vary in each measurement</span>
+        <span class="c1"># End of necessary parameters</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_plot_parameters</span><span class="p">()</span>                      <span class="c1"># Set plot parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initialize_instrument</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">instrument</span><span class="p">)</span>  <span class="c1"># Initialize instrument</span>
+        
+
+<div class="viewcode-block" id="Measurement.set_plot_parameters"><a class="viewcode-back" href="../../measurements.html#measurements.template.Measurement.set_plot_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">set_plot_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cycle_type</span><span class="p">):</span> <span class="c1"># Set plot parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_grid</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="c1"># Set plot grid (rows, columns)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_titles</span> <span class="o">=</span> <span class="p">[[</span><span class="s1">&#39;Example plot title&#39;</span><span class="p">]]</span> <span class="c1"># List of plot titles (each list is a row)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_labels</span> <span class="o">=</span> <span class="p">[[[</span><span class="s1">&#39;Example x label&#39;</span><span class="p">,</span> <span class="s1">&#39;Example y label&#39;</span><span class="p">]]]</span> <span class="c1"># List of plot labels (each list is a row, and each plot requires a list with x and y labels)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_clear</span> <span class="o">=</span> <span class="p">[[</span><span class="kc">True</span><span class="p">]]</span> <span class="c1"># List of plot clear flags (each list is a row, and each plot requires a boolean value)</span></div>
+
+<div class="viewcode-block" id="Measurement.initialize_instrument"><a class="viewcode-back" href="../../measurements.html#measurements.template.Measurement.initialize_instrument">[docs]</a>    <span class="k">def</span> <span class="nf">initialize_instrument</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">instrument</span><span class="p">):</span>
+        <span class="c1"># Use this function to initialize the instrument and set its initial parameters, this function is called only once</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Setting instrument initial parameters&#39;</span><span class="p">)</span>
+        <span class="n">instrument</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>
+        <span class="n">instrument</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="s1">&#39;INIT:IMM&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Instrument parameters set!&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Measurement.measure_val"><a class="viewcode-back" href="../../measurements.html#measurements.template.Measurement.measure_val">[docs]</a>    <span class="k">def</span> <span class="nf">measure_val</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">instrument</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="c1"># Use this function to measure a single value from the vals list</span>
+        <span class="c1"># This function is called for each value in the vals list</span>
+        <span class="c1"># The function should return a list with the results of the measurement and a list with the results of the plots</span>
+        <span class="c1"># The results of the measurement should be a list of values equal to the specified headers</span>
+
+
+
+        <span class="c1"># Do something</span>
+
+        <span class="c1"># Return results</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Example value&#39;</span><span class="p">]</span> <span class="c1"># List of results of the measurement</span>
+        <span class="n">result_plots</span> <span class="o">=</span> <span class="p">[[[</span><span class="s1">&#39;Example x value&#39;</span><span class="p">,</span> <span class="s1">&#39;Example y value&#39;</span><span class="p">]]]</span> <span class="c1"># List of results of the plots (each list is a row, and each plot requires a list with x and y values)</span>
+        
+        <span class="k">return</span> <span class="p">[</span><span class="n">result</span><span class="p">,</span> <span class="n">result_plots</span><span class="p">]</span> <span class="c1"># Return results, don&#39;t change this line</span></div></div>
+ 
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Ricardo E. Silva.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
