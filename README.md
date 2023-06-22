@@ -143,7 +143,7 @@ Don't forget to give the project a star! Thanks again!
 <!-- LICENSE -->
 ## License
 
-Distributed under the [GNU General Public License v3.0]([licence-url]).
+Distributed under the [GNU General Public License v3.0]([[licence-url]]).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
