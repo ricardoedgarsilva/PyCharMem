@@ -45,7 +45,6 @@ matplotlib
 mdit-py-plugins
 mdurl
 ml-dtypes
-mpi4py
 npyscreen
 numpy
 oauthlib
