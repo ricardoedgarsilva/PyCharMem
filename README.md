@@ -8,12 +8,6 @@
     <br />
     <a href="https://github.com/ricardoedgarsilva/PyCharMem"><strong>Explore the docs »</strong></a>
     <br />
-    <br />
-    <a href="https://github.com/ricardoedgarsilva/PyCharMem">View Demo</a>
-    ·
-    <a href="https://github.com/ricardoedgarsilva/PyCharMem/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/ricardoedgarsilva/PyCharMem/issues">Request Feature</a>
   </p>
 </div>
 
@@ -50,13 +44,13 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-PyCharMem is a Python program that allows you to measure the charge memory of a device. The program measures the charge memory of a device under different conditions, which are specified in a configuration file.
+PyCharMem is a robust Python-based software, engineered to perform electrical characterization on memristive devices. It conducts these measurements under a range of conditions dictated by a user-configured file, thereby offering a great deal of flexibility and control.
 
-The program has been developed by Ricardo E. Silva and is licensed under the GNU General Public License v3.0. The source code is available on GitHub.
+Developed by Ricardo E. Silva, PyCharMem is openly licensed under the GNU General Public License v3.0, with the source code readily accessible on GitHub, promoting transparency and community-based enhancements.
 
-PyCharMem provides a command-line interface (CLI) that allows you to select a measurement type, enter measurement parameters, and run a measurement. The program also has a GUI that provides real-time visualization of the measurement results.
+PyCharMem furnishes both a command-line interface (CLI) and a graphical user interface (GUI). The CLI permits users to select a specific measurement type, key in the necessary parameters, and initiate the measurement. Simultaneously, the GUI presents an intuitive platform for real-time results visualization, enhancing user understanding and interaction.
 
-PyCharMem was developed as part of a research project at INESC-MN Lisbon, Portugal.
+The inception of PyCharMem traces back to a comprehensive research project at INESC-MN Lisbon, Portugal, a testament to its scientific rigor and reliability.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -67,11 +61,6 @@ PyCharMem was developed as part of a research project at INESC-MN Lisbon, Portug
 This section should list any major frameworks/libraries used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
 
 * [![Python][Python]][Python-url]
-* [![Rich][Rich]][Rich-url]
-* [![InquirerPy][InquirerPy]][InquirerPy-url]
-* [![PyQt6][PyQt6]][PyQt6-url]
-* [![PyQtGraph][PyQtGraph]][PyQtGraph-url]
-* [![PyVISA][PyVISA]][PyVISA-url]
 * [![YAML][YAML]][YAML-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -81,18 +70,19 @@ This section should list any major frameworks/libraries used to bootstrap your p
 <!-- GETTING STARTED -->
 ## Getting Started
 
-In order to get started clone the repository and install the required dependencies.
-
 ### Prerequisites
 
-PyCharMem can run in every operating system that supports Python 3.6 or higher. The following instructions will guide you through the process of installing Python 3.6 or higher. Then you will need to get an National Instruments GPIB card and install the NI-VISA drivers. If your instrument is not in `/measurements` folder you will need to create an API for it.
+
+PyCharMem is compatible with all operating systems that support Python 3.9 or above. This guide will walk you through the steps necessary to install Python 3.9 or a newer version. Afterward, you'll need to acquire a National Instruments GPIB card and install the specific NI-VISA drivers for your case. If your device is not listed in the /instruments directory, you will need to generate a file using the "template.py" file provided in the same folder. This will serve as a communication bridge between your device and the system, effectively functioning as an API.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 ### Installation
 
-After cloning the repository, you will need to install the required dependencies. The following instructions will guide you through the process.
+Once you have cloned the repository or downloaded a particular release, it's essential to install the necessary dependencies. Here's how you can proceed with the process:
+
+Firstly, you will need to install the Python requirements. Execute the following command to do so:
 
   ```sh
     pip install -r requirements.txt
@@ -112,7 +102,7 @@ In order to run the program open a terminal window and run the following command
     python PyCharMem.py
   ```
 
-_For more, please refer to the manual.pdf
+For more, please refer to the documentation.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -121,9 +111,9 @@ _For more, please refer to the manual.pdf
 <!-- ROADMAP -->
 ## Roadmap
 
-- [ ] Add changelog
-- [ ] Add manual
-- [ ] Add more measurements
+
+- [X] Create documentation
+- [ ] Add step measurements
 
 
 See the [open issues](https://github.com/ricardoedgarsilva/PyCharMem/issues) for a full list of proposed features (and known issues).
@@ -153,7 +143,7 @@ Don't forget to give the project a star! Thanks again!
 <!-- LICENSE -->
 ## License
 
-Distributed under the MIT License. See `LICENSE.txt` for more information.
+Distributed under the [licence](GNU General Public License v3.0).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -162,7 +152,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Project Link: [https://github.com/ricardoedgarsilva/PyCharMem](https://github.com/ricardoedgarsilva/PyCharMem)
+Personal Website: [https://ricardoedgarsilva.super.site](Link)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
