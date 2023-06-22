@@ -143,7 +143,7 @@ Don't forget to give the project a star! Thanks again!
 <!-- LICENSE -->
 ## License
 
-Distributed under the [licence](GNU General Public License v3.0).
+Distributed under the [licence-url](GNU General Public License v3.0).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -152,7 +152,7 @@ Distributed under the [licence](GNU General Public License v3.0).
 <!-- CONTACT -->
 ## Contact
 
-Personal Website: [https://ricardoedgarsilva.super.site](Link)
+Personal Website: [Link](https://ricardoedgarsilva.super.site)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
