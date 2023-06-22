@@ -93,7 +93,7 @@ scikit-learn
 scipy
 simple-term-menu
 six
-sklearn
+scikit-learn
 snowballstemmer
 Sphinx
 sphinx-pdj-theme
