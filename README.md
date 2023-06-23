@@ -6,7 +6,7 @@
 <br />
   <p align="center">
     <br />
-    <a href="https://github.com/ricardoedgarsilva/PyCharMem"><strong>Explore the docs »</strong></a>
+    <a href="https://ricardoedgarsilva.github.io/PyCharMem/"><strong>Explore the docs »</strong></a>
     <br />
   </p>
 </div>
