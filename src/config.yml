@@ -1,10 +1,8 @@
-# Sample configuration file for the 
 sample:
   name: "MemQuD_CPI_Q1S11"  # Name of the sample ex: "MRG6N1"
   device: "55R2"  # location of the device ex: "x1y6"
   path: "C:\\Users\\ricar\\OneDrive - Universidade de Lisboa\\Desktop\\Data" # path to save the data ex: "C:\\Users\\Admin\\Desktop\\Data"
 
-# Load Instrument
 instrument:
   model: "sim"  # name of the sourcemeter file without .py ex: "keithley_2400"
   address: "GPIB0::24::INSTR"  # address of the sourcemeter ex: "GPIB0::24::INSTR"
@@ -37,4 +35,24 @@ pulsedVI:
   t_wait: 0.00001  # time between each cycle
   nplc: 2  # number of power line cycles
 
+sweepIV:
+  cycle: "+-"  # cycle of the voltage (ex: "+-","-+", "+" or "-")
+  n_cycles: 1  # number of cycles
+  v+:  5.0 # maximum voltage value of positive cycle
+  v-: -5.0  # minimum voltage value of negative cycle
+  v_step: 0.3  # voltage step
+  ccplc+: 0.000001  # current compliance for positive cycle
+  ccplc-: 0.000001  # current compliance for negative cycle
+  t_sweep: 0.00001  # time between each voltage step
+  nplc: 2 #number of power line cycles
 
+sweepVI:
+  cycle: "+-"  # cycle of the voltage (ex: "+-","-+", "+" or "-")
+  n_cycles: 1  # number of cycles
+  i+:  2.0 # maximum voltage value of positive cycle
+  i-: -2.0  # minimum voltage value of negative cycle
+  i_step: 0.5  # voltage step
+  vcplc+: 0.1  # current compliance for positive cycle
+  vcplc-: 0.1  # current compliance for negative cycle
+  t_sweep: 0.00001  # time between each voltage step
+  nplc: 2  # number of power line cycles

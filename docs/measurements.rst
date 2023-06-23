@@ -20,6 +20,22 @@ measurements.pulsedVI module
    :undoc-members:
    :show-inheritance:
 
+measurements.sweepIV module
+----------------------------
+
+.. automodule:: measurements.sweepIV
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+measurements.sweepVI module
+----------------------------
+
+.. automodule:: measurements.sweepVI
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 measurements.template module
 ----------------------------
 

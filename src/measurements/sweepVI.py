@@ -40,19 +40,19 @@ def create_list(logger, cycle, max_val, min_val, step):
 class Measurement:
     def __init__(self, logger, config, instrument):
         """
-        Initialize a Measurement object.
+        Initialize the Measurement class.
 
         Args:
-            logger (logging.Logger): The logger object to use for logging messages.
-            config (dict): The configuration dictionary containing measurement parameters.
-            instrument (object): The instrument object used for measurement.
+        logger (logging.Logger): Logger to use for logging messages.
+        config (dict): Dictionary containing configuration parameters.
+        instrument (Instrument): Instrument object to use for measurement.
 
         """
 
-        self.name = 'pulsedVI'
-        self.nparams = ['cycle', 'n_cycles', 'i+', 'i-', 'i_step', 'i_read', 'vcplc+','vcplc-', 't_write', 't_read', 't_wait', 'nplc']
+        self.name = 'sweepVI'
+        self.nparams = ['cycle', 'n_cycles', 'i+', 'i-', 'i_step', 'vcplc+','vcplc-', 't_sweep', 'nplc']
 
-        self.headers = ['Current Write[A]', 'Voltage Write [A]', 'Current Read [V]', 'Voltage Read [A]', 'Resistance [Ω]', 'Timer [s]', 'Datetime']
+        self.headers = ['Current [A]', 'Voltage [V]', 'Resistance [Ω]', 'Timer [s]', 'Datetime']
 
         self.params = dict(config.items())
         self.vals = create_list(
@@ -68,10 +68,10 @@ class Measurement:
 
     def set_plot_parameters(self, cycle_type):
         """
-        Set the plot parameters based on the cycle type.
+        Set parameters for the plot based on the type of cycle.
 
         Args:
-            cycle_type (str): The cycle type.
+        cycle_type (str): Type of the cycle which could be '1' or '2'.
 
         """
 
@@ -97,11 +97,11 @@ class Measurement:
 
     def initialize_instrument(self, logger, instrument):
         """
-        Initialize the instrument with the specified parameters.
+        Initialize the instrument with initial parameters.
 
         Args:
-            logger (logging.Logger): The logger object to use for logging messages.
-            instrument (object): The instrument object used for measurement.
+        logger (logging.Logger): Logger to use for logging messages.
+        instrument (Instrument): Instrument object to use for setting parameters.
 
         """
 
@@ -118,47 +118,32 @@ class Measurement:
 
     def measure_val(self, logger, instrument, val):
         """
-        Perform a measurement for a specific value.
+        Measure the output for a given current and return the result along with the plots.
 
         Args:
-            logger (logging.Logger): The logger object to use for logging messages.
-            instrument (object): The instrument object used for measurement.
-            val (float): The value to measure.
+        logger (logging.Logger): Logger to use for logging messages.
+        instrument (Instrument): Instrument object to use for measurement.
+        val (float): The current value to measure.
 
         Returns:
-            list: The measurement results and plots.
+        list: A list containing the result of measurement and the plots.
 
         """
 
         if val>0: instrument.set_func_cplc(logger, func="Voltage", value=self.params.get(self.name).get('vcplc+'))
         else: instrument.set_func_cplc(logger, func="Voltage", value=self.params.get(self.name).get('vcplc-'))
 
-        time.sleep(self.params.get(self.name).get('t_wait'))
-
-
-        #Write Pulse: Start
         instrument.set_output_value(logger, "Current", val)
-        time.sleep(self.params.get(self.name).get('t_write'))
-        result_write = instrument.read(logger)
-        #Write Pulse: End
+        result_sweep = instrument.read(logger)
 
-        instrument.set_output_value(logger, "Current", 0)
-        time.sleep(self.params.get(self.name).get('t_wait'))
-
-        #Read Pulse: Start
-        instrument.set_output_value(logger, "Current", self.params.get(self.name).get('i_read'))
-        time.sleep(self.params.get(self.name).get('t_read'))
-        result_read = instrument.read(logger)
-        #Read Pulse: End
+        time.sleep(self.params.get(self.name).get('t_sweep'))
 
         result = [
-            result_write[1], #Current Write
-            result_write[0], #Voltage Write
-            result_read[1], #Current Read
-            result_read[0], #Voltage Read
-            result_read[0]/result_read[1], #Resistance
-            result_read[3], #Timer
-            time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()) #Datetime
+            val,                    #Current [0]
+            result_sweep[0],        #Voltage [1]
+            result_sweep[0]/val,    #Resistance [2]
+            result_sweep[3],        #Timer [3]
+            time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())    #Datetime [4]
         ]
 
 
@@ -166,28 +151,28 @@ class Measurement:
             case 1: 
                 result_plots = [
                     [[result[0], result[1]],    # [Current, Voltage]    Cycle V-I
-                     [result[5], result[4]]],   # [Time, Resistance]    Resistance vs Time
-                    [[result[0], result[4]],    # [Current, Resistance] Resistance vs Current
-                     [result[5], result[0]]]    # [Time, Current]       Current vs Time
+                     [result[3], result[2]]],   # [Timer, Resistance]   Resistance vs Time
+                    [[result[0], result[2]],    # [Current, Resistance] Resistance vs Voltage
+                     [result[3], result[0]]]    # [Timer, Current]      Current vs Time
                 ]
             case 2:
                 if val >= 0:
                     result_plots = [
                         [[result[0], result[1]],    # [Current, Voltage]    Cycle V-I +
-                         [np.nan, np.nan],          # [Current, Voltage]    Cycle V-I -
-                         [result[5], result[4]]],   # [Time, Resistance]    Resistance vs Time
-                        [[result[0], result[4]],    # [Current, Resistance] Resistance vs Current +
-                         [np.nan, np.nan],          # [Current, Resistance] Resistance vs Current -
-                         [result[5], result[0]]]    # [Time, Current]       Current vs Time
+                         [np.nan, np.nan],          # [NaN, NaN]            Cycle V-I -
+                         [result[3], result[2]]],   # [Time, Resistance]    Resistance vs Time
+                        [[result[0], result[2]],    # [Current, Resistance] Resistance vs Current +
+                         [np.nan, np.nan],          # [NaN, NaN]            Resistance vs Current -
+                         [result[3], result[0]]]    # [Time, Current]       Current vs Time    
                     ]
                 else:
                     result_plots = [
-                        [[np.nan, np.nan],          # [Current, Voltage]    Cycle V-I +
+                        [[np.nan, np.nan],          # [NaN, NaN]            Cycle V-I +
                          [result[0], result[1]],    # [Current, Voltage]    Cycle V-I -
-                         [result[5], result[4]]],   # [Time, Resistance]    Resistance vs Time
-                        [[np.nan, np.nan],          # [Current, Resistance] Resistance vs Current +
-                         [result[0], result[4]],    # [Current, Resistance] Resistance vs Current -
-                         [result[5], result[0]]]    # [Time, Current]       Current vs Time
+                         [result[3], result[2]]],   # [Time, Resistance]    Resistance vs Time   
+                        [[np.nan, np.nan],          # [NaN, NaN]            Resistance vs Current +
+                         [result[0], result[2]],    # [Current, Resistance] Resistance vs Current -    
+                         [result[3], result[0]]]    # [Time, Current]       Current vs Time
                     ]
 
         return [result, result_plots]                

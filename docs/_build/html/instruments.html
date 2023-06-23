@@ -18,7 +18,8 @@
         <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="measurements package" href="measurements.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -41,8 +42,85 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="PyCharMem.html">PyCharMem module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="measurements.html">measurements package</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">instruments package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-instruments.keithley_2401">instruments.keithley_2401 module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#instruments.keithley_2401.Instrument"><code class="docutils literal notranslate"><span class="pre">Instrument</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#instruments.keithley_2401.Instrument.rm"><code class="docutils literal notranslate"><span class="pre">Instrument.rm</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#instruments.keithley_2401.Instrument.inst"><code class="docutils literal notranslate"><span class="pre">Instrument.inst</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#instruments.keithley_2401.Instrument.close"><code class="docutils literal notranslate"><span class="pre">Instrument.close()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#instruments.keithley_2401.Instrument.init"><code class="docutils literal notranslate"><span class="pre">Instrument.init()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#instruments.keithley_2401.Instrument.reset"><code class="docutils literal notranslate"><span class="pre">Instrument.reset()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#instruments.keithley_2401.Instrument.write"><code class="docutils literal notranslate"><span class="pre">Instrument.write()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#instruments.keithley_2401.Instrument.query"><code class="docutils literal notranslate"><span class="pre">Instrument.query()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#instruments.keithley_2401.Instrument.set_output_state"><code class="docutils literal notranslate"><span class="pre">Instrument.set_output_state()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#instruments.keithley_2401.Instrument.set_output_value"><code class="docutils literal notranslate"><span class="pre">Instrument.set_output_value()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#instruments.keithley_2401.Instrument.get_output_value"><code class="docutils literal notranslate"><span class="pre">Instrument.get_output_value()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#instruments.keithley_2401.Instrument.fetch"><code class="docutils literal notranslate"><span class="pre">Instrument.fetch()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#instruments.keithley_2401.Instrument.read"><code class="docutils literal notranslate"><span class="pre">Instrument.read()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#instruments.keithley_2401.Instrument.get_timer"><code class="docutils literal notranslate"><span class="pre">Instrument.get_timer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#instruments.keithley_2401.Instrument.reset_timer"><code class="docutils literal notranslate"><span class="pre">Instrument.reset_timer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#instruments.keithley_2401.Instrument.set_mode_fixed"><code class="docutils literal notranslate"><span class="pre">Instrument.set_mode_fixed()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#instruments.keithley_2401.Instrument.set_src_func"><code class="docutils literal notranslate"><span class="pre">Instrument.set_src_func()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#instruments.keithley_2401.Instrument.set_func_range"><code class="docutils literal notranslate"><span class="pre">Instrument.set_func_range()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#instruments.keithley_2401.Instrument.set_func_step"><code class="docutils literal notranslate"><span class="pre">Instrument.set_func_step()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#instruments.keithley_2401.Instrument.set_sense_func"><code class="docutils literal notranslate"><span class="pre">Instrument.set_sense_func()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#instruments.keithley_2401.Instrument.set_func_cplc"><code class="docutils literal notranslate"><span class="pre">Instrument.set_func_cplc()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#instruments.keithley_2401.Instrument.set_func_nplc"><code class="docutils literal notranslate"><span class="pre">Instrument.set_func_nplc()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id0"><code class="docutils literal notranslate"><span class="pre">Instrument.close()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id1"><code class="docutils literal notranslate"><span class="pre">Instrument.fetch()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2"><code class="docutils literal notranslate"><span class="pre">Instrument.get_output_value()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id3"><code class="docutils literal notranslate"><span class="pre">Instrument.get_timer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id4"><code class="docutils literal notranslate"><span class="pre">Instrument.init()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id5"><code class="docutils literal notranslate"><span class="pre">Instrument.query()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id6"><code class="docutils literal notranslate"><span class="pre">Instrument.read()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id7"><code class="docutils literal notranslate"><span class="pre">Instrument.reset()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id8"><code class="docutils literal notranslate"><span class="pre">Instrument.reset_timer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id9"><code class="docutils literal notranslate"><span class="pre">Instrument.set_func_cplc()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id10"><code class="docutils literal notranslate"><span class="pre">Instrument.set_func_nplc()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id11"><code class="docutils literal notranslate"><span class="pre">Instrument.set_func_range()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id12"><code class="docutils literal notranslate"><span class="pre">Instrument.set_func_step()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id13"><code class="docutils literal notranslate"><span class="pre">Instrument.set_mode_fixed()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id14"><code class="docutils literal notranslate"><span class="pre">Instrument.set_output_state()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id15"><code class="docutils literal notranslate"><span class="pre">Instrument.set_output_value()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id16"><code class="docutils literal notranslate"><span class="pre">Instrument.set_sense_func()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id17"><code class="docutils literal notranslate"><span class="pre">Instrument.set_src_func()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id18"><code class="docutils literal notranslate"><span class="pre">Instrument.write()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-instruments.sim">instruments.sim module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#instruments.sim.Instrument"><code class="docutils literal notranslate"><span class="pre">Instrument</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#instruments.sim.Instrument.close"><code class="docutils literal notranslate"><span class="pre">Instrument.close()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#instruments.sim.Instrument.fetch"><code class="docutils literal notranslate"><span class="pre">Instrument.fetch()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#instruments.sim.Instrument.get_output_value"><code class="docutils literal notranslate"><span class="pre">Instrument.get_output_value()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#instruments.sim.Instrument.get_timer"><code class="docutils literal notranslate"><span class="pre">Instrument.get_timer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#instruments.sim.Instrument.init"><code class="docutils literal notranslate"><span class="pre">Instrument.init()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#instruments.sim.Instrument.query"><code class="docutils literal notranslate"><span class="pre">Instrument.query()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#instruments.sim.Instrument.read"><code class="docutils literal notranslate"><span class="pre">Instrument.read()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#instruments.sim.Instrument.reset"><code class="docutils literal notranslate"><span class="pre">Instrument.reset()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#instruments.sim.Instrument.reset_timer"><code class="docutils literal notranslate"><span class="pre">Instrument.reset_timer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#instruments.sim.Instrument.set_func_cplc"><code class="docutils literal notranslate"><span class="pre">Instrument.set_func_cplc()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#instruments.sim.Instrument.set_func_nplc"><code class="docutils literal notranslate"><span class="pre">Instrument.set_func_nplc()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#instruments.sim.Instrument.set_func_range"><code class="docutils literal notranslate"><span class="pre">Instrument.set_func_range()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#instruments.sim.Instrument.set_func_step"><code class="docutils literal notranslate"><span class="pre">Instrument.set_func_step()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#instruments.sim.Instrument.set_mode_fixed"><code class="docutils literal notranslate"><span class="pre">Instrument.set_mode_fixed()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#instruments.sim.Instrument.set_output_state"><code class="docutils literal notranslate"><span class="pre">Instrument.set_output_state()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#instruments.sim.Instrument.set_output_value"><code class="docutils literal notranslate"><span class="pre">Instrument.set_output_value()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#instruments.sim.Instrument.set_sense_func"><code class="docutils literal notranslate"><span class="pre">Instrument.set_sense_func()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#instruments.sim.Instrument.set_src_func"><code class="docutils literal notranslate"><span class="pre">Instrument.set_src_func()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#instruments.sim.Instrument.write"><code class="docutils literal notranslate"><span class="pre">Instrument.write()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-instruments">Module contents</a></li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -59,6 +137,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">&lt;no title&gt;</a></li>
       <li class="breadcrumb-item active">instruments package</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/instruments.rst.txt" rel="nofollow"> View page source</a>
@@ -738,7 +817,9 @@
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="measurements.html" class="btn btn-neutral float-left" title="measurements package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
 
   <hr/>
 

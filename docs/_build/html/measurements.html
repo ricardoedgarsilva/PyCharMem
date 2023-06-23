@@ -18,7 +18,9 @@
         <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="instruments package" href="instruments.html" />
+    <link rel="prev" title="PyCharMem module" href="PyCharMem.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -41,8 +43,63 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="PyCharMem.html">PyCharMem module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">measurements package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-measurements.pulsedIV">measurements.pulsedIV module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#measurements.pulsedIV.Measurement"><code class="docutils literal notranslate"><span class="pre">Measurement</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#measurements.pulsedIV.Measurement.initialize_instrument"><code class="docutils literal notranslate"><span class="pre">Measurement.initialize_instrument()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#measurements.pulsedIV.Measurement.measure_val"><code class="docutils literal notranslate"><span class="pre">Measurement.measure_val()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#measurements.pulsedIV.Measurement.set_plot_parameters"><code class="docutils literal notranslate"><span class="pre">Measurement.set_plot_parameters()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#measurements.pulsedIV.create_list"><code class="docutils literal notranslate"><span class="pre">create_list()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-measurements.pulsedVI">measurements.pulsedVI module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#measurements.pulsedVI.Measurement"><code class="docutils literal notranslate"><span class="pre">Measurement</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#measurements.pulsedVI.Measurement.initialize_instrument"><code class="docutils literal notranslate"><span class="pre">Measurement.initialize_instrument()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#measurements.pulsedVI.Measurement.measure_val"><code class="docutils literal notranslate"><span class="pre">Measurement.measure_val()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#measurements.pulsedVI.Measurement.set_plot_parameters"><code class="docutils literal notranslate"><span class="pre">Measurement.set_plot_parameters()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#measurements.pulsedVI.create_list"><code class="docutils literal notranslate"><span class="pre">create_list()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-measurements.sweepIV">measurements.sweepIV module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#measurements.sweepIV.Measurement"><code class="docutils literal notranslate"><span class="pre">Measurement</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#measurements.sweepIV.Measurement.initialize_instrument"><code class="docutils literal notranslate"><span class="pre">Measurement.initialize_instrument()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#measurements.sweepIV.Measurement.measure_val"><code class="docutils literal notranslate"><span class="pre">Measurement.measure_val()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#measurements.sweepIV.Measurement.set_plot_parameters"><code class="docutils literal notranslate"><span class="pre">Measurement.set_plot_parameters()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#measurements.sweepIV.create_list"><code class="docutils literal notranslate"><span class="pre">create_list()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-measurements.sweepVI">measurements.sweepVI module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#measurements.sweepVI.Measurement"><code class="docutils literal notranslate"><span class="pre">Measurement</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#measurements.sweepVI.Measurement.initialize_instrument"><code class="docutils literal notranslate"><span class="pre">Measurement.initialize_instrument()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#measurements.sweepVI.Measurement.measure_val"><code class="docutils literal notranslate"><span class="pre">Measurement.measure_val()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#measurements.sweepVI.Measurement.set_plot_parameters"><code class="docutils literal notranslate"><span class="pre">Measurement.set_plot_parameters()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#measurements.sweepVI.create_list"><code class="docutils literal notranslate"><span class="pre">create_list()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-measurements.template">measurements.template module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#measurements.template.Measurement"><code class="docutils literal notranslate"><span class="pre">Measurement</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#measurements.template.Measurement.initialize_instrument"><code class="docutils literal notranslate"><span class="pre">Measurement.initialize_instrument()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#measurements.template.Measurement.measure_val"><code class="docutils literal notranslate"><span class="pre">Measurement.measure_val()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#measurements.template.Measurement.set_plot_parameters"><code class="docutils literal notranslate"><span class="pre">Measurement.set_plot_parameters()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-measurements">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="instruments.html">instruments package</a></li>
 </ul>
 
         </div>
@@ -59,6 +116,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">&lt;no title&gt;</a></li>
       <li class="breadcrumb-item active">measurements package</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/measurements.rst.txt" rel="nofollow"> View page source</a>
@@ -236,6 +294,134 @@
 </dd></dl>
 
 </section>
+<section id="module-measurements.sweepIV">
+<span id="measurements-sweepiv-module"></span><h2>measurements.sweepIV module<a class="headerlink" href="#module-measurements.sweepIV" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="measurements.sweepIV.Measurement">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">measurements.sweepIV.</span></span><span class="sig-name descname"><span class="pre">Measurement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instrument</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/measurements/sweepIV.html#Measurement"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#measurements.sweepIV.Measurement" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="measurements.sweepIV.Measurement.initialize_instrument">
+<span class="sig-name descname"><span class="pre">initialize_instrument</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instrument</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/measurements/sweepIV.html#Measurement.initialize_instrument"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#measurements.sweepIV.Measurement.initialize_instrument" title="Permalink to this definition"></a></dt>
+<dd><p>Initialize the instrument with initial parameters.</p>
+<p>Args:
+logger (logging.Logger): Logger to use for logging messages.
+instrument (Instrument): Instrument object to use for setting parameters.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="measurements.sweepIV.Measurement.measure_val">
+<span class="sig-name descname"><span class="pre">measure_val</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instrument</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/measurements/sweepIV.html#Measurement.measure_val"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#measurements.sweepIV.Measurement.measure_val" title="Permalink to this definition"></a></dt>
+<dd><p>Measure the output for a given voltage and return the result along with the plots.</p>
+<p>Args:
+logger (logging.Logger): Logger to use for logging messages.
+instrument (Instrument): Instrument object to use for measurement.
+val (float): The voltage value to measure.</p>
+<p>Returns:
+list: A list containing the result of measurement and the plots.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="measurements.sweepIV.Measurement.set_plot_parameters">
+<span class="sig-name descname"><span class="pre">set_plot_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cycle_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/measurements/sweepIV.html#Measurement.set_plot_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#measurements.sweepIV.Measurement.set_plot_parameters" title="Permalink to this definition"></a></dt>
+<dd><p>Set parameters for the plot based on the type of cycle.</p>
+<p>Args:
+cycle_type (str): Type of the cycle which could be ‘1’ or ‘2’.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="measurements.sweepIV.create_list">
+<span class="sig-prename descclassname"><span class="pre">measurements.sweepIV.</span></span><span class="sig-name descname"><span class="pre">create_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cycle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/measurements/sweepIV.html#create_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#measurements.sweepIV.create_list" title="Permalink to this definition"></a></dt>
+<dd><p>Create a list of values based on the specified cycle type and parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logger</strong> (<em>logging.Logger</em>) – The logger object to use for logging messages.</p></li>
+<li><p><strong>cycle</strong> (<em>str</em>) – The cycle type. Valid values are ‘+’, ‘-’, ‘+-’, ‘-+’.</p></li>
+<li><p><strong>max_val</strong> (<em>float</em>) – The maximum value for the list.</p></li>
+<li><p><strong>min_val</strong> (<em>float</em>) – The minimum value for the list.</p></li>
+<li><p><strong>step</strong> (<em>float</em>) – The step size between consecutive values.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The generated list of values, rounded to 5 decimal places.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the cycle type is invalid.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-measurements.sweepVI">
+<span id="measurements-sweepvi-module"></span><h2>measurements.sweepVI module<a class="headerlink" href="#module-measurements.sweepVI" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="measurements.sweepVI.Measurement">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">measurements.sweepVI.</span></span><span class="sig-name descname"><span class="pre">Measurement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instrument</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/measurements/sweepVI.html#Measurement"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#measurements.sweepVI.Measurement" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="measurements.sweepVI.Measurement.initialize_instrument">
+<span class="sig-name descname"><span class="pre">initialize_instrument</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instrument</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/measurements/sweepVI.html#Measurement.initialize_instrument"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#measurements.sweepVI.Measurement.initialize_instrument" title="Permalink to this definition"></a></dt>
+<dd><p>Initialize the instrument with initial parameters.</p>
+<p>Args:
+logger (logging.Logger): Logger to use for logging messages.
+instrument (Instrument): Instrument object to use for setting parameters.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="measurements.sweepVI.Measurement.measure_val">
+<span class="sig-name descname"><span class="pre">measure_val</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instrument</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/measurements/sweepVI.html#Measurement.measure_val"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#measurements.sweepVI.Measurement.measure_val" title="Permalink to this definition"></a></dt>
+<dd><p>Measure the output for a given current and return the result along with the plots.</p>
+<p>Args:
+logger (logging.Logger): Logger to use for logging messages.
+instrument (Instrument): Instrument object to use for measurement.
+val (float): The current value to measure.</p>
+<p>Returns:
+list: A list containing the result of measurement and the plots.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="measurements.sweepVI.Measurement.set_plot_parameters">
+<span class="sig-name descname"><span class="pre">set_plot_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cycle_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/measurements/sweepVI.html#Measurement.set_plot_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#measurements.sweepVI.Measurement.set_plot_parameters" title="Permalink to this definition"></a></dt>
+<dd><p>Set parameters for the plot based on the type of cycle.</p>
+<p>Args:
+cycle_type (str): Type of the cycle which could be ‘1’ or ‘2’.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="measurements.sweepVI.create_list">
+<span class="sig-prename descclassname"><span class="pre">measurements.sweepVI.</span></span><span class="sig-name descname"><span class="pre">create_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cycle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/measurements/sweepVI.html#create_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#measurements.sweepVI.create_list" title="Permalink to this definition"></a></dt>
+<dd><p>Create a list of values based on the specified cycle type and parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logger</strong> (<em>logging.Logger</em>) – The logger object to use for logging messages.</p></li>
+<li><p><strong>cycle</strong> (<em>str</em>) – The cycle type. Valid values are ‘+’, ‘-’, ‘+-’, ‘-+’.</p></li>
+<li><p><strong>max_val</strong> (<em>float</em>) – The maximum value for the list.</p></li>
+<li><p><strong>min_val</strong> (<em>float</em>) – The minimum value for the list.</p></li>
+<li><p><strong>step</strong> (<em>float</em>) – The step size between consecutive values.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The generated list of values, rounded to 5 decimal places.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the cycle type is invalid.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 <section id="module-measurements.template">
 <span id="measurements-template-module"></span><h2>measurements.template module<a class="headerlink" href="#module-measurements.template" title="Permalink to this heading"></a></h2>
 <dl class="py class">
@@ -268,7 +454,10 @@
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="PyCharMem.html" class="btn btn-neutral float-left" title="PyCharMem module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="instruments.html" class="btn btn-neutral float-right" title="instruments package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 
