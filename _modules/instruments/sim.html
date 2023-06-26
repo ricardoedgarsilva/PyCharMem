@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>instruments.sim &mdash; PyCharMem 0.0.6 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            PyCharMem
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../PyCharMem.html">PyCharMem module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../measurements.html">measurements package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../instruments.html">instruments package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PyCharMem</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">instruments.sim</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for instruments.sim</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<div class="viewcode-block" id="Instrument"><a class="viewcode-back" href="../../instruments.html#instruments.sim.Instrument">[docs]</a><span class="k">class</span> <span class="nc">Instrument</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Opens and initializes the instrument.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        logger : Logger</span>
+<span class="sd">            the Logger object for logging debug and error messages.</span>
+<span class="sd">        config : dict</span>
+<span class="sd">            the configuration parameters for the instrument.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;THIS IS A SIMULATED INSTRUMENT, NO HARDWARE IS BEING USED! &quot;[SIM]&quot; WILL BE PRINTED BEFORE ALL LOGS&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;[SIM] Initializing instrument...&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">voltage</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current</span> <span class="o">=</span> <span class="mf">1e-3</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resistance</span> <span class="o">=</span> <span class="mf">1000.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timer</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_state</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[SIM] Instrument successfully initialized!&#39;</span><span class="p">)</span>
+
+
+    <span class="c1"># Basic control commands -------------------------------------------------------</span>
+    
+<div class="viewcode-block" id="Instrument.close"><a class="viewcode-back" href="../../instruments.html#instruments.sim.Instrument.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Closes the instrument.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        logger : Logger</span>
+<span class="sd">            the Logger object for logging debug and error messages.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;[SIM] Instrument closed&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Instrument.init"><a class="viewcode-back" href="../../instruments.html#instruments.sim.Instrument.init">[docs]</a>    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes the instrument.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        logger : Logger</span>
+<span class="sd">            the Logger object for logging debug and error messages.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;[SIM] Instrument initialized&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Instrument.reset"><a class="viewcode-back" href="../../instruments.html#instruments.sim.Instrument.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Resets the instrument to default settings.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        logger : Logger</span>
+<span class="sd">            the Logger object for logging debug and error messages.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;[SIM] GPIB defaults reseted&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Instrument.write"><a class="viewcode-back" href="../../instruments.html#instruments.sim.Instrument.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">command</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Writes a command to the instrument.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        logger : Logger</span>
+<span class="sd">            the Logger object for logging debug and error messages.</span>
+<span class="sd">        command : str</span>
+<span class="sd">            the command to be written to the instrument.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[SIM] Instrument command: </span><span class="si">{</span><span class="n">command</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Instrument.query"><a class="viewcode-back" href="../../instruments.html#instruments.sim.Instrument.query">[docs]</a>    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">command</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sends a query to the instrument.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        logger : Logger</span>
+<span class="sd">            the Logger object for logging debug and error messages.</span>
+<span class="sd">        command : str</span>
+<span class="sd">            the query to be sent to the instrument.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[SIM] Instrument query: </span><span class="si">{</span><span class="n">command</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Instrument.set_output_state"><a class="viewcode-back" href="../../instruments.html#instruments.sim.Instrument.set_output_state">[docs]</a>    <span class="k">def</span> <span class="nf">set_output_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the output state of the instrument.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        logger : Logger</span>
+<span class="sd">            the Logger object for logging debug and error messages.</span>
+<span class="sd">        state : str</span>
+<span class="sd">            the desired state of the instrument output (ON/OFF).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">if</span> <span class="n">state</span> <span class="o">==</span> <span class="s1">&#39;ON&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_state</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="n">state</span> <span class="o">==</span> <span class="s1">&#39;OFF&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_state</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span> <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s1">&#39;[SIM] Invalid output state!&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Instrument output set to </span><span class="si">{</span><span class="n">state</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Instrument.set_output_value"><a class="viewcode-back" href="../../instruments.html#instruments.sim.Instrument.set_output_value">[docs]</a>    <span class="k">def</span> <span class="nf">set_output_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the output value for a given function (voltage or current).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        logger : Logger</span>
+<span class="sd">            the Logger object for logging debug and error messages.</span>
+<span class="sd">        func : str</span>
+<span class="sd">            the function for which the output value is being set (Voltage/Current).</span>
+<span class="sd">        value : float</span>
+<span class="sd">            the desired output value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">func</span> <span class="o">==</span> <span class="s1">&#39;Voltage&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">voltage</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">elif</span> <span class="n">func</span> <span class="o">==</span> <span class="s1">&#39;Current&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">current</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">else</span><span class="p">:</span> <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s1">&#39;[SIM] Invalid output function!&#39;</span><span class="p">)</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Instrument </span><span class="si">{</span><span class="n">func</span><span class="si">}</span><span class="s1"> value set to </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Instrument.get_output_value"><a class="viewcode-back" href="../../instruments.html#instruments.sim.Instrument.get_output_value">[docs]</a>    <span class="k">def</span> <span class="nf">get_output_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Measures the output value for a given function (voltage, current, or resistance).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        logger : Logger</span>
+<span class="sd">            the Logger object for logging debug and error messages.</span>
+<span class="sd">        func : str</span>
+<span class="sd">            the function for which the output value is being measured (Voltage/Current/Resistance).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        
+        <span class="c1"># Simulated response based on the function</span>
+        <span class="k">if</span> <span class="n">func</span> <span class="o">==</span> <span class="s1">&#39;Voltage&#39;</span><span class="p">:</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">voltage</span>
+        <span class="k">elif</span> <span class="n">func</span> <span class="o">==</span> <span class="s1">&#39;Current&#39;</span><span class="p">:</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">current</span>
+        <span class="k">elif</span> <span class="n">func</span> <span class="o">==</span> <span class="s1">&#39;Resistance&#39;</span><span class="p">:</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">resistance</span>
+        <span class="k">else</span><span class="p">:</span> <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s1">&#39;[SIM] Invalid output function!&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Instrument.fetch"><a class="viewcode-back" href="../../instruments.html#instruments.sim.Instrument.fetch">[docs]</a>    <span class="k">def</span> <span class="nf">fetch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Fetches the instrument and returns a list of values.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        logger : Logger</span>
+<span class="sd">            the Logger object for logging debug and error messages.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="c1"># Simulated response</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;[SIM] Instrument fetched&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">voltage</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">current</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">resistance</span> <span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">timer</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Instrument.read"><a class="viewcode-back" href="../../instruments.html#instruments.sim.Instrument.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reads the instrument and returns a list of values.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        logger : Logger</span>
+<span class="sd">            the Logger object for logging debug and error messages.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Simulated response</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;[SIM] Instrument read&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">voltage</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">current</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">resistance</span> <span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">timer</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Instrument.get_timer"><a class="viewcode-back" href="../../instruments.html#instruments.sim.Instrument.get_timer">[docs]</a>    <span class="k">def</span> <span class="nf">get_timer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the timer value of the instrument.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        logger : Logger</span>
+<span class="sd">            the Logger object for logging debug and error messages.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Simulated response</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;[SIM] Instrument timer read&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">timer</span></div>
+
+<div class="viewcode-block" id="Instrument.reset_timer"><a class="viewcode-back" href="../../instruments.html#instruments.sim.Instrument.reset_timer">[docs]</a>    <span class="k">def</span> <span class="nf">reset_timer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Resets the timer of the instrument.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        logger : Logger</span>
+<span class="sd">            the Logger object for logging debug and error messages.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;[SIM] Instrument timer reseted&#39;</span><span class="p">)</span></div>
+
+    <span class="c1"># Measurement mode commands ------------------------------------------------</span>
+
+<div class="viewcode-block" id="Instrument.set_mode_fixed"><a class="viewcode-back" href="../../instruments.html#instruments.sim.Instrument.set_mode_fixed">[docs]</a>    <span class="k">def</span> <span class="nf">set_mode_fixed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the measurement mode of the instrument to &#39;fixed&#39;.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        logger : Logger</span>
+<span class="sd">            the Logger object for logging debug and error messages.</span>
+<span class="sd">        func : str</span>
+<span class="sd">            the function for which the measurement mode is being set.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;[SIM] Instrument measurement mode set to fixed&#39;</span><span class="p">)</span></div>
+
+    <span class="c1"># Measurement function commands -------------------------------------------</span>
+
+<div class="viewcode-block" id="Instrument.set_src_func"><a class="viewcode-back" href="../../instruments.html#instruments.sim.Instrument.set_src_func">[docs]</a>    <span class="k">def</span> <span class="nf">set_src_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the source function of the instrument (voltage or current).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        logger : Logger</span>
+<span class="sd">            the Logger object for logging debug and error messages.</span>
+<span class="sd">        func : str</span>
+<span class="sd">            the source function to be set on the instrument (Voltage/Current).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[SIM] Instrument source function set to </span><span class="si">{</span><span class="n">func</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Instrument.set_func_range"><a class="viewcode-back" href="../../instruments.html#instruments.sim.Instrument.set_func_range">[docs]</a>    <span class="k">def</span> <span class="nf">set_func_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="nb">range</span> <span class="o">=</span> <span class="s1">&#39;:AUTO ON&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the range of the given function on the instrument.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        logger : Logger</span>
+<span class="sd">            the Logger object for logging debug and error messages.</span>
+<span class="sd">        func : str</span>
+<span class="sd">            the function of the instrument (Voltage/Current).</span>
+<span class="sd">        range : str</span>
+<span class="sd">            the range to be set on the instrument (default is &#39;:AUTO ON&#39;).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[SIM] Instrument range set to </span><span class="si">{</span><span class="nb">range</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Instrument.set_func_step"><a class="viewcode-back" href="../../instruments.html#instruments.sim.Instrument.set_func_step">[docs]</a>    <span class="k">def</span> <span class="nf">set_func_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the step for a given function.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        logger : Logger</span>
+<span class="sd">            the Logger object for logging debug and error messages.</span>
+<span class="sd">        func : str</span>
+<span class="sd">            the function of the instrument (Voltage/Current).</span>
+<span class="sd">        step : float</span>
+<span class="sd">            the step value to be set on the instrument.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[SIM] Instrument step set to </span><span class="si">{</span><span class="n">step</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Instrument.set_sense_func"><a class="viewcode-back" href="../../instruments.html#instruments.sim.Instrument.set_sense_func">[docs]</a>    <span class="k">def</span> <span class="nf">set_sense_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the sense function of the instrument (voltage, current, or resistance).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        logger : Logger</span>
+<span class="sd">            the Logger object for logging debug and error messages.</span>
+<span class="sd">        func : str</span>
+<span class="sd">            the sense function to be set on the instrument (Voltage/Current/Resistance).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[SIM] Instrument sense function set to </span><span class="si">{</span><span class="n">func</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Instrument.set_func_cplc"><a class="viewcode-back" href="../../instruments.html#instruments.sim.Instrument.set_func_cplc">[docs]</a>    <span class="k">def</span> <span class="nf">set_func_cplc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the compliance for a given function (voltage or current).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        logger : Logger</span>
+<span class="sd">            the Logger object for logging debug and error messages.</span>
+<span class="sd">        func : str</span>
+<span class="sd">            the function of the instrument (Voltage/Current).</span>
+<span class="sd">        value : float</span>
+<span class="sd">            the compliance value to be set on the instrument.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[SIM] Instrument compliance set to </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Instrument.set_func_nplc"><a class="viewcode-back" href="../../instruments.html#instruments.sim.Instrument.set_func_nplc">[docs]</a>    <span class="k">def</span> <span class="nf">set_func_nplc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the integration time for a given function (voltage or current).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        logger : Logger</span>
+<span class="sd">            the Logger object for logging debug and error messages.</span>
+<span class="sd">        func : str</span>
+<span class="sd">            the function of the instrument (Voltage/Current).</span>
+<span class="sd">        value : float</span>
+<span class="sd">            the integration time to be set on the instrument.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[SIM] Instrument integration time set to </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div></div>
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Ricardo E. Silva.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

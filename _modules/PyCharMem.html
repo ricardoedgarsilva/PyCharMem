@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PyCharMem &mdash; PyCharMem 0.0.6 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PyCharMem
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../PyCharMem.html">PyCharMem module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../measurements.html">measurements package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../instruments.html">instruments package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PyCharMem</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">PyCharMem</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for PyCharMem</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Imports</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">atexit</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">platform</span>
+<span class="kn">import</span> <span class="nn">importlib</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">openpyxl</span>
+<span class="kn">import</span> <span class="nn">inquirer</span>
+<span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">import</span> <span class="nn">pyvisa</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pyqtgraph</span> <span class="k">as</span> <span class="nn">pg</span>
+<span class="kn">from</span> <span class="nn">art</span> <span class="kn">import</span> <span class="n">text2art</span>
+<span class="kn">from</span> <span class="nn">rich.console</span> <span class="kn">import</span> <span class="n">Console</span>
+<span class="kn">from</span> <span class="nn">rich.traceback</span> <span class="kn">import</span> <span class="n">install</span>
+<span class="kn">from</span> <span class="nn">rich.logging</span> <span class="kn">import</span> <span class="n">RichHandler</span>
+<span class="kn">from</span> <span class="nn">rich.progress</span> <span class="kn">import</span> <span class="n">Progress</span>
+<span class="kn">from</span> <span class="nn">rich.panel</span> <span class="kn">import</span> <span class="n">Panel</span>
+<span class="kn">from</span> <span class="nn">PyQt6.QtCore</span> <span class="kn">import</span> <span class="n">QThread</span><span class="p">,</span> <span class="n">pyqtSignal</span>
+<span class="kn">from</span> <span class="nn">PyQt6.QtWidgets</span> <span class="kn">import</span> <span class="p">(</span><span class="n">QApplication</span><span class="p">,</span> <span class="n">QMainWindow</span><span class="p">,</span> <span class="n">QStyleFactory</span><span class="p">,</span> <span class="n">QTableWidget</span><span class="p">,</span>
+                              <span class="n">QTableWidgetItem</span><span class="p">,</span> <span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">QTabWidget</span><span class="p">,</span> <span class="n">QGridLayout</span><span class="p">)</span>
+
+<span class="c1"># Global Variables</span>
+<span class="n">PROGRAM_INFO</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;PyCharMem&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;version&#39;</span><span class="p">:</span> <span class="s1">&#39;0.0.6&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;author&#39;</span><span class="p">:</span> <span class="s1">&#39;Ricardo E. Silva&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;email&#39;</span><span class="p">:</span> <span class="s1">&#39;ricardoedgarsilva@tecnico.ulisboa.pt&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;PyCharMem is a Python program that allows you to measure the charge memory of a device.&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;license&#39;</span><span class="p">:</span> <span class="s1">&#39;GNU General Public License v3.0&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://github.com/ricardoedgarsilva/PyCharMem&#39;</span>
+<span class="p">}</span>
+
+<div class="viewcode-block" id="verbose_debug"><a class="viewcode-back" href="../PyCharMem.html#PyCharMem.verbose_debug">[docs]</a><span class="k">def</span> <span class="nf">verbose_debug</span><span class="p">(</span><span class="n">verbose</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Configure a verbose debugging setup.</span>
+
+<span class="sd">    Initializes a logging configuration with customizable verbosity based on the provided `verbose` parameter.</span>
+<span class="sd">    If `verbose` is True, the log level is set to &quot;NOTSET&quot;; otherwise, it is set to &#39;INFO&#39;.</span>
+<span class="sd">    The log format displays only the log message with a timestamp in the format of [hour:minute:second].</span>
+<span class="sd">    The log output is handled by a RichHandler.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        logging.Logger or None: The logger object from the &quot;rich&quot; logger if the setup is successful.</span>
+<span class="sd">        If an exception occurs during setup, prints the error message and terminates the program, returning None.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">log_level</span> <span class="o">=</span> <span class="s2">&quot;NOTSET&quot;</span> <span class="k">if</span> <span class="n">verbose</span> <span class="k">else</span> <span class="s1">&#39;INFO&#39;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">log_level</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">datefmt</span><span class="o">=</span><span class="s2">&quot;[</span><span class="si">%X</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="n">handlers</span><span class="o">=</span><span class="p">[</span><span class="n">RichHandler</span><span class="p">()])</span>
+        <span class="k">return</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;rich&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">quit</span><span class="p">()</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="clear_terminal"><a class="viewcode-back" href="../PyCharMem.html#PyCharMem.clear_terminal">[docs]</a><span class="k">def</span> <span class="nf">clear_terminal</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Clear the terminal screen.</span>
+
+<span class="sd">    Uses the appropriate system command based on the operating system.</span>
+<span class="sd">    If running on Windows, executes the &#39;cls&#39; command.</span>
+<span class="sd">    If running on Unix-based systems, executes the &#39;clear&#39; command.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39;cls||clear&#39;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Unable to clear terminal screen. Please clear the screen manually.&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="print_newlines"><a class="viewcode-back" href="../PyCharMem.html#PyCharMem.print_newlines">[docs]</a><span class="k">def</span> <span class="nf">print_newlines</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Print a specified number of newline characters.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        lines (int): The number of newline characters to be printed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">lines</span> <span class="o">*</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Invalid argument.&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="splash_screen"><a class="viewcode-back" href="../PyCharMem.html#PyCharMem.splash_screen">[docs]</a><span class="k">def</span> <span class="nf">splash_screen</span><span class="p">(</span><span class="n">console</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Display a splash screen with program information.</span>
+
+<span class="sd">    Prints the program name as ASCII art using the &#39;text2art&#39; function.</span>
+<span class="sd">    Displays the program version, repository URL, and author using the &#39;console.print&#39; function.</span>
+<span class="sd">    Inserts 5 newlines using the &#39;print_newlines&#39; function.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        console (Console): A console object for rich text output.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+        
+    <span class="nb">print</span><span class="p">(</span><span class="n">text2art</span><span class="p">(</span><span class="n">PROGRAM_INFO</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]))</span>
+    <span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Version: </span><span class="si">{</span><span class="n">PROGRAM_INFO</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s1">&#39;bold blue&#39;</span><span class="p">)</span>
+    <span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Repositoty: </span><span class="si">{</span><span class="n">PROGRAM_INFO</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s1">&#39;bold blue&#39;</span><span class="p">)</span>
+    <span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Author: </span><span class="si">{</span><span class="n">PROGRAM_INFO</span><span class="p">[</span><span class="s1">&#39;author&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s1">&#39;bold blue&#39;</span><span class="p">)</span>
+    <span class="n">print_newlines</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="open_config"><a class="viewcode-back" href="../PyCharMem.html#PyCharMem.open_config">[docs]</a><span class="k">def</span> <span class="nf">open_config</span><span class="p">(</span><span class="n">logger</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Open the config file using the appropriate system command.</span>
+
+<span class="sd">    Attempts to open the &#39;config.yml&#39; file based on the operating system.</span>
+<span class="sd">    On Windows, uses the &#39;start&#39; command.</span>
+<span class="sd">    On macOS, uses the &#39;open&#39; command.</span>
+<span class="sd">    On Linux, uses the &#39;open&#39; command.</span>
+<span class="sd">    If the config file is not found, logs a critical message using the provided logger and exits the program.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        logger (logging.Logger): The logger object to use for logging error messages.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">({</span><span class="s1">&#39;Windows&#39;</span><span class="p">:</span> <span class="s1">&#39;start config.yml&#39;</span><span class="p">,</span> <span class="s1">&#39;Darwin&#39;</span><span class="p">:</span> <span class="s1">&#39;open config.yml&#39;</span><span class="p">,</span> <span class="s1">&#39;Linux&#39;</span><span class="p">:</span> <span class="s1">&#39;open config.yml&#39;</span><span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">(),</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s1">&#39;Config file not found&#39;</span><span class="p">)</span>
+        <span class="n">quit</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="read_config"><a class="viewcode-back" href="../PyCharMem.html#PyCharMem.read_config">[docs]</a><span class="k">def</span> <span class="nf">read_config</span><span class="p">(</span><span class="n">logger</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Read and load the configuration from a YAML file.</span>
+
+<span class="sd">    Attempts to read the &#39;config.yml&#39; file and load its contents using the `yaml.safe_load` function.</span>
+<span class="sd">    If the file is successfully loaded, logs an informational message using the provided logger and returns the configuration.</span>
+<span class="sd">    If the file is not found, logs a critical message and exits the program.</span>
+<span class="sd">    If the file is not a valid YAML file, logs a critical message and exits the program.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        logger (logging.Logger): The logger object to use for logging error messages.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: The configuration loaded from the YAML file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;config.yml&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Config file loaded!&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">config</span>
+    <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s1">&#39;Config file not found&#39;</span><span class="p">)</span>
+        <span class="n">quit</span><span class="p">()</span>
+    <span class="k">except</span> <span class="n">yaml</span><span class="o">.</span><span class="n">YAMLError</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s1">&#39;Config file is not a valid YAML file&#39;</span><span class="p">)</span>
+        <span class="n">quit</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="path_exists"><a class="viewcode-back" href="../PyCharMem.html#PyCharMem.path_exists">[docs]</a><span class="k">def</span> <span class="nf">path_exists</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check if a path exists.</span>
+
+<span class="sd">    Checks whether the specified `path` exists in the file system.</span>
+<span class="sd">    Returns `True` if the path exists, `False` otherwise.</span>
+<span class="sd">    If an OSError occurs during the check, it returns `False`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path (str): The path to be checked.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bool: `True` if the path exists, `False` otherwise.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="get_path"><a class="viewcode-back" href="../PyCharMem.html#PyCharMem.get_path">[docs]</a><span class="k">def</span> <span class="nf">get_path</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the path of the current file or module.</span>
+
+<span class="sd">    If the script is being run as the main module (__name__ == &#39;__main__&#39;), returns the directory name</span>
+<span class="sd">    of the current file after resolving symbolic links using `os.path.realpath`.</span>
+<span class="sd">    Otherwise, returns the directory name of the current file using `os.path.abspath`.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: The path of the current file or module.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="mkdir"><a class="viewcode-back" href="../PyCharMem.html#PyCharMem.mkdir">[docs]</a><span class="k">def</span> <span class="nf">mkdir</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a directory at the specified path.</span>
+
+<span class="sd">    Checks if the directory already exists using the `path_exists` function.</span>
+<span class="sd">    If the directory does not exist, creates it using `os.makedirs`.</span>
+<span class="sd">    Logs a debug message with the logger indicating whether the folder was created or already exists.</span>
+<span class="sd">    If an OSError occurs during the creation, logs an error message with the logger.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        logger (logging.Logger): The logger object to use for logging messages.</span>
+<span class="sd">        path (str): The path of the directory to be created.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">path_exists</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Folder </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1"> created&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Folder </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1"> already exists&#39;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Failed to create folder </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="get_index"><a class="viewcode-back" href="../PyCharMem.html#PyCharMem.get_index">[docs]</a><span class="k">def</span> <span class="nf">get_index</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the index of the last element in a directory.</span>
+
+<span class="sd">    Retrieves the index by counting the number of items in the specified `path` using `os.listdir`.</span>
+<span class="sd">    If the directory is not found, returns 0 as the index.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path (str): The path of the directory.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        int: The index of the last element in the directory.</span>
+<span class="sd">    &quot;&quot;&quot;</span>   
+    <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+    <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">return</span> <span class="n">index</span></div>
+
+<div class="viewcode-block" id="get_filename"><a class="viewcode-back" href="../PyCharMem.html#PyCharMem.get_filename">[docs]</a><span class="k">def</span> <span class="nf">get_filename</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate a filename for a new Excel file.</span>
+
+<span class="sd">    Retrieves the index of the last element in the specified `path` using the `get_index` function.</span>
+<span class="sd">    Gets the current date in the format &#39;%Y%m%d&#39; using `datetime.datetime.now().strftime`.</span>
+<span class="sd">    Constructs and returns a filename using the format &#39;{date}_{sample}_{device}_{index}.xlsx&#39;.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path (str): The path of the directory where the file will be saved.</span>
+<span class="sd">        sample (str): The name or identifier of the sample.</span>
+<span class="sd">        device (str): The name or identifier of the device.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: The generated filename for the Excel file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">index</span> <span class="o">=</span> <span class="n">get_index</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">date</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">sample</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">device</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">.xlsx&#39;</span></div>
+
+<div class="viewcode-block" id="get_available_addresses"><a class="viewcode-back" href="../PyCharMem.html#PyCharMem.get_available_addresses">[docs]</a><span class="k">def</span> <span class="nf">get_available_addresses</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the available addresses of USB devices.</span>
+
+<span class="sd">    Attempts to create a PyVISA resource manager using `pyvisa.ResourceManager`.</span>
+<span class="sd">    Retrieves the list of available resource addresses using `rm.list_resources()`.</span>
+<span class="sd">    If no USB devices are found, prints a message and returns an empty list.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List[str]: A list of available addresses of USB devices.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">rm</span> <span class="o">=</span> <span class="n">pyvisa</span><span class="o">.</span><span class="n">ResourceManager</span><span class="p">()</span>
+        <span class="n">addresses</span> <span class="o">=</span> <span class="n">rm</span><span class="o">.</span><span class="n">list_resources</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">addresses</span>
+    <span class="k">except</span> <span class="n">pyvisa</span><span class="o">.</span><span class="n">VisaIOError</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No USB devices found&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[]</span></div>
+
+<div class="viewcode-block" id="print_available_addresses"><a class="viewcode-back" href="../PyCharMem.html#PyCharMem.print_available_addresses">[docs]</a><span class="k">def</span> <span class="nf">print_available_addresses</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">console</span><span class="p">,</span> <span class="n">addresses</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Print the available addresses of USB devices.</span>
+
+<span class="sd">    Prints a blank line using the `print_newlines` function.</span>
+<span class="sd">    If no addresses are provided, logs a critical message using the provided logger and returns.</span>
+<span class="sd">    Prints a panel with the title &quot;Available Addresses&quot; using the `console.print` function.</span>
+<span class="sd">    Prints each address from the provided list using the `console.print` function.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        logger (logging.Logger): The logger object to use for logging messages.</span>
+<span class="sd">        console (Console): A console object for rich text output.</span>
+<span class="sd">        addresses (List[str]): A list of available addresses of USB devices.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    
+    <span class="n">print_newlines</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">addresses</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s1">&#39;No addresses found!&#39;</span><span class="p">)</span>
+        <span class="k">return</span>
+    
+    <span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">Panel</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="s2">&quot;[bold]Available Addresses[/bold]&quot;</span><span class="p">,</span> <span class="n">border_style</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">))</span>
+    
+    <span class="k">for</span> <span class="n">address</span> <span class="ow">in</span> <span class="n">addresses</span><span class="p">:</span>
+        <span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">address</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="check_address"><a class="viewcode-back" href="../PyCharMem.html#PyCharMem.check_address">[docs]</a><span class="k">def</span> <span class="nf">check_address</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">addresses</span><span class="p">,</span> <span class="n">address</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check if the specified address is valid in the configuration.</span>
+
+<span class="sd">    Checks if the `addresses` parameter is a dictionary and logs an error if it&#39;s not.</span>
+<span class="sd">    Checks if the specified `address` is present in the addresses dictionary and logs an error if it&#39;s not.</span>
+<span class="sd">    Checks if the address value is a dictionary and logs an error if it&#39;s not.</span>
+<span class="sd">    Checks if the required keys (&#39;type&#39;, &#39;name&#39;, &#39;protocol&#39;, &#39;port&#39;, &#39;baudrate&#39;, &#39;timeout&#39;, &#39;endline&#39;, &#39;write_timeout&#39;,</span>
+<span class="sd">    &#39;read_termination&#39;, &#39;write_termination&#39;, &#39;bytesize&#39;, &#39;parity&#39;) are present in the address dictionary and logs</span>
+<span class="sd">    an error if any of them are missing.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        logger (logging.Logger): The logger object to use for logging messages.</span>
+<span class="sd">        addresses (dict): A dictionary containing the configuration addresses.</span>
+<span class="sd">        address (str): The address to be checked.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        None</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        quit(): Exits the program if any errors are encountered.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+        
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">addresses</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s1">&#39;Instrument address in config file is not a dictionary! Please edit config file with correct address&#39;</span><span class="p">)</span>
+        <span class="n">quit</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">address</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">addresses</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s1">&#39;Instrument address in config file not found! Please edit config file with correct address&#39;</span><span class="p">)</span>
+        <span class="n">quit</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">addresses</span><span class="p">[</span><span class="n">address</span><span class="p">],</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s1">&#39;Address </span><span class="si">{}</span><span class="s1"> is not a dictionary! Please edit config file with correct address&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">address</span><span class="p">))</span>
+        <span class="n">quit</span><span class="p">()</span>
+    <span class="k">if</span> <span class="s1">&#39;type&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">addresses</span><span class="p">[</span><span class="n">address</span><span class="p">]:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s1">&#39;Address </span><span class="si">{}</span><span class="s1"> does not have a type! Please edit config file with correct address&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">address</span><span class="p">))</span>
+        <span class="n">quit</span><span class="p">()</span>
+    <span class="k">if</span> <span class="s1">&#39;name&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">addresses</span><span class="p">[</span><span class="n">address</span><span class="p">]:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s1">&#39;Address </span><span class="si">{}</span><span class="s1"> does not have a name! Please edit config file with correct address&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">address</span><span class="p">))</span>
+        <span class="n">quit</span><span class="p">()</span>
+    <span class="k">if</span> <span class="s1">&#39;protocol&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">addresses</span><span class="p">[</span><span class="n">address</span><span class="p">]:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s1">&#39;Address </span><span class="si">{}</span><span class="s1"> does not have a protocol! Please edit config file with correct address&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">address</span><span class="p">))</span>
+        <span class="n">quit</span><span class="p">()</span>
+    <span class="k">if</span> <span class="s1">&#39;port&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">addresses</span><span class="p">[</span><span class="n">address</span><span class="p">]:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s1">&#39;Address </span><span class="si">{}</span><span class="s1"> does not have a port! Please edit config file with correct address&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">address</span><span class="p">))</span>
+        <span class="n">quit</span><span class="p">()</span>
+    <span class="k">if</span> <span class="s1">&#39;baudrate&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">addresses</span><span class="p">[</span><span class="n">address</span><span class="p">]:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s1">&#39;Address </span><span class="si">{}</span><span class="s1"> does not have a baudrate! Please edit config file with correct address&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">address</span><span class="p">))</span>
+        <span class="n">quit</span><span class="p">()</span>
+    <span class="k">if</span> <span class="s1">&#39;timeout&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">addresses</span><span class="p">[</span><span class="n">address</span><span class="p">]:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s1">&#39;Address </span><span class="si">{}</span><span class="s1"> does not have a timeout! Please edit config file with correct address&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">address</span><span class="p">))</span>
+        <span class="n">quit</span><span class="p">()</span>
+    <span class="k">if</span> <span class="s1">&#39;endline&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">addresses</span><span class="p">[</span><span class="n">address</span><span class="p">]:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s1">&#39;Address </span><span class="si">{}</span><span class="s1"> does not have an endline! Please edit config file with correct address&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">address</span><span class="p">))</span>
+        <span class="n">quit</span><span class="p">()</span>
+    <span class="k">if</span> <span class="s1">&#39;write_timeout&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">addresses</span><span class="p">[</span><span class="n">address</span><span class="p">]:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s1">&#39;Address </span><span class="si">{}</span><span class="s1"> does not have a write_timeout! Please edit config file with correct address&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">address</span><span class="p">))</span>
+        <span class="n">quit</span><span class="p">()</span>
+    <span class="k">if</span> <span class="s1">&#39;read_termination&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">addresses</span><span class="p">[</span><span class="n">address</span><span class="p">]:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s1">&#39;Address </span><span class="si">{}</span><span class="s1"> does not have a read_termination! Please edit config file with correct address&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">address</span><span class="p">))</span>
+        <span class="n">quit</span><span class="p">()</span>
+    <span class="k">if</span> <span class="s1">&#39;write_termination&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">addresses</span><span class="p">[</span><span class="n">address</span><span class="p">]:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s1">&#39;Address </span><span class="si">{}</span><span class="s1"> does not have a write_termination! Please edit config file with correct address&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">address</span><span class="p">))</span>
+        <span class="n">quit</span><span class="p">()</span>
+    <span class="k">if</span> <span class="s1">&#39;bytesize&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">addresses</span><span class="p">[</span><span class="n">address</span><span class="p">]:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s1">&#39;Address </span><span class="si">{}</span><span class="s1"> does not have a bytesize! Please edit config file with correct address&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">address</span><span class="p">))</span>
+        <span class="n">quit</span><span class="p">()</span>
+    <span class="k">if</span> <span class="s1">&#39;parity&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">addresses</span><span class="p">[</span><span class="n">address</span><span class="p">]:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s1">&#39;Address </span><span class="si">{}</span><span class="s1"> does not have a parity! Please edit config file with correct address&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">address</span><span class="p">))</span>
+        <span class="n">quit</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="check_missing_params"><a class="viewcode-back" href="../PyCharMem.html#PyCharMem.check_missing_params">[docs]</a><span class="k">def</span> <span class="nf">check_missing_params</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">my_dict</span><span class="p">,</span> <span class="n">my_list</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check for missing measurement parameters in a dictionary.</span>
+
+<span class="sd">    Compares the items in `my_list` against the keys in `my_dict` to find any missing items.</span>
+<span class="sd">    If no missing items are found, logs an informational message.</span>
+<span class="sd">    If only one missing item is found, logs a critical message with the missing item and exits the program.</span>
+<span class="sd">    If multiple missing items are found, logs a critical message with a list of missing items and exits the program.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        logger (logging.Logger): The logger object to use for logging messages.</span>
+<span class="sd">        my_dict (dict): The dictionary containing the measurement parameters.</span>
+<span class="sd">        my_list (list): The list of measurement parameters to check.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        None</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        quit(): Exits the program if missing items are found.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">missing_items</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">my_list</span> <span class="k">if</span> <span class="n">item</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">my_dict</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">missing_items</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;All measurement parameters found!&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">missing_items</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Missing measurement parameter: </span><span class="si">{</span><span class="n">missing_items</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">quit</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s1">&#39;Missing measurement parameters:&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">missing_items</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;- </span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">quit</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="create_list"><a class="viewcode-back" href="../PyCharMem.html#PyCharMem.create_list">[docs]</a><span class="k">def</span> <span class="nf">create_list</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">condition_values</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a list of values based on the provided condition values.</span>
+
+<span class="sd">    Takes a list `condition_values` containing the cycle type, maximum value, minimum value, and step size.</span>
+<span class="sd">    Generates one-way lists (`listp_oneway` and `listn_oneway`) using `np.arange`.</span>
+<span class="sd">    Combines the one-way lists with maximum and minimum values to create symmetric lists (`listp` and `listn`)</span>
+<span class="sd">    using `np.concatenate`.</span>
+<span class="sd">    Constructs a dictionary `cycle_dict` with cycle types as keys and corresponding lists as values.</span>
+<span class="sd">    Returns the list of values based on the specified cycle type from the `cycle_dict`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        logger (logging.Logger): The logger object to use for logging messages.</span>
+<span class="sd">        condition_values (list): A list containing the cycle type, maximum value, minimum value, and step size.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        numpy.ndarray: The generated list of values based on the specified cycle type.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        KeyError: If an invalid cycle type is provided.</span>
+<span class="sd">        quit(): Exits the program if an invalid cycle type is provided or if an unknown error occurs.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">cycle</span><span class="p">,</span> <span class="n">max_value</span><span class="p">,</span> <span class="n">min_value</span><span class="p">,</span> <span class="n">step</span> <span class="o">=</span> <span class="n">condition_values</span>
+    <span class="n">listp_oneway</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+    <span class="n">listn_oneway</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">min_value</span><span class="p">,</span> <span class="o">-</span><span class="n">step</span><span class="p">)</span>
+    <span class="n">listp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">listp_oneway</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">max_value</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">listp_oneway</span><span class="p">)))</span>
+    <span class="n">listn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">listn_oneway</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">min_value</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">listn_oneway</span><span class="p">)))</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">cycle_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;+&#39;</span><span class="p">:</span> <span class="n">listp</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">:</span> <span class="n">listn</span><span class="p">,</span> <span class="s1">&#39;+-&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">listp</span><span class="p">,</span> <span class="n">listn</span><span class="p">)),</span> <span class="s1">&#39;-+&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">listn</span><span class="p">,</span> <span class="n">listp</span><span class="p">))}</span>
+        <span class="k">return</span> <span class="n">cycle_dict</span><span class="p">[</span><span class="n">cycle</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s1">&#39;Invalid cycle type!&#39;</span><span class="p">)</span>
+        <span class="n">quit</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unknown error occurred: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">quit</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="get_datetime"><a class="viewcode-back" href="../PyCharMem.html#PyCharMem.get_datetime">[docs]</a><span class="k">def</span> <span class="nf">get_datetime</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the current date and time as a formatted string.</span>
+
+<span class="sd">    Retrieves the current timestamp using `time.time()`.</span>
+<span class="sd">    Converts the timestamp to a `datetime` object using `datetime.datetime.fromtimestamp`.</span>
+<span class="sd">    Formats the `datetime` object as a string in the format &#39;%Y-%m-%d %H:%M:%S:%f&#39;.</span>
+<span class="sd">    Returns the formatted string representing the current date and time.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str or None: The formatted string representing the current date and time.</span>
+<span class="sd">        Returns None if an error occurs.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S:</span><span class="si">%f</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error in get_datetime(): </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="get_instrument"><a class="viewcode-back" href="../PyCharMem.html#PyCharMem.get_instrument">[docs]</a><span class="k">def</span> <span class="nf">get_instrument</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">inst_type</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get an instrument object based on the provided instrument type and address.</span>
+
+<span class="sd">    Initializes an instrument of the specified `inst_type` at the given `address`.</span>
+<span class="sd">    Logs an informational message indicating the instrument type and address.</span>
+<span class="sd">    Attempts to import the corresponding module and create an instance of the instrument class using the `import_module` function.</span>
+<span class="sd">    If successful, returns the instrument instance initialized with the provided logger, address, and additional arguments.</span>
+<span class="sd">    If an exception occurs during the initialization, logs an error message and returns None.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        logger (logging.Logger): The logger object to use for logging messages.</span>
+<span class="sd">        inst_type (str): The type of instrument to be initialized.</span>
+<span class="sd">        address (str): The address of the instrument.</span>
+<span class="sd">        **kwargs: Additional keyword arguments to be passed to the instrument initialization.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        object or None: An instance of the instrument class if initialization is successful.</span>
+<span class="sd">        None if an error occurs during initialization.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Initializing </span><span class="si">{</span><span class="n">inst_type</span><span class="si">}</span><span class="s1"> at </span><span class="si">{</span><span class="n">address</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">instrument</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="s1">&#39;instrument&#39;</span><span class="p">,</span> <span class="n">inst_type</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">instrument</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Could not initialize </span><span class="si">{</span><span class="n">inst_type</span><span class="si">}</span><span class="s1"> at </span><span class="si">{</span><span class="n">address</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="import_module"><a class="viewcode-back" href="../PyCharMem.html#PyCharMem.import_module">[docs]</a><span class="k">def</span> <span class="nf">import_module</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">inst_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">measurement_type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Import a module and retrieve a class object.</span>
+
+<span class="sd">    Imports the specified module and retrieves the corresponding class object.</span>
+<span class="sd">    The `type` parameter determines whether it&#39;s an &#39;instrument&#39; or &#39;measurement&#39; module.</span>
+<span class="sd">    Constructs the file name and object name based on the `type`, `inst_type`, and `measurement_type`.</span>
+<span class="sd">    Returns the imported class object.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        logger (logging.Logger): The logger object to use for logging messages.</span>
+<span class="sd">        type (str): The type of module to import. Can be &#39;instrument&#39; or &#39;measurement&#39;.</span>
+<span class="sd">        inst_type (str): The type of instrument. Required if `type` is &#39;instrument&#39;.</span>
+<span class="sd">        measurement_type (str): The type of measurement. Required if `type` is &#39;measurement&#39;.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        object: The imported class object.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ModuleNotFoundError: If the specified module is not found.</span>
+<span class="sd">        AttributeError: If the specified class is not found within the module.</span>
+<span class="sd">        quit(): Exits the program if an error occurs during module or class import.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">file_name</span><span class="p">,</span> <span class="n">obj_name</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span>
+    
+    <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s1">&#39;instrument&#39;</span><span class="p">:</span>
+        <span class="n">file_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;instruments.</span><span class="si">{</span><span class="n">inst_type</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">obj_name</span> <span class="o">=</span> <span class="s1">&#39;Instrument&#39;</span>
+    <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="s1">&#39;measurement&#39;</span><span class="p">:</span>
+        <span class="n">file_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;measurements.</span><span class="si">{</span><span class="n">measurement_type</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">obj_name</span> <span class="o">=</span> <span class="s1">&#39;Measurement&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s1">&#39;Invalid type passed to import_module!&#39;</span><span class="p">)</span>
+        <span class="n">quit</span><span class="p">()</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">file</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">file_name</span><span class="si">}</span><span class="s1"> module imported&#39;</span><span class="p">)</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">obj_name</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">obj_name</span><span class="si">}</span><span class="s1"> class imported&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">obj</span>
+    <span class="k">except</span> <span class="ne">ModuleNotFoundError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error importing module </span><span class="si">{</span><span class="n">file_name</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">quit</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error importing class </span><span class="si">{</span><span class="n">obj_name</span><span class="si">}</span><span class="s1"> from module </span><span class="si">{</span><span class="n">file_name</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">quit</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unexpected error while importing </span><span class="si">{</span><span class="n">file_name</span><span class="si">}</span><span class="s1"> or </span><span class="si">{</span><span class="n">obj_name</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">quit</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="menu"><a class="viewcode-back" href="../PyCharMem.html#PyCharMem.menu">[docs]</a><span class="k">def</span> <span class="nf">menu</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">console</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Display a menu and prompt for user selection.</span>
+
+<span class="sd">    Displays a menu based on the specified `type` parameter.</span>
+<span class="sd">    Constructs the menu name, message, and choices based on the menu type.</span>
+<span class="sd">    Prints the menu name using `print_newlines` and `console.print`.</span>
+<span class="sd">    Prompts the user for menu selection using `inquirer.prompt`.</span>
+<span class="sd">    Logs the selected choice and returns it.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        logger (logging.Logger): The logger object to use for logging messages.</span>
+<span class="sd">        console (Console): A console object for rich text output.</span>
+<span class="sd">        type (str): The type of menu to display. Can be &#39;main&#39; or &#39;measurements&#39;.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: The user-selected choice from the menu.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        quit(): Exits the program if an invalid menu type is provided.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">name</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">choices</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="p">[]</span>
+    
+    <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s1">&#39;main&#39;</span><span class="p">:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Main Menu&#39;</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;Select an option:&#39;</span>
+        <span class="n">choices</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Exit&#39;</span><span class="p">,</span> <span class="s1">&#39;Select Measurement&#39;</span><span class="p">,</span> <span class="s1">&#39;Print Available Addresses&#39;</span><span class="p">,</span> <span class="s1">&#39;Edit Configuration&#39;</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="s1">&#39;measurements&#39;</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">list_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="s1">&#39;measurements&#39;</span><span class="p">)</span>
+            <span class="n">measurement_types</span> <span class="o">=</span> <span class="p">[</span><span class="n">filename</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">list_dir</span> <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.py&#39;</span><span class="p">)]</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">measurement_types</span><span class="p">)</span><span class="si">}</span><span class="s1"> measurement types found&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s1">&#39;No measurement types found!&#39;</span><span class="p">)</span>
+            <span class="n">quit</span><span class="p">()</span>
+        
+        <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Measurement Selection Menu&#39;</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;Select a measurement:&#39;</span>
+        <span class="n">choices</span> <span class="o">=</span> <span class="n">measurement_types</span>
+        <span class="n">choices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Back&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s1">&#39;Invalid menu type passed to menu function!&#39;</span><span class="p">)</span>
+        <span class="n">quit</span><span class="p">()</span>
+
+    <span class="n">print_newlines</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">Panel</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[bold]</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">[/bold]&quot;</span><span class="p">,</span> <span class="n">border_style</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">))</span>
+    <span class="n">menu_options</span> <span class="o">=</span> <span class="p">[</span><span class="n">inquirer</span><span class="o">.</span><span class="n">List</span><span class="p">(</span><span class="s1">&#39;choice&#39;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="n">choices</span><span class="p">)]</span>
+    <span class="n">answer</span> <span class="o">=</span> <span class="n">inquirer</span><span class="o">.</span><span class="n">prompt</span><span class="p">(</span><span class="n">menu_options</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Returning answer: </span><span class="si">{</span><span class="n">answer</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">answer</span><span class="p">[</span><span class="s1">&#39;choice&#39;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="ask_for_comment"><a class="viewcode-back" href="../PyCharMem.html#PyCharMem.ask_for_comment">[docs]</a><span class="k">def</span> <span class="nf">ask_for_comment</span><span class="p">(</span><span class="n">logger</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prompt the user to enter a comment.</span>
+
+<span class="sd">    Displays a prompt asking the user for a comment.</span>
+<span class="sd">    Validates that the comment is not empty.</span>
+<span class="sd">    Logs the entered comment and returns it.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        logger (logging.Logger): The logger object to use for logging messages.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: The comment entered by the user.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">print_newlines</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">comment</span> <span class="o">=</span> <span class="p">[</span><span class="n">inquirer</span><span class="o">.</span><span class="n">Text</span><span class="p">(</span><span class="s1">&#39;comment&#39;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;What would you like to comment?&quot;</span><span class="p">,</span> <span class="n">validate</span><span class="o">=</span><span class="k">lambda</span> <span class="n">_</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">),]</span>
+    <span class="n">answer</span> <span class="o">=</span> <span class="n">inquirer</span><span class="o">.</span><span class="n">prompt</span><span class="p">(</span><span class="n">comment</span><span class="p">)</span>
+    <span class="k">while</span> <span class="n">answer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">answer</span> <span class="o">=</span> <span class="n">inquirer</span><span class="o">.</span><span class="n">prompt</span><span class="p">(</span><span class="n">comment</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Comment: </span><span class="si">{</span><span class="n">answer</span><span class="p">[</span><span class="s2">&quot;comment&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">answer</span><span class="p">[</span><span class="s2">&quot;comment&quot;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="repeat_measurement"><a class="viewcode-back" href="../PyCharMem.html#PyCharMem.repeat_measurement">[docs]</a><span class="k">def</span> <span class="nf">repeat_measurement</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">console</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prompt the user to repeat a measurement.</span>
+
+<span class="sd">    Displays a prompt asking the user if they would like to repeat the measurement.</span>
+<span class="sd">    Logs the user&#39;s answer and returns it.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        logger (logging.Logger): The logger object to use for logging messages.</span>
+<span class="sd">        console (Console): A console object for rich text output.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bool: True if the user chooses to repeat the measurement, False otherwise.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">print_newlines</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">comment</span> <span class="o">=</span> <span class="p">[</span><span class="n">inquirer</span><span class="o">.</span><span class="n">Confirm</span><span class="p">(</span><span class="s1">&#39;repeat&#39;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Would you like to repeat the measurement?&quot;</span><span class="p">)]</span>
+    <span class="n">answer</span> <span class="o">=</span> <span class="n">inquirer</span><span class="o">.</span><span class="n">prompt</span><span class="p">(</span><span class="n">comment</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Repeat: </span><span class="si">{</span><span class="n">answer</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">answer</span><span class="p">[</span><span class="s1">&#39;repeat&#39;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="exit"><a class="viewcode-back" href="../PyCharMem.html#PyCharMem.exit">[docs]</a><span class="k">def</span> <span class="nf">exit</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">inst</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Exit the program and close the instrument.</span>
+
+<span class="sd">    Logs an informational message indicating that the program is exiting.</span>
+<span class="sd">    Attempts to close the instrument using the `close` method of the provided `inst` object.</span>
+<span class="sd">    Logs a message indicating whether the instrument was successfully closed or not.</span>
+<span class="sd">    Exits the program.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        logger (logging.Logger): The logger object to use for logging messages.</span>
+<span class="sd">        inst (object): The instrument object to be closed.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        None</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Exiting program...&#39;</span><span class="p">)</span> 
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">inst</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Instrument closed&#39;</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Failed to close instrument&#39;</span><span class="p">)</span></div>
+
+
+<span class="c1"># Important Classes ---------------------------------------------------------------</span>
+
+
+<div class="viewcode-block" id="FileSave"><a class="viewcode-back" href="../PyCharMem.html#PyCharMem.FileSave">[docs]</a><span class="k">class</span> <span class="nc">FileSave</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
+
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize a new Excel file.</span>
+
+<span class="sd">        Creates a new Excel file with separate &#39;config&#39; and &#39;data&#39; sheets.</span>
+<span class="sd">        Sets up the file path and name based on the provided `path`, `sample`, and `device`.</span>
+<span class="sd">        Saves the empty workbook to the specified file path.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            logger (logging.Logger): The logger object to use for logging messages.</span>
+<span class="sd">            path (str): The path where the file will be saved.</span>
+<span class="sd">            sample (str): The sample name.</span>
+<span class="sd">            device (str): The device name.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+        <span class="n">mkdir</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_name</span> <span class="o">=</span> <span class="n">get_filename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wb</span> <span class="o">=</span> <span class="n">openpyxl</span><span class="o">.</span><span class="n">Workbook</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wb</span><span class="o">.</span><span class="n">create_sheet</span><span class="p">(</span><span class="s1">&#39;config&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wb</span><span class="o">.</span><span class="n">create_sheet</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wb</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wb</span><span class="p">[</span><span class="s1">&#39;Sheet&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wb</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">)</span>
+
+<div class="viewcode-block" id="FileSave.save_config"><a class="viewcode-back" href="../PyCharMem.html#PyCharMem.FileSave.save_config">[docs]</a>    <span class="k">def</span> <span class="nf">save_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">measurement_type</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save the configuration data to the &#39;config&#39; sheet.</span>
+
+<span class="sd">        Writes the configuration data to the &#39;config&#39; sheet of the Excel file.</span>
+<span class="sd">        The `config` parameter is expected to be a dictionary with sections as keys and section data as values.</span>
+<span class="sd">        Each section is written as a separate block in the sheet.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            logger (logging.Logger): The logger object to use for logging messages.</span>
+<span class="sd">            config (dict): The configuration data.</span>
+<span class="sd">            measurement_type (str): The type of measurement.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ws</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wb</span><span class="p">[</span><span class="s1">&#39;config&#39;</span><span class="p">]</span>
+
+        <span class="n">sections</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sample&#39;</span><span class="p">,</span> <span class="s1">&#39;instrument&#39;</span><span class="p">,</span> <span class="n">measurement_type</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="n">sections</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ws</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">section</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">section</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ws</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ws</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wb</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Configuration file saved in config sheet&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FileSave.save_headers"><a class="viewcode-back" href="../PyCharMem.html#PyCharMem.FileSave.save_headers">[docs]</a>    <span class="k">def</span> <span class="nf">save_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">headers_list</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save the headers to the &#39;data&#39; sheet.</span>
+
+<span class="sd">        Writes the headers to the first row of the &#39;data&#39; sheet.</span>
+<span class="sd">        The `headers_list` parameter is expected to be a list of header names.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            logger (logging.Logger): The logger object to use for logging messages.</span>
+<span class="sd">            headers_list (list): The list of header names.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ws</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wb</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">headers_list</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ws</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">headers_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wb</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Headers saved in data sheet&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FileSave.save_result"><a class="viewcode-back" href="../PyCharMem.html#PyCharMem.FileSave.save_result">[docs]</a>    <span class="k">def</span> <span class="nf">save_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+<span class="w">        </span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save a result row to the &#39;data&#39; sheet.</span>
+
+<span class="sd">        Appends a result row to the &#39;data&#39; sheet.</span>
+<span class="sd">        The `result` parameter is expected to be a list of values representing a row of results.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            logger (logging.Logger): The logger object to use for logging messages.</span>
+<span class="sd">            result (list): The list of values representing a result row.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">ws</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wb</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ws</span><span class="o">.</span><span class="n">max_row</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ws</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;IndexError: result row is too long&#39;</span><span class="p">)</span>
+                <span class="k">raise</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wb</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;result saved in data sheet&#39;</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="Logbook"><a class="viewcode-back" href="../PyCharMem.html#PyCharMem.Logbook">[docs]</a><span class="k">class</span> <span class="nc">Logbook</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">sample</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize a new logbook.</span>
+
+<span class="sd">        Creates a new logbook Excel file if it doesn&#39;t exist.</span>
+<span class="sd">        If the logbook file already exists, it loads the existing file.</span>
+<span class="sd">        Sets up the file path and name based on the provided `path` and `sample`.</span>
+<span class="sd">        Creates a &#39;logbook&#39; sheet in the workbook and sets the headers.</span>
+<span class="sd">        Saves the workbook to the specified file path.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            logger (logging.Logger): The logger object to use for logging messages.</span>
+<span class="sd">            path (str): The path where the logbook file will be saved.</span>
+<span class="sd">            sample (str): The sample name.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">sample</span><span class="p">)</span>
+        <span class="n">mkdir</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;logbook.xlsx&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">path_exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wb</span> <span class="o">=</span> <span class="n">openpyxl</span><span class="o">.</span><span class="n">load_workbook</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Logbook file already exists&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wb</span> <span class="o">=</span> <span class="n">openpyxl</span><span class="o">.</span><span class="n">Workbook</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wb</span><span class="o">.</span><span class="n">create_sheet</span><span class="p">(</span><span class="s1">&#39;logbook&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wb</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wb</span><span class="p">[</span><span class="s1">&#39;Sheet&#39;</span><span class="p">])</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">ws</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wb</span><span class="p">[</span><span class="s1">&#39;logbook&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ws</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;logbook&#39;</span>
+            <span class="n">headers_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Date&#39;</span><span class="p">,</span> <span class="s1">&#39;File&#39;</span><span class="p">,</span> <span class="s1">&#39;Comment&#39;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">headers_list</span><span class="p">)):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ws</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">headers_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">wb</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Logbook file created&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Logbook.save_log"><a class="viewcode-back" href="../PyCharMem.html#PyCharMem.Logbook.save_log">[docs]</a>    <span class="k">def</span> <span class="nf">save_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">comment</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save a log entry to the logbook.</span>
+
+<span class="sd">        Appends a log entry to the &#39;logbook&#39; sheet of the logbook Excel file.</span>
+<span class="sd">        Writes the provided `date`, `file`, and `comment` to the respective columns.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            logger (logging.Logger): The logger object to use for logging messages.</span>
+<span class="sd">            date (str): The date of the log entry.</span>
+<span class="sd">            file (str): The file associated with the log entry.</span>
+<span class="sd">            comment (str): The comment for the log entry.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">date</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;No date provided for log entry.&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">file</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;No file provided for log entry.&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">comment</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;No comment provided for log entry.&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ws</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wb</span><span class="p">[</span><span class="s1">&#39;logbook&#39;</span><span class="p">]</span>
+            <span class="n">row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ws</span><span class="o">.</span><span class="n">max_row</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ws</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">date</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ws</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">file</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ws</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">comment</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wb</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Log saved in logbook sheet&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error saving log entry: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="MeasurementThread"><a class="viewcode-back" href="../PyCharMem.html#PyCharMem.MeasurementThread">[docs]</a><span class="k">class</span> <span class="nc">MeasurementThread</span><span class="p">(</span><span class="n">QThread</span><span class="p">):</span>
+
+    <span class="n">update_data</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+    <span class="n">clear_plots</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+    <span class="n">close_window</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">inst</span><span class="p">,</span> <span class="n">meas</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">filesave</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the MeasurementThread object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            logger (logging.Logger): The logger object to use for logging messages.</span>
+<span class="sd">            inst (object): The instrument object for performing measurements.</span>
+<span class="sd">            meas (object): The measurement object for performing measurements.</span>
+<span class="sd">            config (dict): The configuration data for the measurement.</span>
+<span class="sd">            filesave (object): The FileSave object for saving measurement results.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: If n_cycles is not set or is not a positive integer.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logger</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inst</span> <span class="o">=</span> <span class="n">inst</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">meas</span> <span class="o">=</span> <span class="n">meas</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filesave</span> <span class="o">=</span> <span class="n">filesave</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filesave</span><span class="o">.</span><span class="n">save_config</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">meas</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filesave</span><span class="o">.</span><span class="n">save_headers</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">meas</span><span class="o">.</span><span class="n">headers</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_cycles</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">meas</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;n_cycles&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_vals</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">meas</span><span class="o">.</span><span class="n">vals</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MeasurementThread.run"><a class="viewcode-back" href="../PyCharMem.html#PyCharMem.MeasurementThread.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Run the measurement process in a separate thread.</span>
+
+<span class="sd">        Executes the measurement process with the provided instrument, measurement, configuration,</span>
+<span class="sd">        and FileSave objects.</span>
+<span class="sd">        Emits signals to update data in the GUI, clear plots, and request the closing of the GUI window.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inst</span><span class="o">.</span><span class="n">set_output_state</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">,</span><span class="s1">&#39;ON&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inst</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">,</span> <span class="s1">&#39;INIT:IMM&#39;</span><span class="p">)</span>
+        
+
+        <span class="k">with</span> <span class="n">Progress</span><span class="p">()</span> <span class="k">as</span> <span class="n">progress</span><span class="p">:</span>
+            <span class="n">value_task</span> <span class="o">=</span> <span class="n">progress</span><span class="o">.</span><span class="n">add_task</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[purple] Current value: None&quot;</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_vals</span><span class="p">)</span> 
+            <span class="n">cycle_task</span> <span class="o">=</span> <span class="n">progress</span><span class="o">.</span><span class="n">add_task</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[blue]Cycle 0/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_cycles</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_cycles</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">cycle</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_cycles</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">meas</span><span class="o">.</span><span class="n">vals</span><span class="p">:</span>
+                    <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">meas</span><span class="o">.</span><span class="n">measure_val</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inst</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">filesave</span><span class="o">.</span><span class="n">save_result</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">,</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">update_data</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">meas</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
+                    <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">value_task</span><span class="p">,</span> <span class="n">advance</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;[purple]Current value: </span><span class="si">{</span><span class="n">val</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">clear_plots</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">meas</span><span class="o">.</span><span class="n">plot_grid</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">meas</span><span class="o">.</span><span class="n">plot_clear</span><span class="p">)</span>
+                <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">value_task</span><span class="p">,</span> <span class="n">advance</span><span class="o">=-</span><span class="bp">self</span><span class="o">.</span><span class="n">n_vals</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;[purple]Value 0/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_vals</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">cycle_task</span><span class="p">,</span> <span class="n">advance</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;[blue]Cycle </span><span class="si">{</span><span class="n">cycle</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_cycles</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inst</span><span class="o">.</span><span class="n">set_output_state</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">,</span><span class="s1">&#39;OFF&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Measurement finished! Please close the window to continue.&#39;</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="MeasurementWindow"><a class="viewcode-back" href="../PyCharMem.html#PyCharMem.MeasurementWindow">[docs]</a><span class="k">class</span> <span class="nc">MeasurementWindow</span><span class="p">(</span><span class="n">QMainWindow</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">inst</span><span class="p">,</span> <span class="n">meas</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">filesave</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the MeasurementWindow object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            logger (logging.Logger): The logger object to use for logging messages.</span>
+<span class="sd">            inst (object): The instrument object for performing measurements.</span>
+<span class="sd">            meas (object): The measurement object for performing measurements.</span>
+<span class="sd">            config (dict): The configuration data for the measurement.</span>
+<span class="sd">            filesave (object): The FileSave object for saving measurement results.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initUI</span><span class="p">(</span><span class="n">meas</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">measure</span> <span class="o">=</span> <span class="n">MeasurementThread</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">inst</span><span class="p">,</span> <span class="n">meas</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">filesave</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">measure</span><span class="o">.</span><span class="n">update_data</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">measure</span><span class="o">.</span><span class="n">clear_plots</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">clear_plots</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">measure</span><span class="o">.</span><span class="n">close_window</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">measure</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+<div class="viewcode-block" id="MeasurementWindow.initUI"><a class="viewcode-back" href="../PyCharMem.html#PyCharMem.MeasurementWindow.initUI">[docs]</a>    <span class="k">def</span> <span class="nf">initUI</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">meas</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the user interface of the window.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            meas (object): The measurement object.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="n">meas</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">800</span><span class="p">,</span> <span class="mi">600</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">tab_widget</span> <span class="o">=</span> <span class="n">QTabWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">plot_tab</span> <span class="o">=</span> <span class="n">QWidget</span><span class="p">()</span>
+        <span class="n">plot_layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="n">plot_tab</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_grid</span> <span class="o">=</span> <span class="n">QGridLayout</span><span class="p">()</span>
+        <span class="p">[</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">]</span> <span class="o">=</span> <span class="n">meas</span><span class="o">.</span><span class="n">plot_grid</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_plots</span> <span class="o">=</span> <span class="p">[[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">cols</span><span class="p">)]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rows</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rows</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">cols</span><span class="p">):</span>
+                <span class="n">plot_widget</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">PlotWidget</span><span class="p">()</span>
+                <span class="n">plot_widget</span><span class="o">.</span><span class="n">setTitle</span><span class="p">(</span><span class="n">meas</span><span class="o">.</span><span class="n">plot_titles</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">col</span><span class="p">])</span>
+                <span class="n">plot_widget</span><span class="o">.</span><span class="n">showGrid</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">plot_widget</span><span class="o">.</span><span class="n">setLabel</span><span class="p">(</span><span class="s1">&#39;bottom&#39;</span><span class="p">,</span> <span class="n">meas</span><span class="o">.</span><span class="n">plot_labels</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">col</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">plot_widget</span><span class="o">.</span><span class="n">setLabel</span><span class="p">(</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">meas</span><span class="o">.</span><span class="n">plot_labels</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">col</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">plot_grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">plot_widget</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">)</span>
+
+        <span class="n">plot_layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_grid</span><span class="p">)</span>
+        <span class="n">plot_tab</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">plot_layout</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tab_widget</span><span class="o">.</span><span class="n">addTab</span><span class="p">(</span><span class="n">plot_tab</span><span class="p">,</span> <span class="s2">&quot;Plots&quot;</span><span class="p">)</span>
+
+        <span class="n">data_tab</span> <span class="o">=</span> <span class="n">QWidget</span><span class="p">()</span>
+        <span class="n">data_layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="n">data_tab</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_table</span> <span class="o">=</span> <span class="n">QTableWidget</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_table</span><span class="o">.</span><span class="n">setRowCount</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_table</span><span class="o">.</span><span class="n">setColumnCount</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">meas</span><span class="o">.</span><span class="n">headers</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_table</span><span class="o">.</span><span class="n">setHorizontalHeaderLabels</span><span class="p">(</span><span class="n">meas</span><span class="o">.</span><span class="n">headers</span><span class="p">)</span>
+        <span class="n">data_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_table</span><span class="p">)</span>
+        <span class="n">data_tab</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">data_layout</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tab_widget</span><span class="o">.</span><span class="n">addTab</span><span class="p">(</span><span class="n">data_tab</span><span class="p">,</span> <span class="s2">&quot;Data&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setCentralWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tab_widget</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MeasurementWindow.update_data"><a class="viewcode-back" href="../PyCharMem.html#PyCharMem.MeasurementWindow.update_data">[docs]</a>    <span class="k">def</span> <span class="nf">update_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">meas</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the displayed data and plots with the measurement results.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            meas (object): The measurement object.</span>
+<span class="sd">            results (list): The measurement results.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="p">[</span><span class="n">result</span><span class="p">,</span> <span class="n">result_plots</span><span class="p">]</span> <span class="o">=</span> <span class="n">results</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_table</span><span class="o">.</span><span class="n">insertRow</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">meas</span><span class="o">.</span><span class="n">headers</span><span class="p">)):</span>
+            <span class="n">item</span> <span class="o">=</span> <span class="n">QTableWidgetItem</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="n">col</span><span class="p">]))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_table</span><span class="o">.</span><span class="n">setItem</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">meas</span><span class="o">.</span><span class="n">plot_grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">meas</span><span class="o">.</span><span class="n">plot_grid</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data_plots</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result_plots</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">col</span><span class="p">])</span>
+                <span class="n">plot_widget</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_grid</span><span class="o">.</span><span class="n">itemAtPosition</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">)</span><span class="o">.</span><span class="n">widget</span><span class="p">()</span>
+                <span class="n">plot_widget</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_plots</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">col</span><span class="p">])[:,</span><span class="mi">0</span><span class="p">],</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_plots</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">col</span><span class="p">])[:,</span><span class="mi">1</span><span class="p">],</span> 
+                    <span class="n">clear</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+        
+<div class="viewcode-block" id="MeasurementWindow.clear_plots"><a class="viewcode-back" href="../PyCharMem.html#PyCharMem.MeasurementWindow.clear_plots">[docs]</a>    <span class="k">def</span> <span class="nf">clear_plots</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plot_grid</span><span class="p">,</span> <span class="n">plot_clear</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Clear the specified plots in the GUI.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            plot_grid (list): The grid layout of the plots.</span>
+<span class="sd">            plot_clear (list): The boolean flags indicating which plots to clear.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>    
+
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">plot_grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">plot_grid</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="k">if</span> <span class="n">plot_clear</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">col</span><span class="p">]:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">data_plots</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span></div>
+
+<div class="viewcode-block" id="MeasurementWindow.close_window"><a class="viewcode-back" href="../PyCharMem.html#PyCharMem.MeasurementWindow.close_window">[docs]</a>    <span class="k">def</span> <span class="nf">close_window</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Close the measurement window.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+                
+        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div></div>
+
+<span class="c1"># Main Functions ------------------------------------------------------------------</span>
+
+
+<div class="viewcode-block" id="start_gui"><a class="viewcode-back" href="../PyCharMem.html#PyCharMem.start_gui">[docs]</a><span class="k">def</span> <span class="nf">start_gui</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">inst</span><span class="p">,</span> <span class="n">meas</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">filesave</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Start the graphical user interface for the measurement application.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        logger (logging.Logger): The logger object to use for logging messages.</span>
+<span class="sd">        inst (object): The instrument object for performing measurements.</span>
+<span class="sd">        meas (object): The measurement object for performing measurements.</span>
+<span class="sd">        config (dict): The configuration data for the measurement.</span>
+<span class="sd">        filesave (object): The FileSave object for saving measurement results.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">app</span> <span class="o">=</span> <span class="n">QApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">setStyle</span><span class="p">(</span><span class="n">QStyleFactory</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;Fusion&quot;</span><span class="p">))</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;QMainWindow::title {background-color: #333333;}&quot;</span><span class="p">)</span>
+    <span class="n">window</span> <span class="o">=</span> <span class="n">MeasurementWindow</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">inst</span><span class="p">,</span> <span class="n">meas</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">filesave</span><span class="p">)</span>
+    <span class="n">window</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">app</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Error in GUI: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../PyCharMem.html#PyCharMem.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Main function for running the measurement application.</span>
+
+<span class="sd">    Initializes the necessary components, displays the main menu, handles user input,</span>
+<span class="sd">    and performs the selected actions based on the user&#39;s choices.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">install</span><span class="p">()</span>
+    <span class="n">console</span> <span class="o">=</span> <span class="n">Console</span><span class="p">()</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">verbose_debug</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">running</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="n">clear_terminal</span><span class="p">()</span>
+    <span class="n">splash_screen</span><span class="p">(</span><span class="n">console</span><span class="p">)</span>
+
+    <span class="n">config</span> <span class="o">=</span> <span class="n">read_config</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>
+
+    <span class="n">addresses</span> <span class="o">=</span> <span class="n">get_available_addresses</span><span class="p">()</span>
+    <span class="n">print_available_addresses</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">console</span><span class="p">,</span> <span class="n">addresses</span><span class="p">)</span>
+
+    <span class="n">inst_class</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="n">logger</span><span class="o">=</span><span class="n">logger</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;instrument&#39;</span><span class="p">,</span> <span class="n">inst_type</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;instrument&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;model&#39;</span><span class="p">))</span>
+    <span class="n">inst</span> <span class="o">=</span> <span class="n">inst_class</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+    <span class="n">inst</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Instrument loaded&#39;</span><span class="p">)</span>
+    <span class="n">atexit</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">exit</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">inst</span><span class="p">)</span>
+
+    <span class="k">while</span> <span class="n">running</span><span class="p">:</span>
+        <span class="n">option</span> <span class="o">=</span> <span class="n">menu</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">console</span><span class="p">,</span> <span class="s1">&#39;main&#39;</span><span class="p">)</span>
+        
+
+        <span class="k">match</span> <span class="n">option</span><span class="p">:</span>
+            <span class="k">case</span> <span class="s1">&#39;Exit&#39;</span><span class="p">:</span>
+                <span class="n">running</span> <span class="o">=</span> <span class="kc">False</span>
+
+            <span class="k">case</span> <span class="s1">&#39;Print Available Addresses&#39;</span><span class="p">:</span>
+                <span class="n">print_available_addresses</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">console</span><span class="p">,</span> <span class="n">get_available_addresses</span><span class="p">())</span>
+
+            <span class="k">case</span> <span class="s1">&#39;Edit Configuration&#39;</span><span class="p">:</span>
+                <span class="n">open_config</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>
+
+            <span class="k">case</span> <span class="s1">&#39;Select Measurement&#39;</span><span class="p">:</span>
+                <span class="n">config</span> <span class="o">=</span> <span class="n">read_config</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>
+                <span class="n">option2</span> <span class="o">=</span> <span class="n">menu</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">console</span><span class="p">,</span> <span class="s1">&#39;measurements&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">option2</span> <span class="o">==</span> <span class="s1">&#39;Back&#39;</span><span class="p">:</span> <span class="k">continue</span>
+
+                <span class="n">meas_class</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="n">logger</span><span class="o">=</span><span class="n">logger</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;measurement&#39;</span><span class="p">,</span> <span class="n">measurement_type</span><span class="o">=</span><span class="n">option2</span><span class="p">)</span>
+                <span class="n">meas</span> <span class="o">=</span> <span class="n">meas_class</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">inst</span><span class="p">)</span>
+
+                <span class="n">filesave</span> <span class="o">=</span> <span class="n">FileSave</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sample&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">),</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sample&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">),</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sample&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;device&#39;</span><span class="p">))</span>
+
+                <span class="n">check_missing_params</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">meas</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">meas</span><span class="o">.</span><span class="n">name</span><span class="p">],</span> <span class="n">meas</span><span class="o">.</span><span class="n">nparams</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;All parameters present&#39;</span><span class="p">)</span>
+                <span class="n">start_gui</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">inst</span><span class="p">,</span> <span class="n">meas</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">filesave</span><span class="p">)</span>
+
+                <span class="n">path</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sample&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">)</span>
+                <span class="n">sample_name</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sample&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span>
+                <span class="n">sample_device</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sample&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;device&#39;</span><span class="p">)</span> 
+                
+                <span class="n">logbook</span> <span class="o">=</span> <span class="n">Logbook</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span><span class="n">path</span><span class="p">,</span> <span class="n">sample_name</span><span class="p">)</span>
+                
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Please enter a comment for the logbook&#39;</span><span class="p">)</span>
+                <span class="n">comment</span> <span class="o">=</span> <span class="n">ask_for_comment</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>
+                <span class="n">logbook</span><span class="o">.</span><span class="n">save_log</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">get_datetime</span><span class="p">(),</span> <span class="n">filesave</span><span class="o">.</span><span class="n">file_name</span><span class="p">,</span> <span class="n">comment</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Logbook saved!&#39;</span><span class="p">)</span>
+
+
+                <span class="n">option3</span> <span class="o">=</span> <span class="n">repeat_measurement</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">console</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">option3</span><span class="p">:</span> <span class="k">continue</span>
+                <span class="k">else</span><span class="p">:</span> 
+                    <span class="n">running</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Ricardo E. Silva.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
